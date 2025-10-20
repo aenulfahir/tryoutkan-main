@@ -1,0 +1,6 @@
+[project]
+project_id = "vhgwcljzzsudyzzicmcc"
+
+[functions.topup-balance]
+verify_jwt = true
+
