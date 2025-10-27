@@ -2,15 +2,24 @@
 FROM node:20-alpine AS base
 WORKDIR /app
 
-# ---------- Deps (install node_modules) ----------
+# ---------- Deps ----------
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
-COPY package.json package-lock.json* ./
-RUN npm ci --ignore-scripts
 
-# ---------- Builder (build Vite with env) ----------
+# hanya package manifests dulu (maksimalkan cache)
+COPY package.json package-lock.json* ./
+
+# Jika ada package-lock.json -> npm ci, jika tidak -> npm install
+RUN if [ -f package-lock.json ]; then \
+    npm ci --ignore-scripts; \
+    else \
+    npm install --no-audit --no-fund --ignore-scripts; \
+    fi
+
+# ---------- Builder (Vite build) ----------
 FROM base AS builder
-# Build args diterima di stage ini (bukan di deps)
+
+# Build args (diisi dari panel saat build)
 ARG VITE_CLIENT_TARGET
 ARG VITE_SUPABASE_ANON_KEY
 ARG VITE_N8N_WEBHOOK_URL
@@ -19,7 +28,7 @@ ARG VITE_N8N_ADD_QUESTIONS_URL
 ARG VITE_AI_API_KEY
 ARG VITE_OPENAI_API_KEY
 
-# Expose as ENV supaya Vite bisa baca saat build
+# Jadikan ENV supaya Vite bisa baca pada build time
 ENV NODE_ENV=production \
     VITE_CLIENT_TARGET=${VITE_CLIENT_TARGET} \
     VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY} \
@@ -29,9 +38,9 @@ ENV NODE_ENV=production \
     VITE_AI_API_KEY=${VITE_AI_API_KEY} \
     VITE_OPENAI_API_KEY=${VITE_OPENAI_API_KEY}
 
-# Ambil node_modules dari stage deps
+# bawa node_modules dari tahap deps
 COPY --from=deps /app/node_modules ./node_modules
-# Lalu salin source code
+# lalu bawa seluruh source
 COPY . .
 
 # Build Vite
@@ -39,9 +48,9 @@ RUN npm run build
 
 # ---------- Runtime (Nginx) ----------
 FROM nginx:alpine AS runner
-# Salin konfigurasi nginx (file terpisah)
+# konfigurasi nginx terpisah
 COPY nginx.conf /etc/nginx/nginx.conf
-# Salin hasil build
+# hasil build
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
