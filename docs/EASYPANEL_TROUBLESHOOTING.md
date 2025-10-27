@@ -1,4 +1,3 @@
-
 # Troubleshooting EasyPanel Deployment
 
 ## Common Issues and Solutions
@@ -111,3 +110,96 @@ curl http://localhost:8080
 docker logs tryoutkan-test
 ```
 
+### 2. Check File Structure
+Ensure all required files are present:
+```bash
+# List all deployment files
+ls -la Dockerfile docker-compose.yml .env.production nginx.conf
+
+# Check .dockerignore
+cat .dockerignore
+```
+
+### 3. Verify Environment Variables
+```bash
+# Check environment variables format
+cat .env.production
+
+# Test with a simple script
+docker run --rm --env-file .env.production node:18-alpine printenv
+```
+
+### 4. Network Issues
+```bash
+# Test network connectivity
+docker network ls
+docker network inspect bridge
+
+# Check DNS resolution
+docker run --rm node:18-alpine nslookup google.com
+```
+
+## Performance Optimization
+
+### 1. Reduce Image Size
+- Use multi-stage builds (already implemented)
+- Remove unnecessary dependencies
+- Use .dockerignore effectively
+
+### 2. Improve Build Speed
+- Leverage Docker layer caching
+- Order COPY commands by frequency of change
+- Use .dockerignore to exclude unnecessary files
+
+### 3. Runtime Optimization
+- Configure resource limits in docker-compose.yml
+- Use health checks
+- Implement proper logging
+
+## Security Considerations
+
+### 1. Environment Variables
+- Never commit .env files to version control
+- Use different keys for production
+- Rotate keys regularly
+
+### 2. Container Security
+- Use non-root user (if possible)
+- Scan images for vulnerabilities
+- Keep base images updated
+
+### 3. Network Security
+- Use HTTPS in production
+- Configure firewall rules
+- Limit exposed ports
+
+## Contact Support
+
+If you continue to experience issues:
+
+1. **Check Logs First**: Always check container and EasyPanel logs
+2. **Local Testing**: Verify the build works locally
+3. **Documentation**: Refer to the main deployment guide
+4. **Community**: Check EasyPanel documentation and community forums
+5. **Hosting Provider**: Contact your VPS provider for infrastructure issues
+
+## Quick Fix Commands
+
+```bash
+# Clean Docker cache
+docker system prune -a
+
+# Rebuild without cache
+docker-compose build --no-cache
+
+# Force recreate containers
+docker-compose up -d --force-recreate
+
+# Check system resources
+docker stats
+docker system df
+```
+
+---
+
+**Remember**: Most deployment issues are related to environment variables, missing files, or network configuration. Always check these first!
