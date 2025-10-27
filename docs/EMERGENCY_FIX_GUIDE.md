@@ -1,4 +1,3 @@
-
 # Emergency Fix Guide for Environment Variables
 
 ## 🚨 Immediate Fix Applied
@@ -94,3 +93,25 @@ Jika setelah rebuild masih error:
 
 1. **Clear Browser Cache**:
    - Ctrl+Shift+R (hard refresh)
+   - Atau buka di incognito window
+
+2. **Check Build Logs** di EasyPanel:
+   - Pastikan build berhasil
+   - Tidak ada error saat build
+
+3. **Verify File Contents**:
+   ```bash
+   # Masuk ke container
+   docker exec -it <container-name> /bin/sh
+   
+   # Check file yang di-build
+   cat /usr/share/nginx/html/assets/index-*.js | grep -i supabase
+   ```
+
+4. **Contact Support**:
+   - Screenshot error dari browser console
+   - Share build logs dari EasyPanel
+
+---
+
+**Emergency fix sudah diterapkan! Sekarang rebuild aplikasi dan test kembali.** 🎉
