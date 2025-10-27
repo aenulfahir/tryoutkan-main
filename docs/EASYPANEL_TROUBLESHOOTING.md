@@ -210,3 +210,80 @@ docker system df
 ---
 
 **Remember**: Most deployment issues are related to environment variables, missing files, or network configuration. Always check these first!
+
+### 4. Alternative Dockerfile Usage
+
+If you continue to experience npm-related issues, use the alternative Dockerfile:
+
+```bash
+# Rename the alternative file
+mv Dockerfile.alternative Dockerfile
+
+# Or specify it in EasyPanel build settings
+# Set Dockerfile path to: Dockerfile.alternative
+```
+
+The alternative Dockerfile:
+- Uses `npm install` instead of `npm ci`
+- Generates package-lock.json if missing
+- More tolerant to different npm versions
+
+### 5. EasyPanel Specific Issues
+
+#### Build Context Problems
+**Error**: Failed to solve: failed to read dockerfile
+
+**Solution**:
+1. Check EasyPanel build context path
+2. Ensure all files are in the correct directory
+3. Verify file permissions on the VPS
+
+#### Resource Limits
+**Error**: Container killed due to memory limit
+
+**Solution**:
+```yaml
+# In docker-compose.yml, add resource limits:
+services:
+  tryoutkan-app:
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+```
+
+---
+
+## Emergency Quick Fix
+
+If you need to deploy immediately and are facing npm issues:
+
+1. **Use** alternative Dockerfile:
+   ```bash
+   cp Dockerfile.alternative Dockerfile
+   ```
+
+2. **Or modify** EasyPanel build command to use:
+   ```bash
+   docker build -f Dockerfile.alternative -t tryoutkan-app .
+   ```
+
+3. **For manual deployment**:
+   ```bash
+   # Build locally
+   docker build -f Dockerfile.alternative -t tryoutkan-app .
+   
+   # Push to registry
+   docker tag tryoutkan-app your-registry/tryoutkan-app
+   docker push your-registry/tryoutkan-app
+   
+   # Pull on VPS
+   docker pull your-registry/tryoutkan-app
+   docker run -d -p 80:80 your-registry/tryoutkan-app
+   ```
+
+---
+
+**Remember**: Most deployment issues are related to package-lock.json, npm versions, or build context. Always check these first!
