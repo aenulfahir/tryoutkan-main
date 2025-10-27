@@ -3,13 +3,20 @@
 ## Common Issues and Solutions
 
 ### 1. npm ci Error
-**Error**: `npm ci --only=production` failed with exit code 1
+**Error**: `npm ci` failed with "The npm ci command can only install with an existing package-lock.json"
 
-**Cause**: The `--only=production` flag is not compatible with `npm ci` in newer npm versions.
+**Cause**: The package-lock.json file is missing or incompatible with the npm version.
 
-**Solution**: 
-- Use `npm ci` without the `--only=production` flag
-- The Dockerfile has been updated to fix this issue
+**Solutions**:
+- **Option 1**: Use `npm install` instead of `npm ci` (Dockerfile updated)
+- **Option 2**: Use the alternative Dockerfile: `Dockerfile.alternative`
+- **Option 3**: Generate a fresh package-lock.json locally first:
+  ```bash
+  rm package-lock.json
+  npm install
+  git add package-lock.json
+  git commit -m "Update package-lock.json"
+  ```
 
 ### 2. Missing package-lock.json
 **Error**: `The npm ci command can only install with an existing package-lock.json`
