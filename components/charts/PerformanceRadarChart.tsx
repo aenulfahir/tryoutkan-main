@@ -2,13 +2,10 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { useEffect, useState } from "react";
 import type { SectionResult } from "@/types/tryout";
+import "highcharts/highcharts-more";
 
 // Initialize highcharts-more for polar charts
-if (typeof window !== "undefined") {
-  import("highcharts/highcharts-more").then((module) => {
-    (module as any)(Highcharts);
-  });
-}
+// The import above automatically initializes Highcharts with additional chart types
 
 interface PerformanceRadarChartProps {
   sectionResults: SectionResult[];

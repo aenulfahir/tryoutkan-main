@@ -47,8 +47,16 @@ export default function Login() {
         });
 
       if (signInError) {
-        // Check if user doesn't exist
-        if (signInError.message.includes("Invalid login credentials")) {
+        // Check for network/DNS errors
+        if (
+          signInError.message.includes("fetch") ||
+          signInError.message.includes("network") ||
+          signInError.message.includes("ERR_NAME_NOT_RESOLVED")
+        ) {
+          setError(
+            "Tidak dapat terhubung ke server. Periksa koneksi internet Anda atau coba lagi nanti."
+          );
+        } else if (signInError.message.includes("Invalid login credentials")) {
           setError("Email atau password salah. Silakan coba lagi.");
         } else {
           setError(signInError.message);
