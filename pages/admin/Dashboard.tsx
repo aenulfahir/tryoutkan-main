@@ -310,31 +310,33 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mt-1">
           Selamat datang di Admin Dashboard TryoutKan
         </p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Stats Cards - Mobile-First */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {statsCards.map((stat) => {
           const Icon = stat.icon;
           return (
             <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 gap-4">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   {stat.title}
                 </CardTitle>
                 <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                  <Icon className={`w-5 h-5 ${stat.color}`} />
+                  <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${stat.color}`} />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-xl sm:text-2xl font-bold">
+                  {stat.value}
+                </div>
                 {stat.description && (
                   <p className="text-xs text-muted-foreground mt-1">
                     {stat.description}
@@ -346,60 +348,68 @@ export default function AdminDashboard() {
         })}
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Charts - Mobile-First */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* User Growth Chart */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Pertumbuhan User</CardTitle>
+            <CardTitle className="text-sm sm:text-base">
+              Pertumbuhan User
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={userGrowthData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="users"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  name="Users"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="w-full overflow-x-auto">
+              <ResponsiveContainer width="100%" height={250} minHeight={200}>
+                <LineChart data={userGrowthData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="users"
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                    name="Users"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
 
         {/* Category Distribution Chart */}
         <Card>
           <CardHeader>
-            <CardTitle>Distribusi Kategori</CardTitle>
+            <CardTitle className="text-sm sm:text-base">
+              Distribusi Kategori
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={categoryDistribution}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }: any) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
-                  }
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {categoryDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="w-full overflow-x-auto">
+              <ResponsiveContainer width="100%" height={250} minHeight={200}>
+                <PieChart>
+                  <Pie
+                    data={categoryDistribution}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }: any) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {categoryDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -407,23 +417,27 @@ export default function AdminDashboard() {
       {/* Revenue Trend Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Tren Pendapatan</CardTitle>
+          <CardTitle className="text-sm sm:text-base">
+            Tren Pendapatan
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={revenueTrendData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip
-                formatter={(value: number) =>
-                  `Rp ${value.toLocaleString("id-ID")}`
-                }
-              />
-              <Legend />
-              <Bar dataKey="revenue" fill="#eab308" name="Revenue" />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="w-full overflow-x-auto">
+            <ResponsiveContainer width="100%" height={250} minHeight={200}>
+              <BarChart data={revenueTrendData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip
+                  formatter={(value: number) =>
+                    `Rp ${value.toLocaleString("id-ID")}`
+                  }
+                />
+                <Legend />
+                <Bar dataKey="revenue" fill="#eab308" name="Revenue" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
     </div>

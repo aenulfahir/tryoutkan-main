@@ -292,117 +292,129 @@ export default function Results() {
   }
 
   return (
-    <div className="p-4 md:p-8 space-y-6">
+    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Hasil & Analisis</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">
+          Hasil & Analisis
+        </h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Lihat semua hasil tryout dan analisis performa Anda
         </p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stats Cards - Mobile-First */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
+          <CardContent className="pt-4 sm:pt-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                   Total Tryout
                 </p>
-                <h3 className="text-3xl font-bold mb-1">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-1">
                   {stats.totalTryouts}
                 </h3>
                 <p className="text-xs text-muted-foreground">Tryout selesai</p>
               </div>
               <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-500">
-                <Trophy className="w-6 h-6" />
+                <Trophy className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
+          <CardContent className="pt-4 sm:pt-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                   Rata-rata Skor
                 </p>
-                <h3 className="text-3xl font-bold mb-1">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-1">
                   {stats.averageScore.toFixed(1)}
                 </h3>
                 <p className="text-xs text-muted-foreground">Dari 100</p>
               </div>
               <div className="p-3 rounded-lg bg-green-100 dark:bg-green-950 text-green-500">
-                <TrendingUp className="w-6 h-6" />
+                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
+          <CardContent className="pt-4 sm:pt-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                   Skor Terbaik
                 </p>
-                <h3 className="text-3xl font-bold mb-1">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-1">
                   {stats.bestScore.toFixed(1)}
                 </h3>
                 <p className="text-xs text-muted-foreground">Personal best</p>
               </div>
               <div className="p-3 rounded-lg bg-yellow-100 dark:bg-yellow-950 text-yellow-500">
-                <Award className="w-6 h-6" />
+                <Award className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
+          <CardContent className="pt-4 sm:pt-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                   Tingkat Kelulusan
                 </p>
-                <h3 className="text-3xl font-bold mb-1">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-1">
                   {stats.passRate.toFixed(0)}%
                 </h3>
                 <p className="text-xs text-muted-foreground">Pass rate</p>
               </div>
               <div className="p-3 rounded-lg bg-purple-100 dark:bg-purple-950 text-purple-500">
-                <CheckCircle className="w-6 h-6" />
+                <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Progress Chart */}
+      {/* Progress Chart - Mobile-First */}
       {results.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Progress Skor</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-sm sm:text-base">
+              Progress Skor
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
               Grafik perkembangan skor dari {Math.min(results.length, 10)}{" "}
               tryout terakhir
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={progressChartOptions}
-            />
+            <div className="w-full overflow-x-auto">
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={{
+                  ...progressChartOptions,
+                  chart: {
+                    ...progressChartOptions.chart,
+                    height: 250, // Reduced height for mobile
+                  },
+                }}
+              />
+            </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Filters & Search */}
+      {/* Filters & Search - Mobile-First */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <CardContent className="pt-4 sm:pt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -410,13 +422,14 @@ export default function Results() {
                 placeholder="Cari tryout..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 min-h-[44px]"
+                style={{ fontSize: "16px" }} // Prevent zoom on iOS
               />
             </div>
 
             {/* Category Filter */}
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger>
+              <SelectTrigger className="min-h-[44px]">
                 <SelectValue placeholder="Kategori" />
               </SelectTrigger>
               <SelectContent>
@@ -430,7 +443,7 @@ export default function Results() {
 
             {/* Status Filter */}
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger>
+              <SelectTrigger className="min-h-[44px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -442,7 +455,7 @@ export default function Results() {
 
             {/* Sort */}
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger>
+              <SelectTrigger className="min-h-[44px]">
                 <SelectValue placeholder="Urutkan" />
               </SelectTrigger>
               <SelectContent>
@@ -456,15 +469,17 @@ export default function Results() {
         </CardContent>
       </Card>
 
-      {/* Results List */}
+      {/* Results List - Mobile-First */}
       <div className="space-y-4">
         {filteredResults.length === 0 ? (
           <Card>
-            <CardContent className="py-12">
+            <CardContent className="py-8 sm:py-12">
               <div className="text-center">
-                <Filter className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Tidak Ada Hasil</h3>
-                <p className="text-sm text-muted-foreground">
+                <Filter className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg sm:text-xl font-semibold mb-2">
+                  Tidak Ada Hasil
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Tidak ada hasil yang sesuai dengan filter Anda
                 </p>
               </div>
@@ -479,12 +494,12 @@ export default function Results() {
                 navigate(`/dashboard/results/${result.user_tryout_session_id}`)
               }
             >
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                   {/* Left: Info */}
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-semibold">
+                      <h3 className="text-base sm:text-lg font-semibold">
                         {Array.isArray(result.tryout_packages)
                           ? result.tryout_packages[0]?.title ||
                             "Tryout Tanpa Judul"
@@ -510,37 +525,39 @@ export default function Results() {
                       </Badge>
                     </div>
 
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                    <div className="flex items-center gap-4 text-xs sm:text-sm text-muted-foreground mb-3">
                       <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
+                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                         {formatDate(result.created_at)}
                       </div>
                       {result.rank_position && (
                         <div className="flex items-center gap-1">
-                          <Award className="w-4 h-4" />
-                          Ranking #{result.rank_position}
+                          <Award className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="text-xs sm:text-sm">
+                            Ranking #{result.rank_position}
+                          </span>
                         </div>
                       )}
                     </div>
 
                     {/* Stats */}
-                    <div className="flex items-center gap-6 text-sm">
+                    <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
                         <span className="font-medium">
                           {result.correct_answers}
                         </span>
                         <span className="text-muted-foreground">Benar</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <XCircle className="w-4 h-4 text-red-500" />
+                        <XCircle className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
                         <span className="font-medium">
                           {result.wrong_answers}
                         </span>
                         <span className="text-muted-foreground">Salah</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Target className="w-4 h-4 text-gray-500" />
+                        <Target className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
                         <span className="font-medium">{result.unanswered}</span>
                         <span className="text-muted-foreground">Kosong</span>
                       </div>
@@ -548,11 +565,11 @@ export default function Results() {
                   </div>
 
                   {/* Right: Score */}
-                  <div className="text-right ml-6">
+                  <div className="text-right ml-0 sm:ml-6">
                     <div className="flex items-center gap-2 mb-1">
                       <div
                         className={cn(
-                          "text-4xl font-bold",
+                          "text-2xl sm:text-4xl font-bold",
                           result.passed ? "text-green-600" : "text-red-600"
                         )}
                       >
@@ -560,14 +577,14 @@ export default function Results() {
                       </div>
                       <div className="text-muted-foreground">%</div>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       {result.total_score.toFixed(0)} /{" "}
                       {result.max_score.toFixed(0)}
                     </p>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="mt-2"
+                      className="mt-2 min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px]"
                       onClick={(e) => {
                         e.stopPropagation();
                         navigate(
@@ -575,8 +592,8 @@ export default function Results() {
                         );
                       }}
                     >
-                      <Eye className="w-4 h-4 mr-2" />
-                      Lihat Detail
+                      <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                      <span className="text-xs sm:text-sm">Detail</span>
                     </Button>
                   </div>
                 </div>
@@ -586,11 +603,11 @@ export default function Results() {
         )}
       </div>
 
-      {/* Summary Footer */}
+      {/* Summary Footer - Mobile-First */}
       {filteredResults.length > 0 && (
         <Card>
           <CardContent className="py-4">
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-xs sm:text-sm text-muted-foreground">
               Menampilkan {filteredResults.length} dari {results.length} hasil
             </p>
           </CardContent>

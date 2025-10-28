@@ -293,59 +293,66 @@ export default function Billing() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Billing</h1>
-        <p className="text-muted-foreground">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Billing</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Manage your balance and view transaction history
         </p>
       </div>
 
-      {/* Current Balance - Simple Design */}
-      <Card className="mb-8">
-        <CardContent className="p-8">
-          <div className="flex items-center justify-between mb-6">
+      {/* Current Balance - Mobile-First Design */}
+      <Card className="mb-6 sm:mb-8">
+        <CardContent className="p-4 sm:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-4">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl">
-                <Wallet className="w-8 h-8" />
+                <Wallet className="w-8 h-8 sm:w-10 sm:h-10" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground mb-1">
                   Total Balance
                 </p>
-                <h2 className="text-4xl font-bold">
+                <h2 className="text-2xl sm:text-4xl font-bold">
                   {formatCurrency(balance?.balance || 0)}
                 </h2>
               </div>
             </div>
-            <div className="flex space-x-2">
-              <Button size="lg" onClick={() => setIsTopUpModalOpen(true)}>
-                <Plus className="w-5 h-5 mr-2" />
-                Top Up
+            <div className="flex flex-col sm:flex-row gap-2 sm:space-x-2">
+              <Button
+                size="lg"
+                onClick={() => setIsTopUpModalOpen(true)}
+                className="w-full sm:w-auto min-h-[44px]"
+              >
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                <span className="text-sm sm:text-base">Top Up</span>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 onClick={() => setIsRedeemModalOpen(true)}
+                className="w-full sm:w-auto min-h-[44px]"
               >
-                <Receipt className="w-5 h-5 mr-2" />
-                Redeem
+                <Receipt className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                <span className="text-sm sm:text-base">Redeem</span>
               </Button>
             </div>
           </div>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-3 gap-4 pt-6 border-t">
-            <div>
+          {/* Quick Stats - Mobile-First */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t">
+            <div className="text-center sm:text-left">
               <p className="text-xs text-muted-foreground mb-1">Transactions</p>
-              <p className="text-2xl font-bold">{transactions.length}</p>
+              <p className="text-xl sm:text-2xl font-bold">
+                {transactions.length}
+              </p>
             </div>
-            <div>
+            <div className="text-center sm:text-left">
               <p className="text-xs text-muted-foreground mb-1">Payments</p>
-              <p className="text-2xl font-bold">{payments.length}</p>
+              <p className="text-xl sm:text-2xl font-bold">{payments.length}</p>
             </div>
-            <div>
+            <div className="text-center sm:text-left">
               <p className="text-xs text-muted-foreground mb-1">Last Updated</p>
               <p className="text-sm font-semibold">
                 {balance?.updated_at ? formatDate(balance.updated_at) : "-"}
@@ -357,15 +364,17 @@ export default function Billing() {
 
       {/* Top Up Modal - Redesigned */}
       <Dialog open={isTopUpModalOpen} onOpenChange={setIsTopUpModalOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-lg max-w-[95vw]">
           <DialogHeader>
             <div className="flex items-center space-x-3 mb-2">
               <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                 <Wallet className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <DialogTitle className="text-2xl">Top Up Balance</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-xl sm:text-2xl">
+                  Top Up Balance
+                </DialogTitle>
+                <DialogDescription className="text-sm sm:text-base">
                   Pilih atau masukkan jumlah top up
                 </DialogDescription>
               </div>
@@ -383,19 +392,19 @@ export default function Billing() {
               </p>
             </div>
 
-            {/* Preset Amount Cards */}
+            {/* Preset Amount Cards - Mobile-First */}
             <div>
               <label className="text-sm font-medium mb-3 block">
                 Quick Select
               </label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {[50000, 100000, 200000].map((amount) => (
                   <button
                     key={amount}
                     type="button"
                     onClick={() => handlePresetAmount(amount)}
                     disabled={isTopUpLoading}
-                    className={`p-4 rounded-xl border-2 transition-all hover:scale-105 ${
+                    className={`p-4 rounded-xl border-2 transition-all hover:scale-105 min-h-[44px] ${
                       parseInt(topUpAmount) === amount
                         ? "border-blue-600 bg-blue-50 dark:bg-blue-950/30"
                         : "border-gray-200 dark:border-gray-700 hover:border-blue-300"
@@ -410,7 +419,7 @@ export default function Billing() {
               </div>
             </div>
 
-            {/* Custom Amount Input */}
+            {/* Custom Amount Input - Mobile-First */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Custom Amount</label>
               <div className="relative">
@@ -426,7 +435,8 @@ export default function Billing() {
                     setTopUpError("");
                   }}
                   disabled={isTopUpLoading}
-                  className="text-lg pl-10 h-12"
+                  className="text-base sm:text-lg pl-10 h-12 min-h-[44px]"
+                  style={{ fontSize: "16px" }} // Prevent zoom on iOS
                 />
               </div>
               <p className="text-xs text-muted-foreground">
@@ -442,9 +452,9 @@ export default function Billing() {
               </div>
             )}
 
-            {/* Submit Button */}
+            {/* Submit Button - Mobile-First */}
             <Button
-              className="w-full h-12 text-base"
+              className="w-full h-12 text-base min-h-[44px]"
               size="lg"
               onClick={handleTopUpSubmit}
               disabled={
@@ -453,13 +463,13 @@ export default function Billing() {
             >
               {isTopUpLoading ? (
                 <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Processing Payment...
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
+                  <span className="text-sm sm:text-base">Processing...</span>
                 </>
               ) : (
                 <>
-                  <CreditCard className="w-5 h-5 mr-2" />
-                  Continue to Payment
+                  <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span className="text-sm sm:text-base">Continue</span>
                 </>
               )}
             </Button>
@@ -492,30 +502,30 @@ export default function Billing() {
         </DialogContent>
       </Dialog>
 
-      {/* Tabs */}
+      {/* Tabs - Mobile-First */}
       <div className="mb-6">
-        <div className="flex space-x-1 border-b border-border">
+        <div className="flex space-x-1 border-b border-border overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab("transactions")}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            className={`px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors min-h-[44px] whitespace-nowrap ${
               activeTab === "transactions"
                 ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            Transactions
+            <span className="text-xs sm:text-sm">Transactions</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("payments")}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            className={`px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors min-h-[44px] whitespace-nowrap ${
               activeTab === "payments"
                 ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            Payments
+            <span className="text-xs sm:text-sm">Payments</span>
           </button>
         </div>
       </div>
@@ -523,23 +533,27 @@ export default function Billing() {
       {/* Conditional Rendering based on Active Tab */}
       {activeTab === "transactions" ? (
         <div>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
             <div>
-              <h2 className="text-2xl font-bold">Transaction History</h2>
-              <p className="text-muted-foreground text-sm mt-1">
+              <h2 className="text-xl sm:text-2xl font-bold">
+                Transaction History
+              </h2>
+              <p className="text-muted-foreground text-xs sm:text-sm mt-1">
                 View all your credit transactions
               </p>
             </div>
           </div>
 
           {transactions.length === 0 ? (
-            <Card className="p-12">
+            <Card className="p-8 sm:p-12">
               <div className="text-center">
                 <div className="inline-flex p-4 bg-muted rounded-full mb-4">
-                  <FileText className="w-8 h-8 text-muted-foreground" />
+                  <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" />
                 </div>
-                <p className="text-muted-foreground">No transactions yet</p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  No transactions yet
+                </p>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                   Your transaction history will appear here
                 </p>
               </div>
@@ -569,10 +583,10 @@ export default function Billing() {
                         : ""
                     }`}
                   >
-                    <CardContent className="p-6">
+                    <CardContent className="p-4 sm:p-6">
                       <div className="flex items-center justify-between">
                         {/* Left: Icon + Description */}
-                        <div className="flex items-center space-x-4 flex-1">
+                        <div className="flex items-center space-x-2 sm:space-x-4 flex-1">
                           <div
                             className={`p-3 rounded-xl ${
                               isPromoRedeem
@@ -596,7 +610,7 @@ export default function Billing() {
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <p className="font-semibold text-base">
+                              <p className="font-semibold text-sm sm:text-base">
                                 {isPromoRedeem
                                   ? "Redeem Kode Promo"
                                   : isDirectTopUp
@@ -753,23 +767,25 @@ export default function Billing() {
         </div>
       ) : (
         <div>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
             <div>
-              <h2 className="text-2xl font-bold">Payment History</h2>
-              <p className="text-muted-foreground text-sm mt-1">
+              <h2 className="text-xl sm:text-2xl font-bold">Payment History</h2>
+              <p className="text-muted-foreground text-xs sm:text-sm mt-1">
                 View all your payment records and invoices
               </p>
             </div>
           </div>
 
           {payments.length === 0 ? (
-            <Card className="p-12">
+            <Card className="p-8 sm:p-12">
               <div className="text-center">
                 <div className="inline-flex p-4 bg-muted rounded-full mb-4">
-                  <Receipt className="w-8 h-8 text-muted-foreground" />
+                  <Receipt className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" />
                 </div>
-                <p className="text-muted-foreground">No payments yet</p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  No payments yet
+                </p>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                   Your payment history will appear here
                 </p>
               </div>
@@ -777,22 +793,22 @@ export default function Billing() {
           ) : (
             <Card>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[600px]">
                   <thead>
                     <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <th className="text-left py-4 px-6 text-sm font-semibold text-muted-foreground">
+                      <th className="text-left py-2 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-muted-foreground">
                         DATE
                       </th>
-                      <th className="text-left py-4 px-6 text-sm font-semibold text-muted-foreground">
+                      <th className="text-left py-2 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-muted-foreground">
                         AMOUNT
                       </th>
-                      <th className="text-left py-4 px-6 text-sm font-semibold text-muted-foreground">
+                      <th className="text-left py-2 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-muted-foreground">
                         CREDITS
                       </th>
-                      <th className="text-left py-4 px-6 text-sm font-semibold text-muted-foreground">
+                      <th className="text-left py-2 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-muted-foreground">
                         STATUS
                       </th>
-                      <th className="text-right py-4 px-6 text-sm font-semibold text-muted-foreground">
+                      <th className="text-right py-2 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-muted-foreground">
                         ACTIONS
                       </th>
                     </tr>
@@ -808,31 +824,31 @@ export default function Billing() {
                           key={payment.id}
                           className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
                         >
-                          <td className="py-4 px-6">
-                            <p className="text-sm font-medium">
+                          <td className="py-2 sm:py-4 px-3 sm:px-6">
+                            <p className="text-xs sm:text-sm font-medium">
                               {formatDate(payment.created_at)}
                             </p>
                           </td>
-                          <td className="py-4 px-6">
-                            <p className="text-sm font-semibold">
+                          <td className="py-2 sm:py-4 px-3 sm:px-6">
+                            <p className="text-xs sm:text-sm font-semibold">
                               {formatCurrency(payment.amount)}
                             </p>
                           </td>
-                          <td className="py-4 px-6">
-                            <p className="text-sm font-medium text-primary">
+                          <td className="py-2 sm:py-4 px-3 sm:px-6">
+                            <p className="text-xs sm:text-sm font-medium text-primary">
                               {credits} credits
                             </p>
                           </td>
-                          <td className="py-4 px-6">
+                          <td className="py-2 sm:py-4 px-3 sm:px-6">
                             <span
-                              className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${statusColor}`}
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusColor}`}
                             >
                               {statusIcon}
                               {payment.status.charAt(0).toUpperCase() +
                                 payment.status.slice(1)}
                             </span>
                           </td>
-                          <td className="py-4 px-6 text-right">
+                          <td className="py-2 sm:py-4 px-3 sm:px-6 text-right">
                             {payment.status.toLowerCase() === "paid" ||
                             payment.status.toLowerCase() === "completed" ? (
                               <Button
@@ -841,9 +857,12 @@ export default function Billing() {
                                 onClick={() =>
                                   (window.location.href = `/dashboard/invoice/${payment.id}`)
                                 }
+                                className="min-h-[36px] min-w-[36px] p-2"
                               >
-                                <Download className="w-4 h-4 mr-2" />
-                                Invoice
+                                <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                                <span className="text-xs sm:text-sm">
+                                  Invoice
+                                </span>
                               </Button>
                             ) : (
                               <span className="text-xs text-muted-foreground">

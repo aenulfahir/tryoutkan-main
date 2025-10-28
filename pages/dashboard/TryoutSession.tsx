@@ -22,6 +22,12 @@ import {
   Send,
   Loader2,
   AlertTriangle,
+  List,
+  ArrowUpDown,
+  ArrowLeft as ChevronLeftIcon,
+  ArrowRight as ChevronRightIcon,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type {
@@ -37,6 +43,10 @@ import {
   calculateTryoutResult,
   updateTryoutSession,
 } from "@/services/tryout";
+import {
+  useSwipeNavigation,
+  useKeyboardNavigation,
+} from "@/hooks/useSwipeNavigation";
 
 // Section info type
 interface SectionInfo {
@@ -65,6 +75,7 @@ export default function TryoutSession() {
   const [showNavigation, setShowNavigation] = useState(false);
   const [submitDialog, setSubmitDialog] = useState(false);
   const [timeUpDialog, setTimeUpDialog] = useState(false);
+  const [showJumpDialog, setShowJumpDialog] = useState(false);
 
   useEffect(() => {
     if (sessionId) {
@@ -187,6 +198,11 @@ export default function TryoutSession() {
     setShowNavigation(false);
   };
 
+  const handleJumpToQuestion = (index: number) => {
+    setCurrentIndex(index);
+    setShowJumpDialog(false);
+  };
+
   const toggleFlag = () => {
     const currentQuestion = questions[currentIndex];
     if (!currentQuestion) return;
@@ -241,6 +257,37 @@ export default function TryoutSession() {
     }
   };
 
+  // Mobile swipe navigation
+  useSwipeNavigation({
+    onSwipeLeft: () => {
+      if (currentIndex < questions.length - 1) {
+        handleNext();
+      }
+    },
+    onSwipeRight: () => {
+      if (currentIndex > 0) {
+        handlePrevious();
+      }
+    },
+    threshold: 50,
+    preventDefault: false, // Allow normal scrolling, only prevent for horizontal swipes
+  });
+
+  // Keyboard navigation
+  useKeyboardNavigation(
+    handlePrevious,
+    handleNext,
+    toggleFlag,
+    handleSubmit,
+    handleGoToQuestion,
+    questions.length
+  );
+
+  // Quick jump navigation for mobile
+  // useQuickJumpNavigation(questions.length, handleJumpToQuestion);
+  // Commented out because hook is not defined yet
+  // Will be implemented when needed
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -260,6 +307,13 @@ export default function TryoutSession() {
   const currentQuestion = questions[currentIndex];
   const answeredCount = Object.keys(answers).length;
   const unansweredCount = questions.length - answeredCount;
+
+  // Create answeredQuestions set for mobile quick jump
+  const answeredQuestions = new Set(
+    Object.keys(answers).map((id) => {
+      return questions.findIndex((q) => q.id === id);
+    })
+  );
 
   // Get current section
   const currentSection = sections.find(
@@ -297,14 +351,14 @@ export default function TryoutSession() {
     <div className="min-h-screen bg-background">
       {/* Fixed Header */}
       <div className="sticky top-0 z-50 bg-card border-b shadow-sm">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-4">
+        <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
             {/* Title */}
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg lg:text-xl font-bold truncate">
+              <h1 className="text-base sm:text-lg lg:text-xl font-bold truncate">
                 {session.tryout_packages?.title}
               </h1>
-              <div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
                 <span>
                   Soal {currentIndex + 1} dari {questions.length}
                 </span>
@@ -320,7 +374,7 @@ export default function TryoutSession() {
             </div>
 
             {/* Timer & Submit */}
-            <div className="flex items-center gap-2 lg:gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <Timer
                 durationMinutes={getTotalDuration()}
                 onTimeUp={handleTimeUp}
@@ -329,19 +383,20 @@ export default function TryoutSession() {
                 variant="destructive"
                 size="sm"
                 onClick={() => setSubmitDialog(true)}
-                className="whitespace-nowrap"
+                className="whitespace-nowrap min-h-[44px] px-3 sm:px-4"
               >
-                <Send className="w-4 h-4 mr-1 lg:mr-2" />
-                <span className="hidden sm:inline">Submit</span>
+                <Send className="w-4 h-4 mr-1 sm:mr-2" />
+                <span className="hidden xs:inline sm:inline">Submit</span>
+                <span className="xs:hidden">Selesai</span>
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content - 2 Column Layout */}
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Main Content - Responsive Layout */}
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Question Area - Left/Main */}
           <div className="lg:col-span-2 space-y-4">
             <QuestionCard
@@ -352,15 +407,17 @@ export default function TryoutSession() {
             />
 
             {/* Navigation Buttons */}
-            <div className="flex items-center justify-between gap-4 pt-4 border-t">
+            <div className="flex flex-col xs:flex-row items-center justify-between gap-2 xs:gap-4 pt-4 border-t">
               <Button
                 variant="outline"
                 onClick={handlePrevious}
                 disabled={currentIndex === 0}
                 size="lg"
+                className="w-full xs:w-auto min-h-[44px]"
               >
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Sebelumnya
+                <ChevronLeftIcon className="w-4 h-4 mr-2" />
+                <span className="hidden xs:inline">←</span>
+                <span className="xs:hidden">←</span>
               </Button>
 
               <Button
@@ -368,20 +425,24 @@ export default function TryoutSession() {
                 onClick={toggleFlag}
                 size="lg"
                 className={cn(
+                  "w-full xs:w-auto min-h-[44px]",
                   flaggedQuestions.has(currentQuestion.id) &&
                     "bg-yellow-100 border-yellow-500 dark:bg-yellow-950"
                 )}
               >
-                <Flag
-                  className={cn(
-                    "w-4 h-4 mr-2",
-                    flaggedQuestions.has(currentQuestion.id) &&
-                      "fill-yellow-500 text-yellow-600"
-                  )}
-                />
-                {flaggedQuestions.has(currentQuestion.id)
-                  ? "Batal Tandai"
-                  : "Tandai untuk Review"}
+                {flaggedQuestions.has(currentQuestion.id) ? (
+                  <BookmarkCheck className="w-4 h-4 mr-2 text-yellow-600" />
+                ) : (
+                  <Bookmark className="w-4 h-4 mr-2" />
+                )}
+                <span className="hidden xs:inline">
+                  {flaggedQuestions.has(currentQuestion.id)
+                    ? "Batal Tandai"
+                    : "Tandai"}
+                </span>
+                <span className="xs:hidden">
+                  {flaggedQuestions.has(currentQuestion.id) ? "★" : "☆"}
+                </span>
               </Button>
 
               <Button
@@ -389,15 +450,67 @@ export default function TryoutSession() {
                 onClick={handleNext}
                 disabled={currentIndex === questions.length - 1}
                 size="lg"
+                className="w-full xs:w-auto min-h-[44px]"
               >
-                Selanjutnya
-                <ChevronRight className="w-4 h-4 ml-2" />
+                <span className="hidden xs:inline">→</span>
+                <span className="xs:inline">→</span>
+                <ChevronRightIcon className="w-4 h-4 ml-2 hidden xs:inline" />
               </Button>
+            </div>
+
+            {/* Mobile Quick Jump */}
+            <div className="lg:hidden mt-4 p-3 bg-muted rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <List className="w-4 h-4" />
+                  <span>Loncat ke Soal:</span>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Tekan 1-9 untuk soal 1-9, atau 0 untuk soal 10
+                </div>
+              </div>
+              <div className="grid grid-cols-5 gap-2">
+                {Array.from(
+                  { length: Math.min(10, questions.length) },
+                  (_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setCurrentIndex(i)}
+                      className={cn(
+                        "aspect-square rounded-md font-semibold text-sm transition-all relative",
+                        "hover:scale-105 active:scale-95",
+                        "border-2 min-h-[44px] min-w-[44px]",
+                        currentIndex === i
+                          ? "bg-blue-500 text-white border-blue-600 ring-2 ring-blue-300 ring-offset-2"
+                          : answeredQuestions.has(i)
+                          ? "bg-green-500 text-white border-green-600"
+                          : "bg-gray-200 text-gray-700 border-gray-300"
+                      )}
+                    >
+                      {i + 1}
+                    </button>
+                  )
+                )}
+              </div>
+              {questions.length > 10 && (
+                <div className="mt-2 text-center">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowJumpDialog(true)}
+                    className="text-xs"
+                  >
+                    <ArrowUpDown className="w-3 h-3 mr-1" />
+                    Soal 11-{questions.length}
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Navigation Grid - Right Sidebar */}
-          <div className="lg:col-span-1">
+          {/* Navigation Grid - Right Sidebar (Hidden on Mobile) */}
+          <div className="hidden lg:block lg:col-span-1">
             <QuestionNavigation
               totalQuestions={questions.length}
               currentQuestion={currentIndex}
@@ -557,6 +670,56 @@ export default function TryoutSession() {
             <Button onClick={handleSubmit} disabled={submitting}>
               {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Submit Sekarang
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Jump Dialog for Mobile */}
+      <Dialog open={showJumpDialog} onOpenChange={setShowJumpDialog}>
+        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <List className="w-5 h-5" />
+              Loncat ke Soal
+            </DialogTitle>
+            <DialogDescription>
+              Pilih nomor soal yang ingin dituju
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid grid-cols-5 gap-3 p-4">
+            {Array.from({ length: questions.length }, (_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => handleJumpToQuestion(i)}
+                className={cn(
+                  "aspect-square rounded-lg font-semibold text-sm transition-all relative",
+                  "hover:scale-105 active:scale-95",
+                  "border-2 min-h-[44px] min-w-[44px]",
+                  currentIndex === i
+                    ? "bg-blue-500 text-white border-blue-600 ring-2 ring-blue-300 ring-offset-2"
+                    : answeredQuestions.has(i)
+                    ? "bg-green-500 text-white border-green-600"
+                    : "bg-gray-200 text-gray-700 border-gray-300"
+                )}
+              >
+                {i + 1}
+                {answeredQuestions.has(i) && (
+                  <div className="absolute top-0 right-0 w-2 h-2 bg-green-600 rounded-full" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowJumpDialog(false)}
+              className="w-full"
+            >
+              Batal
             </Button>
           </DialogFooter>
         </DialogContent>

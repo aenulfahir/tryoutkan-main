@@ -16,7 +16,7 @@ const AI_PROVIDER = "custom_openai"; // "custom_openai" or "gemini"
 const CUSTOM_BASE_URL = "https://ai.sumopod.com";
 const API_KEY = import.meta.env.VITE_AI_API_KEY; // Using the new key
 // const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY; // Kept for reference
-const MODEL = "gpt-4o"; // Or any model your custom endpoint supports
+const MODEL = "gpt-4o-mini"; // Or any model your custom endpoint supports
 // const GEMINI_MODEL = "gemini-pro";
 
 export interface ExtractedQuestion {

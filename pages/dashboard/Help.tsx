@@ -207,29 +207,33 @@ Jawab dengan singkat, jelas, dan to the point.`;
   }
 
   return (
-    <div className="p-4 md:p-8 space-y-6">
+    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Bantuan & Dukungan</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">
+          Bantuan & Dukungan
+        </h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Temukan jawaban untuk pertanyaan Anda atau hubungi kami
         </p>
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Quick Actions - Mobile-First */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <Card
           className="cursor-pointer hover:shadow-md transition-shadow"
           onClick={() => setShowChatbot(true)}
         >
-          <CardContent className="pt-6">
+          <CardContent className="pt-4 sm:pt-6">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-950">
-                <Bot className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <h3 className="font-semibold">AI Chatbot</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-sm sm:text-base">
+                  AI Chatbot
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Tanya jawab cepat
                 </p>
               </div>
@@ -241,14 +245,16 @@ Jawab dengan singkat, jelas, dan to the point.`;
           className="cursor-pointer hover:shadow-md transition-shadow"
           onClick={handleEmailSupport}
         >
-          <CardContent className="pt-6">
+          <CardContent className="pt-4 sm:pt-6">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-lg bg-green-100 dark:bg-green-950">
-                <Mail className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <h3 className="font-semibold">Email Support</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-sm sm:text-base">
+                  Email Support
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   aenulfahir03@gmail.com
                 </p>
               </div>
@@ -260,28 +266,32 @@ Jawab dengan singkat, jelas, dan to the point.`;
           className="cursor-pointer hover:shadow-md transition-shadow"
           onClick={handleWhatsAppSupport}
         >
-          <CardContent className="pt-6">
+          <CardContent className="pt-4 sm:pt-6">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-950">
-                <MessageCircle className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <h3 className="font-semibold">WhatsApp</h3>
-                <p className="text-sm text-muted-foreground">088744985916</p>
+                <h3 className="font-semibold text-sm sm:text-base">WhatsApp</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  088744985916
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* FAQ Section */}
+      {/* FAQ Section - Mobile-First */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <HelpCircle className="w-5 h-5" />
-            Pertanyaan yang Sering Diajukan (FAQ)
+            <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="text-sm sm:text-base">
+              Pertanyaan yang Sering Diajukan (FAQ)
+            </span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm">
             Temukan jawaban untuk pertanyaan umum seputar TryoutKan
           </CardDescription>
         </CardHeader>
@@ -289,10 +299,10 @@ Jawab dengan singkat, jelas, dan to the point.`;
           <Accordion type="single" collapsible className="w-full">
             {FAQ_DATA.map((faq, index) => (
               <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left">
+                <AccordionTrigger className="text-left text-sm sm:text-base min-h-[44px]">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
+                <AccordionContent className="text-muted-foreground text-xs sm:text-sm">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
@@ -301,86 +311,98 @@ Jawab dengan singkat, jelas, dan to the point.`;
         </CardContent>
       </Card>
 
-      {/* Contact Support */}
+      {/* Contact Support - Mobile-First */}
       <Card>
         <CardHeader>
-          <CardTitle>Hubungi Kami</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-sm sm:text-base">Hubungi Kami</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Tim support kami siap membantu Anda (08.00 - 22.00 WIB)
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between p-4 border rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border rounded-lg gap-4">
             <div className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-primary" />
+              <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               <div>
-                <h4 className="font-medium">Email</h4>
-                <p className="text-sm text-muted-foreground">
+                <h4 className="font-medium text-sm sm:text-base">Email</h4>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   aenulfahir03@gmail.com
                 </p>
               </div>
             </div>
-            <Button onClick={handleEmailSupport}>
+            <Button
+              onClick={handleEmailSupport}
+              className="w-full sm:w-auto min-h-[44px]"
+            >
               <Mail className="w-4 h-4 mr-2" />
-              Kirim Email
+              <span className="text-sm sm:text-base">Kirim Email</span>
             </Button>
           </div>
 
-          <div className="flex items-center justify-between p-4 border rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border rounded-lg gap-4">
             <div className="flex items-center gap-3">
-              <MessageCircle className="w-5 h-5 text-primary" />
+              <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               <div>
-                <h4 className="font-medium">WhatsApp</h4>
-                <p className="text-sm text-muted-foreground">088744985916</p>
+                <h4 className="font-medium text-sm sm:text-base">WhatsApp</h4>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  088744985916
+                </p>
               </div>
             </div>
             <Button
               onClick={handleWhatsAppSupport}
-              className="bg-green-600 hover:bg-green-700"
+              className="w-full sm:w-auto min-h-[44px] bg-green-600 hover:bg-green-700"
             >
               <MessageCircle className="w-4 h-4 mr-2" />
-              Chat WhatsApp
+              <span className="text-sm sm:text-base">Chat WhatsApp</span>
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* AI Chatbot Dialog */}
+      {/* AI Chatbot Dialog - Mobile-First */}
       <Dialog open={showChatbot} onOpenChange={setShowChatbot}>
-        <DialogContent className="max-w-2xl h-[600px] flex flex-col p-0">
-          <DialogHeader className="p-6 pb-4 border-b">
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl h-[600px] flex flex-col p-0">
+          <DialogHeader className="p-4 sm:p-6 pb-4 border-b">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-950">
-                  <Bot className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <DialogTitle>AI Assistant</DialogTitle>
-                  <DialogDescription>
+                  <DialogTitle className="text-sm sm:text-base">
+                    AI Assistant
+                  </DialogTitle>
+                  <DialogDescription className="text-xs sm:text-sm">
                     Tanya apa saja tentang TryoutKan
                   </DialogDescription>
                 </div>
               </div>
               {messages.length > 0 && (
-                <Button variant="ghost" size="sm" onClick={handleClearChat}>
-                  <X className="w-4 h-4 mr-2" />
-                  Clear
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleClearChat}
+                  className="min-h-[36px] min-w-[36px]"
+                >
+                  <X className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                  <span className="text-xs sm:text-sm">Clear</span>
                 </Button>
               )}
             </div>
           </DialogHeader>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {/* Messages - Mobile-First */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
-                <Bot className="w-16 h-16 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
+                <Bot className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground mb-4" />
+                <h3 className="text-lg sm:text-xl font-semibold mb-2">
                   Halo! Ada yang bisa saya bantu?
                 </h3>
-                <p className="text-sm text-muted-foreground max-w-md">
+                <p className="text-xs sm:text-sm text-muted-foreground max-w-md">
                   Tanyakan apa saja tentang cara menggunakan TryoutKan,
-                  fitur-fitur yang tersedia, atau masalah yang Anda alami.
+                  fitur-fitur yang tersedia, atau Masalah yang Anda alami.
                 </p>
               </div>
             ) : (
@@ -394,7 +416,7 @@ Jawab dengan singkat, jelas, dan to the point.`;
                 >
                   {message.role === "assistant" && (
                     <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-950 h-fit">
-                      <Bot className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      <Bot className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" />
                     </div>
                   )}
                   <div
@@ -405,13 +427,13 @@ Jawab dengan singkat, jelas, dan to the point.`;
                         : "bg-muted"
                     )}
                   >
-                    <p className="text-sm whitespace-pre-wrap">
+                    <p className="text-xs sm:text-sm whitespace-pre-wrap">
                       {message.content}
                     </p>
                   </div>
                   {message.role === "user" && (
                     <div className="p-2 rounded-lg bg-primary h-fit">
-                      <UserIcon className="w-4 h-4 text-primary-foreground" />
+                      <UserIcon className="w-3 h-3 sm:w-4 sm:h-4 text-primary-foreground" />
                     </div>
                   )}
                 </div>
@@ -420,16 +442,16 @@ Jawab dengan singkat, jelas, dan to the point.`;
             {loading && (
               <div className="flex gap-3 justify-start">
                 <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-950 h-fit">
-                  <Bot className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <Bot className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="bg-muted rounded-lg p-3">
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
                 </div>
               </div>
             )}
           </div>
 
-          {/* Input */}
+          {/* Input - Mobile-First */}
           <div className="p-4 border-t">
             <div className="flex gap-2">
               <Input
@@ -443,12 +465,16 @@ Jawab dengan singkat, jelas, dan to the point.`;
                   }
                 }}
                 disabled={loading}
+                className="text-base min-h-[44px]"
+                style={{ fontSize: "16px" }} // Prevent zoom on iOS
               />
               <Button
                 onClick={handleSendMessage}
                 disabled={loading || !inputMessage.trim()}
+                className="min-h-[44px]"
               >
                 <Send className="w-4 h-4" />
+                <span className="text-xs sm:text-sm ml-2">Kirim</span>
               </Button>
             </div>
           </div>
