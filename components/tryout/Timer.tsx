@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Clock, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -7,6 +7,7 @@ interface TimerProps {
   onTimeUp: () => void;
   isPaused?: boolean;
   initialElapsed?: number; // Initial elapsed time in seconds
+  sessionId?: string; // Session ID for storing timer state
 }
 
 export function Timer({
@@ -14,10 +15,89 @@ export function Timer({
   onTimeUp,
   isPaused = false,
   initialElapsed = 0,
+  sessionId,
 }: TimerProps) {
   const totalTime = durationMinutes * 60; // Total time in seconds
   const initialTimeRemaining = Math.max(0, totalTime - initialElapsed);
   const [timeRemaining, setTimeRemaining] = useState(initialTimeRemaining); // in seconds
+  const startTimeRef = useRef<number | null>(null);
+  const storageKey = sessionId ? `timer_${sessionId}` : null;
+
+  // Load timer state from sessionStorage on mount
+  useEffect(() => {
+    if (storageKey) {
+      try {
+        const storedState = sessionStorage.getItem(storageKey);
+        if (storedState) {
+          const {
+            timeRemaining: storedTimeRemaining,
+            startTime: storedStartTime,
+          } = JSON.parse(storedState);
+
+          // Calculate elapsed time since last save
+          if (storedStartTime) {
+            const elapsedSinceLastSave = Math.floor(
+              (Date.now() - storedStartTime) / 1000
+            );
+            const newTimeRemaining = Math.max(
+              0,
+              storedTimeRemaining - elapsedSinceLastSave
+            );
+
+            setTimeRemaining(newTimeRemaining);
+
+            // If time has run out while page was closed
+            if (newTimeRemaining <= 0) {
+              onTimeUp();
+            }
+          } else {
+            setTimeRemaining(storedTimeRemaining);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading timer state:", error);
+      }
+    }
+  }, [storageKey, onTimeUp]);
+
+  // Save timer state to sessionStorage periodically
+  useEffect(() => {
+    if (storageKey) {
+      const saveState = () => {
+        try {
+          sessionStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              timeRemaining,
+              startTime: Date.now(),
+            })
+          );
+        } catch (error) {
+          console.error("Error saving timer state:", error);
+        }
+      };
+
+      // Save immediately when timeRemaining changes
+      saveState();
+
+      // Also save periodically as a backup
+      const interval = setInterval(saveState, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [timeRemaining, storageKey]);
+
+  // Clear timer state when component unmounts or timer completes
+  useEffect(() => {
+    return () => {
+      if (storageKey && timeRemaining <= 0) {
+        try {
+          sessionStorage.removeItem(storageKey);
+        } catch (error) {
+          console.error("Error clearing timer state:", error);
+        }
+      }
+    };
+  }, [storageKey, timeRemaining]);
 
   useEffect(() => {
     if (isPaused) return;
@@ -27,6 +107,16 @@ export function Timer({
         if (prev <= 1) {
           clearInterval(interval);
           onTimeUp();
+
+          // Clear timer state when time is up
+          if (storageKey) {
+            try {
+              sessionStorage.removeItem(storageKey);
+            } catch (error) {
+              console.error("Error clearing timer state:", error);
+            }
+          }
+
           return 0;
         }
         return prev - 1;
@@ -34,7 +124,7 @@ export function Timer({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isPaused, onTimeUp]);
+  }, [isPaused, onTimeUp, storageKey]);
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);

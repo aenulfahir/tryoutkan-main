@@ -15,6 +15,7 @@ import {
 import { QuestionCard } from "@/components/tryout/QuestionCard";
 import { Timer } from "@/components/tryout/Timer";
 import { QuestionNavigation } from "@/components/tryout/QuestionNavigation";
+import { RefreshWarningDialog } from "@/components/tryout/RefreshWarningDialog";
 import {
   ChevronLeft,
   ChevronRight,
@@ -76,12 +77,71 @@ export default function TryoutSession() {
   const [submitDialog, setSubmitDialog] = useState(false);
   const [timeUpDialog, setTimeUpDialog] = useState(false);
   const [showJumpDialog, setShowJumpDialog] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0); // Track elapsed time from database
+  const [showRefreshWarning, setShowRefreshWarning] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     if (sessionId) {
       loadSession();
     }
   }, [sessionId]);
+
+  // Add beforeunload event listener to show confirmation dialog
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Only show confirmation if session is active and not completed and not already showing custom dialog
+      if (session && session.status === "in_progress" && !showRefreshWarning) {
+        const message =
+          "Apakah Anda yakin ingin meninggalkan halaman ini? Progress tryout Anda akan tersimpan, namun timer akan terus berjalan.";
+        e.preventDefault();
+        e.returnValue = message;
+        return message;
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [session, showRefreshWarning]);
+
+  // Handle keyboard shortcuts for refresh
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for F5 or Ctrl+R / Cmd+R
+      if (
+        e.key === "F5" ||
+        (e.ctrlKey && e.key === "r") ||
+        (e.metaKey && e.key === "r")
+      ) {
+        // Only show custom dialog if session is active and not completed
+        if (session && session.status === "in_progress" && !isRefreshing) {
+          e.preventDefault();
+          setShowRefreshWarning(true);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [session, isRefreshing]);
+
+  const handleRefreshConfirm = () => {
+    setIsRefreshing(true);
+    setShowRefreshWarning(false);
+    // Remove the beforeunload listener temporarily to allow refresh
+    window.removeEventListener("beforeunload", () => {});
+    window.location.reload();
+  };
+
+  const handleRefreshCancel = () => {
+    setShowRefreshWarning(false);
+  };
 
   async function loadSession() {
     try {
@@ -97,6 +157,20 @@ export default function TryoutSession() {
       if (sessionData.status === "completed") {
         navigate(`/dashboard/results/${sessionId}`);
         return;
+      }
+
+      // Calculate elapsed time if session is in progress
+      let elapsedSeconds = 0;
+      if (sessionData.status === "in_progress" && sessionData.started_at) {
+        const startTime = new Date(sessionData.started_at).getTime();
+        const currentTime = Date.now();
+        elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+
+        // Also consider time_spent_seconds from database
+        elapsedSeconds = Math.max(
+          elapsedSeconds,
+          sessionData.time_spent_seconds || 0
+        );
       }
 
       // Load questions
@@ -149,6 +223,12 @@ export default function TryoutSession() {
         }
       });
       setAnswers(answersMap);
+
+      // Store elapsed time for timer initialization
+      if (elapsedSeconds > 0) {
+        console.log("⏱️ Elapsed time loaded:", elapsedSeconds, "seconds");
+        setElapsedSeconds(elapsedSeconds);
+      }
     } catch (error) {
       console.error("Error loading session:", error);
       toast.error("Gagal Memuat Tryout", {
@@ -378,6 +458,8 @@ export default function TryoutSession() {
               <Timer
                 durationMinutes={getTotalDuration()}
                 onTimeUp={handleTimeUp}
+                sessionId={sessionId}
+                initialElapsed={elapsedSeconds}
               />
               <Button
                 variant="destructive"
@@ -724,6 +806,14 @@ export default function TryoutSession() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Custom Refresh Warning Dialog */}
+      <RefreshWarningDialog
+        open={showRefreshWarning}
+        onOpenChange={setShowRefreshWarning}
+        onConfirm={handleRefreshConfirm}
+        onCancel={handleRefreshCancel}
+      />
     </div>
   );
 }
