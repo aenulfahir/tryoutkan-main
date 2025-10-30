@@ -386,91 +386,131 @@ export default function Tryout() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Paket Tryout</h1>
-        <p className="text-muted-foreground mt-1">
-          Pilih paket tryout yang sesuai dengan kebutuhan Anda
-        </p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header with gradient background */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-black p-8 text-white shadow-2xl mb-8">
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+        <div className="relative z-10">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-4 sm:mb-0">
+              <h1 className="text-4xl font-bold mb-2 tracking-tight">
+                Paket Tryout
+              </h1>
+              <p className="text-gray-300 text-lg max-w-2xl">
+                Pilih paket tryout yang sesuai dengan kebutuhan Anda
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-white rounded-full"></div>
+                <span className="text-sm text-gray-300">
+                  Total Paket: {tryouts.length}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-white rounded-full"></div>
+                <span className="text-sm text-gray-300">
+                  Saldo: {formatPrice(balance)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {error && (
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="border-red-200 bg-red-50 mb-6">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            placeholder="Cari paket tryout..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+      {/* Enhanced Filters */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-8">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 lg:mb-0">
+            Filter Pencarian
+          </h3>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative sm:w-80">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Cari paket tryout..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 border-gray-300 focus:border-black focus:ring-black"
+              />
+            </div>
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="w-full sm:w-48 border-gray-300 focus:border-black focus:ring-black">
+                <SelectValue placeholder="Kategori" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Semua Kategori</SelectItem>
+                <SelectItem value="CPNS">🏛️ CPNS</SelectItem>
+                <SelectItem value="BUMN_TKD">🏢 BUMN TKD</SelectItem>
+                <SelectItem value="BUMN_AKHLAK">⭐ BUMN AKHLAK</SelectItem>
+                <SelectItem value="BUMN_TBI">🌐 BUMN TBI</SelectItem>
+                <SelectItem value="STAN">🎓 STAN</SelectItem>
+                <SelectItem value="PLN">⚡ PLN</SelectItem>
+                <SelectItem value="OTHER">📝 Lainnya</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={difficultyFilter}
+              onValueChange={setDifficultyFilter}
+            >
+              <SelectTrigger className="w-full sm:w-48 border-gray-300 focus:border-black focus:ring-black">
+                <SelectValue placeholder="Tingkat Kesulitan" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Semua Tingkat</SelectItem>
+                <SelectItem value="easy">Mudah</SelectItem>
+                <SelectItem value="medium">Sedang</SelectItem>
+                <SelectItem value="hard">Sulit</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full sm:w-[200px]">
-            <SelectValue placeholder="Kategori" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Semua Kategori</SelectItem>
-            <SelectItem value="CPNS">🏛️ CPNS</SelectItem>
-            <SelectItem value="BUMN_TKD">🏢 BUMN TKD</SelectItem>
-            <SelectItem value="BUMN_AKHLAK">⭐ BUMN AKHLAK</SelectItem>
-            <SelectItem value="BUMN_TBI">🌐 BUMN TBI</SelectItem>
-            <SelectItem value="STAN">🎓 STAN</SelectItem>
-            <SelectItem value="PLN">⚡ PLN</SelectItem>
-            <SelectItem value="OTHER">📝 Lainnya</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
-          <SelectTrigger className="w-full sm:w-[200px]">
-            <SelectValue placeholder="Tingkat Kesulitan" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Semua Tingkat</SelectItem>
-            <SelectItem value="easy">Mudah</SelectItem>
-            <SelectItem value="medium">Sedang</SelectItem>
-            <SelectItem value="hard">Sulit</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
-      {/* Tabs */}
+      {/* Enhanced Tabs */}
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as any)}
         className="w-full"
       >
-        <TabsList className="grid w-full max-w-md grid-cols-2">
-          <TabsTrigger value="available" className="flex items-center gap-2">
+        <TabsList className="grid w-full max-w-md grid-cols-2 bg-gray-100 p-1 rounded-xl mb-8">
+          <TabsTrigger
+            value="available"
+            className="flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-md rounded-lg transition-all"
+          >
             <Package className="w-4 h-4" />
-            Paket Tersedia ({availableTryouts.length})
+            <span>Paket Tersedia ({availableTryouts.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="purchased" className="flex items-center gap-2">
+          <TabsTrigger
+            value="purchased"
+            className="flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-md rounded-lg transition-all"
+          >
             <ShoppingBag className="w-4 h-4" />
-            Paket Anda ({purchasedTryouts.length})
+            <span>Paket Anda ({purchasedTryouts.length})</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="available" className="mt-6">
+        <TabsContent value="available" className="mt-0">
           {availableTryouts.length === 0 ? (
-            <div className="text-center py-12">
-              <Package className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">
+            <div className="text-center py-16 bg-gray-50 rounded-xl border border-gray-200">
+              <Package className="w-20 h-20 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">
                 Tidak ada paket tersedia
               </h3>
-              <p className="text-muted-foreground">
-                Coba ubah filter pencarian Anda
+              <p className="text-gray-600 max-w-md mx-auto">
+                Coba ubah filter pencarian Anda untuk menemukan paket yang
+                sesuai
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {availableTryouts.map((tryout) => (
                 <TryoutCard
                   key={tryout.id}
@@ -485,19 +525,20 @@ export default function Tryout() {
           )}
         </TabsContent>
 
-        <TabsContent value="purchased" className="mt-6">
+        <TabsContent value="purchased" className="mt-0">
           {purchasedTryouts.length === 0 ? (
-            <div className="text-center py-12">
-              <ShoppingBag className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">
+            <div className="text-center py-16 bg-gray-50 rounded-xl border border-gray-200">
+              <ShoppingBag className="w-20 h-20 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">
                 Belum ada paket dibeli
               </h3>
-              <p className="text-muted-foreground">
-                Beli paket tryout untuk mulai berlatih
+              <p className="text-gray-600 max-w-md mx-auto">
+                Beli paket tryout untuk mulai berlatih dan meningkatkan
+                kemampuan Anda
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {purchasedTryouts.map((tryout) => (
                 <TryoutCard
                   key={tryout.id}

@@ -111,24 +111,27 @@ export function PurchaseSuccessModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md border-gray-200">
+        {/* Header with gradient accent */}
+        <div className="h-2 bg-gradient-to-r from-gray-900 to-black"></div>
+
         {/* Animated Success Icon */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-6 mt-4">
           <div className={cn("relative", "animate-in zoom-in-50 duration-500")}>
-            <div className="absolute inset-0 bg-green-500/20 rounded-full blur-xl animate-pulse" />
-            <div className="relative p-4 bg-green-100 dark:bg-green-950 rounded-full">
-              <CheckCircle className="w-16 h-16 text-green-600 dark:text-green-400 animate-in zoom-in-50 duration-700" />
+            <div className="absolute inset-0 bg-black/10 rounded-full blur-xl animate-pulse" />
+            <div className="relative p-4 bg-gray-100 rounded-full">
+              <CheckCircle className="w-16 h-16 text-black animate-in zoom-in-50 duration-700" />
             </div>
           </div>
         </div>
 
-        {/* Confetti Effect (CSS only) */}
+        {/* Confetti Effect (CSS only) - Black and white theme */}
         {showConfetti && (
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             {[...Array(20)].map((_, i) => (
               <div
                 key={i}
-                className="absolute w-2 h-2 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full animate-confetti"
+                className="absolute w-2 h-2 bg-gradient-to-br from-gray-400 to-gray-800 rounded-full animate-confetti"
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: "-10px",
@@ -141,10 +144,10 @@ export function PurchaseSuccessModal({
         )}
 
         <DialogHeader>
-          <DialogTitle className="text-center text-2xl font-bold text-green-600 dark:text-green-400">
+          <DialogTitle className="text-center text-2xl font-bold text-gray-900">
             Pembelian Berhasil!
           </DialogTitle>
-          <DialogDescription className="text-center">
+          <DialogDescription className="text-center text-gray-600">
             Paket tryout Anda sudah siap digunakan
           </DialogDescription>
         </DialogHeader>
@@ -152,63 +155,71 @@ export function PurchaseSuccessModal({
         {/* Purchase Details */}
         <div className="space-y-4 py-4">
           {/* Package Name */}
-          <div className="p-4 bg-muted rounded-lg">
+          <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
             <div className="flex items-start gap-3">
-              <Package className="w-5 h-5 text-primary mt-0.5" />
+              <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
+                <Package className="w-5 h-5 text-white" />
+              </div>
               <div className="flex-1">
-                <p className="text-sm text-muted-foreground mb-1">
+                <p className="text-sm text-gray-500 mb-1 font-medium">
                   Paket Tryout
                 </p>
-                <p className="font-semibold">{packageTitle}</p>
+                <p className="font-semibold text-gray-900">{packageTitle}</p>
               </div>
             </div>
           </div>
 
           {/* Transaction Details */}
-          <div className="space-y-2 text-sm">
+          <div className="space-y-3 text-sm bg-gray-50 p-4 rounded-xl border border-gray-200">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Harga Paket</span>
-              <span className="font-semibold">{formatPrice(price)}</span>
+              <span className="text-gray-600">Harga Paket</span>
+              <span className="font-semibold text-gray-900">
+                {formatPrice(price)}
+              </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Saldo Tersisa</span>
-              <span className="font-semibold text-green-600 dark:text-green-400">
+              <span className="text-gray-600">Saldo Tersisa</span>
+              <span className="font-semibold text-green-700">
                 {formatPrice(remainingBalance)}
               </span>
             </div>
-            <div className="flex justify-between pt-2 border-t">
-              <span className="text-muted-foreground">Tanggal & Waktu</span>
-              <span className="font-medium text-xs">
+            <div className="flex justify-between pt-3 border-t border-gray-200">
+              <span className="text-gray-600">Tanggal & Waktu</span>
+              <span className="font-medium text-xs text-gray-700">
                 {formatDate(purchaseDate)}
               </span>
             </div>
           </div>
 
           {/* Success Message */}
-          <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
-            <Sparkles className="w-4 h-4 text-green-600 dark:text-green-400" />
-            <p className="text-sm text-green-700 dark:text-green-300">
+          <div className="flex items-center gap-3 p-4 bg-gray-900 text-white rounded-xl">
+            <Sparkles className="w-5 h-5 text-white" />
+            <p className="text-sm font-medium">
               Selamat! Anda dapat langsung memulai tryout sekarang.
             </p>
           </div>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-col gap-2">
-          <Button onClick={handleStartTryout} className="w-full" size="lg">
+        <DialogFooter className="flex-col sm:flex-col gap-3 pt-4">
+          <Button
+            onClick={handleStartTryout}
+            className="w-full bg-black text-white hover:bg-gray-800 transition-colors"
+            size="lg"
+          >
             <ArrowRight className="w-4 h-4 mr-2" />
             Mulai Tryout Sekarang
           </Button>
           <Button
             onClick={handleViewMyPackages}
             variant="outline"
-            className="w-full"
+            className="w-full border-gray-300 hover:bg-gray-50 transition-colors"
             size="lg"
           >
             <Package className="w-4 h-4 mr-2" />
             Lihat Paket Saya
           </Button>
           {countdown > 0 && (
-            <p className="text-xs text-center text-muted-foreground mt-2">
+            <p className="text-xs text-center text-gray-500 mt-2">
               Menutup otomatis dalam {countdown} detik...
             </p>
           )}
