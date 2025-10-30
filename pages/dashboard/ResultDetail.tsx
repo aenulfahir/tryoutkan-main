@@ -3,10 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScoreDistributionChart } from "@/components/charts/ScoreDistributionChart";
 import { PerformanceRadarChart } from "@/components/charts/PerformanceRadarChart";
-import { QuestionCard } from "@/components/tryout/QuestionCard";
 import {
   Trophy,
   Target,
@@ -18,22 +16,20 @@ import {
   Loader2,
   Home,
   BarChart3,
+  BookOpen,
+  ArrowRight,
+  Clock,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { TryoutResult, Question, UserAnswer } from "@/types/tryout";
-import {
-  getTryoutResult,
-  getQuestions,
-  getSessionAnswers,
-} from "@/services/tryout";
+import type { TryoutResult } from "@/types/tryout";
+import { getTryoutResult } from "@/services/tryout";
 
 export default function ResultDetail() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
 
   const [result, setResult] = useState<TryoutResult | null>(null);
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [answers, setAnswers] = useState<UserAnswer[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,14 +47,6 @@ export default function ResultDetail() {
       // Load result
       const resultData = await getTryoutResult(sessionId);
       setResult(resultData);
-
-      // Load questions
-      const questionsData = await getQuestions(resultData.tryout_package_id);
-      setQuestions(questionsData);
-
-      // Load answers
-      const answersData = await getSessionAnswers(sessionId);
-      setAnswers(answersData);
     } catch (error) {
       console.error("Error loading results:", error);
       alert("Terjadi kesalahan saat memuat hasil");
@@ -85,300 +73,297 @@ export default function ResultDetail() {
   }
 
   const isPassed = result.passed || result.percentage >= 65;
-  const answersMap = new Map(answers.map((a) => [a.question_id, a]));
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Hasil Tryout</h1>
-          <p className="text-muted-foreground mt-1">
-            {Array.isArray(result.tryout_packages)
-              ? result.tryout_packages[0]?.title || "Tryout Tanpa Judul"
-              : result.tryout_packages?.title || "Tryout Tanpa Judul"}
-          </p>
-        </div>
-        <Button variant="outline" onClick={() => navigate("/dashboard/tryout")}>
-          <Home className="w-4 h-4 mr-2" />
-          Kembali
-        </Button>
-      </div>
-
-      {/* Pass/Fail Banner */}
-      <Card
-        className={cn(
-          "border-2",
-          isPassed
-            ? "bg-green-50 border-green-500 dark:bg-green-950"
-            : "bg-red-50 border-red-500 dark:bg-red-950"
-        )}
-      >
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              {isPassed ? (
-                <Trophy className="w-12 h-12 text-green-600 dark:text-green-400" />
-              ) : (
-                <Target className="w-12 h-12 text-red-600 dark:text-red-400" />
-              )}
-              <div>
-                <h2 className="text-2xl font-bold">
-                  {isPassed ? "Selamat! Anda Lulus" : "Belum Lulus"}
-                </h2>
-                <p className="text-muted-foreground">
-                  {isPassed
-                    ? "Anda telah melampaui passing grade"
-                    : "Terus berlatih untuk hasil yang lebih baik"}
-                </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-4xl font-bold">
-                {result.percentage.toFixed(1)}%
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Skor: {result.total_score.toFixed(0)} /{" "}
-                {result.max_score.toFixed(0)}
-              </p>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+              Hasil Tryout
+            </h1>
+            <p className="text-lg text-gray-600 dark:text-gray-300 mt-2">
+              {Array.isArray(result.tryout_packages)
+                ? result.tryout_packages[0]?.title || "Tryout Tanpa Judul"
+                : result.tryout_packages?.title || "Tryout Tanpa Judul"}
+            </p>
           </div>
-        </CardContent>
-      </Card>
+          <Button
+            variant="outline"
+            onClick={() => navigate("/dashboard/tryout")}
+            className="bg-white dark:bg-gray-800"
+          >
+            <Home className="w-4 h-4 mr-2" />
+            Kembali
+          </Button>
+        </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
-                <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Benar</p>
-                <p className="text-2xl font-bold">{result.correct_answers}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-red-100 dark:bg-red-900 rounded-lg">
-                <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Salah</p>
-                <p className="text-2xl font-bold">{result.wrong_answers}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <MinusCircle className="w-6 h-6 text-gray-600 dark:text-gray-400" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Tidak Dijawab</p>
-                <p className="text-2xl font-bold">{result.unanswered}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                <Award className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Ranking</p>
-                <p className="text-2xl font-bold">
-                  #{result.rank_position || "-"}
-                </p>
-                {result.percentile && (
-                  <p className="text-xs text-muted-foreground">
-                    Top {(100 - result.percentile).toFixed(0)}%
+        {/* Pass/Fail Banner */}
+        <Card
+          className={cn(
+            "mb-8 border-2 shadow-lg overflow-hidden",
+            isPassed
+              ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-500 dark:from-green-900/20 dark:to-emerald-900/20"
+              : "bg-gradient-to-r from-red-50 to-pink-50 border-red-500 dark:from-red-900/20 dark:to-pink-900/20"
+          )}
+        >
+          <CardContent className="p-8">
+            <div className="flex flex-col md:flex-row items-center justify-between">
+              <div className="flex items-center space-x-6 mb-6 md:mb-0">
+                <div
+                  className={cn(
+                    "p-4 rounded-full",
+                    isPassed
+                      ? "bg-green-100 dark:bg-green-800"
+                      : "bg-red-100 dark:bg-red-800"
+                  )}
+                >
+                  {isPassed ? (
+                    <Trophy className="w-16 h-16 text-green-600 dark:text-green-400" />
+                  ) : (
+                    <Target className="w-16 h-16 text-red-600 dark:text-red-400" />
+                  )}
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    {isPassed ? "Selamat! Anda Lulus" : "Belum Lulus"}
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300 mt-1">
+                    {isPassed
+                      ? "Anda telah melampaui passing grade"
+                      : "Terus berlatih untuk hasil yang lebih baik"}
                   </p>
-                )}
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-5xl font-bold text-gray-900 dark:text-white">
+                  {result.percentage.toFixed(1)}%
+                </p>
+                <p className="text-lg text-gray-600 dark:text-gray-300">
+                  Skor: {result.total_score.toFixed(0)} /{" "}
+                  {result.max_score.toFixed(0)}
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Charts */}
-      {result.section_results && result.section_results.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Distribusi Skor per Bagian</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ScoreDistributionChart sectionResults={result.section_results} />
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card className="bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
+                  <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Benar
+                  </p>
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+                    {result.correct_answers}
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Analisis Performa</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PerformanceRadarChart sectionResults={result.section_results} />
+          <Card className="bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 bg-red-100 dark:bg-red-900 rounded-lg">
+                  <XCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Salah
+                  </p>
+                  <p className="text-3xl font-bold text-red-600 dark:text-red-400">
+                    {result.wrong_answers}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                  <MinusCircle className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Tidak Dijawab
+                  </p>
+                  <p className="text-3xl font-bold text-gray-600 dark:text-gray-400">
+                    {result.unanswered}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                  <Award className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Ranking
+                  </p>
+                  <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                    #{result.rank_position || "-"}
+                  </p>
+                  {result.percentile && (
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                      Top {(100 - result.percentile).toFixed(0)}%
+                    </p>
+                  )}
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
-      )}
 
-      {/* Section Details */}
-      {result.section_results && result.section_results.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Detail per Bagian</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {result.section_results.map((section) => (
-                <div
-                  key={section.id}
-                  className="p-4 border rounded-lg hover:bg-accent transition-colors"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold">{section.section_name}</h4>
-                    <Badge
-                      variant={
-                        section.percentage >= 65 ? "default" : "secondary"
-                      }
+        {/* Charts and Section Details */}
+        {result.section_results && result.section_results.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div className="space-y-8">
+              <Card className="bg-white dark:bg-gray-800 shadow-md">
+                <CardHeader>
+                  <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                    Distribusi Skor per Bagian
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScoreDistributionChart
+                    sectionResults={result.section_results}
+                  />
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white dark:bg-gray-800 shadow-md">
+                <CardHeader>
+                  <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                    Analisis Performa
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <PerformanceRadarChart
+                    sectionResults={result.section_results}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card className="bg-white dark:bg-gray-800 shadow-md">
+              <CardHeader>
+                <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Detail per Bagian
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {result.section_results.map((section) => (
+                    <div
+                      key={section.id}
+                      className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
-                      {section.percentage.toFixed(1)}%
-                    </Badge>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Benar</p>
-                      <p className="font-semibold text-green-600">
-                        {section.correct_answers}
-                      </p>
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-semibold text-gray-900 dark:text-white">
+                          {section.section_name}
+                        </h4>
+                        <Badge
+                          variant={
+                            section.percentage >= 65 ? "default" : "secondary"
+                          }
+                          className="text-sm"
+                        >
+                          {section.percentage.toFixed(1)}%
+                        </Badge>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400">
+                            Benar
+                          </p>
+                          <p className="font-semibold text-green-600 dark:text-green-400">
+                            {section.correct_answers}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400">
+                            Salah
+                          </p>
+                          <p className="font-semibold text-red-600 dark:text-red-400">
+                            {section.wrong_answers}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400">
+                            Tidak Dijawab
+                          </p>
+                          <p className="font-semibold text-gray-600 dark:text-gray-400">
+                            {section.unanswered}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-muted-foreground">Salah</p>
-                      <p className="font-semibold text-red-600">
-                        {section.wrong_answers}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Tidak Dijawab</p>
-                      <p className="font-semibold text-gray-600">
-                        {section.unanswered}
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Review Button Card */}
+        <Card className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg mb-8">
+          <CardContent className="p-8">
+            <div className="flex flex-col md:flex-row items-center justify-between">
+              <div className="mb-6 md:mb-0">
+                <h3 className="text-2xl font-bold mb-2">
+                  Review Soal & Pembahasan
+                </h3>
+                <p className="text-blue-100">
+                  Pelajari kembali soal-soal yang telah dikerjakan beserta
+                  pembahasannya
+                </p>
+              </div>
+              <Button
+                size="lg"
+                onClick={() => navigate(`/dashboard/review/${sessionId}`)}
+                className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3"
+              >
+                <BookOpen className="w-5 h-5 mr-2" />
+                Review Soal
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
             </div>
           </CardContent>
         </Card>
-      )}
 
-      {/* Review Questions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Review Soal & Pembahasan</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="wrong" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="wrong">
-                Salah ({result.wrong_answers})
-              </TabsTrigger>
-              <TabsTrigger value="correct">
-                Benar ({result.correct_answers})
-              </TabsTrigger>
-              <TabsTrigger value="all">Semua ({questions.length})</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="wrong" className="space-y-6 mt-6">
-              {questions
-                .filter((q) => {
-                  const answer = answersMap.get(q.id);
-                  return answer && answer.is_correct === false;
-                })
-                .map((q, idx) => (
-                  <QuestionCard
-                    key={q.id}
-                    question={q}
-                    questionNumber={q.question_number}
-                    selectedOption={
-                      answersMap.get(q.id)?.selected_option || null
-                    }
-                    onSelectOption={() => {}}
-                    showExplanation={true}
-                  />
-                ))}
-              {questions.filter((q) => {
-                const answer = answersMap.get(q.id);
-                return answer && answer.is_correct === false;
-              }).length === 0 && (
-                <p className="text-center text-muted-foreground py-8">
-                  Tidak ada jawaban yang salah
-                </p>
-              )}
-            </TabsContent>
-
-            <TabsContent value="correct" className="space-y-6 mt-6">
-              {questions
-                .filter((q) => {
-                  const answer = answersMap.get(q.id);
-                  return answer && answer.is_correct === true;
-                })
-                .map((q, idx) => (
-                  <QuestionCard
-                    key={q.id}
-                    question={q}
-                    questionNumber={q.question_number}
-                    selectedOption={
-                      answersMap.get(q.id)?.selected_option || null
-                    }
-                    onSelectOption={() => {}}
-                    showExplanation={true}
-                  />
-                ))}
-            </TabsContent>
-
-            <TabsContent value="all" className="space-y-6 mt-6">
-              {questions.map((q, idx) => (
-                <QuestionCard
-                  key={q.id}
-                  question={q}
-                  questionNumber={q.question_number}
-                  selectedOption={answersMap.get(q.id)?.selected_option || null}
-                  onSelectOption={() => {}}
-                  showExplanation={true}
-                />
-              ))}
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-
-      {/* Actions */}
-      <div className="flex items-center justify-center space-x-4">
-        <Button
-          variant="outline"
-          onClick={() => navigate("/dashboard/ranking")}
-        >
-          <BarChart3 className="w-4 h-4 mr-2" />
-          Lihat Ranking
-        </Button>
-        <Button onClick={() => navigate("/dashboard/tryout")}>
-          <TrendingUp className="w-4 h-4 mr-2" />
-          Coba Tryout Lain
-        </Button>
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+          <Button
+            variant="outline"
+            onClick={() => navigate("/dashboard/ranking")}
+            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 px-6 py-3"
+          >
+            <BarChart3 className="w-5 h-5 mr-2" />
+            Lihat Ranking
+          </Button>
+          <Button
+            onClick={() => navigate("/dashboard/tryout")}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3"
+          >
+            <TrendingUp className="w-5 h-5 mr-2" />
+            Coba Tryout Lain
+          </Button>
+        </div>
       </div>
     </div>
   );

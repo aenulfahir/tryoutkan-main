@@ -9,7 +9,7 @@ export interface Balance {
 export interface Transaction {
   id: string;
   user_id: string;
-  type: "topup" | "usage";
+  type: "topup" | "usage" | "gift";
   amount: number;
   description: string | null;
   tryout_package_id: string | null;

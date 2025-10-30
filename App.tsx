@@ -16,6 +16,7 @@ import Tryout from "@/pages/dashboard/Tryout";
 import TryoutSession from "@/pages/dashboard/TryoutSession";
 import Results from "@/pages/dashboard/Results";
 import ResultDetail from "@/pages/dashboard/ResultDetail";
+import ReviewQuestions from "@/pages/dashboard/ReviewQuestions";
 import Ranking from "@/pages/dashboard/Ranking";
 import History from "@/pages/dashboard/History";
 import Settings from "@/pages/dashboard/Settings";
@@ -92,6 +93,18 @@ export default function App() {
             }
           >
             <Route index element={<ResultDetail />} />
+          </Route>
+
+          {/* Review Questions - Inside dashboard layout */}
+          <Route
+            path="/dashboard/review/:sessionId"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<ReviewQuestions />} />
           </Route>
 
           {/* Admin Routes - Protected with AdminRoute */}

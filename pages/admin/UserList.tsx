@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, Eye } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,6 +15,7 @@ import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import { AddUserDialog } from "@/components/admin/AddUserDialog";
 import { EditUserDialog } from "@/components/admin/EditUserDialog";
 import { ViewUserDialog } from "@/components/admin/ViewUserDialog";
+import { GiftCreditDialog } from "@/components/admin/GiftCreditDialog";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
@@ -42,6 +43,8 @@ export default function AdminUserList() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [giftDialogOpen, setGiftDialogOpen] = useState(false);
+  const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
 
   useEffect(() => {
     loadUsers();
@@ -123,6 +126,12 @@ export default function AdminUserList() {
     setEditDialogOpen(true);
   }
 
+  function handleGift(userId: string, userName: string) {
+    setSelectedUserId(userId);
+    setSelectedUserName(userName);
+    setGiftDialogOpen(true);
+  }
+
   const columns = [
     {
       key: "user",
@@ -184,6 +193,15 @@ export default function AdminUserList() {
             onClick={() => handleEdit(item.id)}
           >
             <Edit className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            title="Gift Credit"
+            onClick={() => handleGift(item.id, item.name)}
+            className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/20"
+          >
+            <Gift className="w-4 h-4" />
           </Button>
           <Button
             variant="ghost"
@@ -271,6 +289,15 @@ export default function AdminUserList() {
         open={viewDialogOpen}
         onOpenChange={setViewDialogOpen}
         userId={selectedUserId}
+      />
+
+      {/* Gift Credit Dialog */}
+      <GiftCreditDialog
+        open={giftDialogOpen}
+        onOpenChange={setGiftDialogOpen}
+        userId={selectedUserId}
+        userName={selectedUserName}
+        onSuccess={loadUsers}
       />
     </div>
   );

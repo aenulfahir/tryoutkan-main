@@ -30,6 +30,7 @@ export default function AdminTryoutList() {
   const [filteredTryouts, setFilteredTryouts] = useState<TryoutPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [selectedTryout, setSelectedTryout] = useState<TryoutPackage | null>(
@@ -43,7 +44,7 @@ export default function AdminTryoutList() {
 
   useEffect(() => {
     filterTryouts();
-  }, [categoryFilter, tryouts]);
+  }, [categoryFilter, statusFilter, tryouts]);
 
   async function loadTryouts() {
     try {
@@ -59,11 +60,21 @@ export default function AdminTryoutList() {
   }
 
   function filterTryouts() {
-    if (categoryFilter === "all") {
-      setFilteredTryouts(tryouts);
-    } else {
-      setFilteredTryouts(tryouts.filter((t) => t.category === categoryFilter));
+    let filtered = tryouts;
+
+    // Filter by category
+    if (categoryFilter !== "all") {
+      filtered = filtered.filter((t) => t.category === categoryFilter);
     }
+
+    // Filter by status
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((t) =>
+        statusFilter === "active" ? t.is_active : !t.is_active
+      );
+    }
+
+    setFilteredTryouts(filtered);
   }
 
   function handleSearch(query: string) {
@@ -268,6 +279,17 @@ export default function AdminTryoutList() {
             <SelectItem value="STAN">🎓 STAN</SelectItem>
             <SelectItem value="PLN">⚡ PLN</SelectItem>
             <SelectItem value="OTHER">📝 Lainnya</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Filter Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Semua Status</SelectItem>
+            <SelectItem value="active">✅ Active</SelectItem>
+            <SelectItem value="inactive">❌ Inactive</SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -562,6 +562,7 @@ export default function Billing() {
             <div className="space-y-3">
               {transactions.map((transaction) => {
                 const isTopUp = transaction.type === "topup";
+                const isGift = transaction.type === "gift";
                 const isPurchase =
                   transaction.type === "usage" && transaction.tryout_packages;
                 // Check if it's a promo redemption by looking at the description or promo_code_usage
@@ -578,6 +579,8 @@ export default function Billing() {
                         ? "border-purple-200 dark:border-purple-800"
                         : isDirectTopUp
                         ? "border-green-200 dark:border-green-800"
+                        : isGift
+                        ? "border-yellow-200 dark:border-yellow-800"
                         : isPurchase
                         ? "border-blue-200 dark:border-blue-800"
                         : ""
@@ -593,6 +596,8 @@ export default function Billing() {
                                 ? "bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30"
                                 : isDirectTopUp
                                 ? "bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30"
+                                : isGift
+                                ? "bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30"
                                 : isPurchase
                                 ? "bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30"
                                 : "bg-red-100 dark:bg-red-900/30"
@@ -602,6 +607,8 @@ export default function Billing() {
                               <Gift className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                             ) : isDirectTopUp ? (
                               <Wallet className="w-6 h-6 text-green-600 dark:text-green-400" />
+                            ) : isGift ? (
+                              <Gift className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
                             ) : isPurchase ? (
                               <ShoppingBag className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                             ) : (
@@ -615,6 +622,8 @@ export default function Billing() {
                                   ? "Redeem Kode Promo"
                                   : isDirectTopUp
                                   ? "Top Up Langsung"
+                                  : isGift
+                                  ? "Gift Credit"
                                   : isPurchase
                                   ? "Pembelian Paket Tryout"
                                   : transaction.description || "Transaksi"}
@@ -682,6 +691,30 @@ export default function Billing() {
                               </div>
                             )}
 
+                            {/* Gift Credit Detail */}
+                            {isGift && (
+                              <div className="mt-2 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <Gift className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                                      <p className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
+                                        Gift Credit
+                                      </p>
+                                    </div>
+                                    <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                                      {transaction.description ||
+                                        "Gift credit dari admin"}
+                                    </p>
+                                    <p className="text-xs text-yellow-500 dark:text-yellow-500 mt-2">
+                                      Saldo gift berhasil ditambahkan ke akun
+                                      Anda
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
                             {/* Package Detail (if purchase) */}
                             {isPurchase && (
                               <div className="mt-2 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
@@ -717,6 +750,8 @@ export default function Billing() {
                                     ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 dark:from-purple-900/30 dark:to-pink-900/30 dark:text-purple-400"
                                     : isDirectTopUp
                                     ? "bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 dark:from-green-900/30 dark:to-emerald-900/30 dark:text-green-400"
+                                    : isGift
+                                    ? "bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-700 dark:from-yellow-900/30 dark:to-orange-900/30 dark:text-yellow-400"
                                     : isPurchase
                                     ? "bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 dark:from-blue-900/30 dark:to-cyan-900/30 dark:text-blue-400"
                                     : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
@@ -737,6 +772,8 @@ export default function Billing() {
                                 ? "text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600"
                                 : isDirectTopUp
                                 ? "text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600"
+                                : isGift
+                                ? "text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-orange-600"
                                 : isPurchase
                                 ? "text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600"
                                 : transaction.amount > 0
@@ -752,6 +789,8 @@ export default function Billing() {
                               ? "Bonus Saldo"
                               : isDirectTopUp
                               ? "Top Up"
+                              : isGift
+                              ? "Gift"
                               : isPurchase
                               ? "Pembelian"
                               : "Transaksi"}

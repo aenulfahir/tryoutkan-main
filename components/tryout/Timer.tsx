@@ -6,14 +6,18 @@ interface TimerProps {
   durationMinutes: number;
   onTimeUp: () => void;
   isPaused?: boolean;
+  initialElapsed?: number; // Initial elapsed time in seconds
 }
 
 export function Timer({
   durationMinutes,
   onTimeUp,
   isPaused = false,
+  initialElapsed = 0,
 }: TimerProps) {
-  const [timeRemaining, setTimeRemaining] = useState(durationMinutes * 60); // in seconds
+  const totalTime = durationMinutes * 60; // Total time in seconds
+  const initialTimeRemaining = Math.max(0, totalTime - initialElapsed);
+  const [timeRemaining, setTimeRemaining] = useState(initialTimeRemaining); // in seconds
 
   useEffect(() => {
     if (isPaused) return;
@@ -45,7 +49,7 @@ export function Timer({
     return `${minutes}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const percentage = (timeRemaining / (durationMinutes * 60)) * 100;
+  const percentage = (timeRemaining / totalTime) * 100;
   const isWarning = percentage <= 20;
   const isCritical = percentage <= 10;
 

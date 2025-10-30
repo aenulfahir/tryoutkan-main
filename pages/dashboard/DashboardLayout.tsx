@@ -114,7 +114,8 @@ export default function DashboardLayout() {
   }
 
   const isActive = (href: string) => {
-    return location.pathname === href;
+    // Check if the current path starts with the href (for nested routes)
+    return location.pathname.startsWith(href);
   };
 
   const handleLogout = async () => {
