@@ -189,20 +189,12 @@ export function useKeyboardNavigation(
           event.preventDefault();
           // Option selection would be handled by the question component
           break;
-        case "Escape":
-          // Close modals or return to question overview
-          break;
-        case "0":
-        case "1":
-        case "2":
-        case "3":
-        case "4":
-        case "5":
         case "6":
         case "7":
         case "8":
         case "9":
-          // Number navigation (0-9 for questions 1-10)
+          event.preventDefault();
+          // Number navigation (6-9 for questions 6-9)
           const questionIndex = parseInt(event.key) - 1;
           if (
             questionIndex >= 0 &&
@@ -211,6 +203,16 @@ export function useKeyboardNavigation(
           ) {
             if (onNavigate) onNavigate(questionIndex);
           }
+          break;
+        case "0":
+          event.preventDefault();
+          // Number navigation (0 for question 10)
+          if (totalQuestions >= 10) {
+            if (onNavigate) onNavigate(9);
+          }
+          break;
+        case "Escape":
+          // Close modals or return to question overview
           break;
       }
     };

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { QuestionCard } from "@/components/tryout/QuestionCard";
 import { QuestionNavigation } from "@/components/tryout/QuestionNavigation";
+import { YoutubeEmbed } from "@/components/ui/YoutubeEmbed";
 import {
   ArrowLeft,
   ArrowRight as ChevronRightIcon,
@@ -393,19 +394,34 @@ export default function ReviewQuestions() {
                             <Play className="w-5 h-5 mr-2" />
                             Video Pembahasan
                           </h4>
-                          <div className="aspect-video bg-black rounded-lg overflow-hidden">
-                            <video
-                              controls
-                              className="w-full h-full"
-                              poster={currentQuestion.image_url || undefined}
-                            >
-                              <source
-                                src={currentQuestion.explanation_video_url}
-                                type="video/mp4"
-                              />
-                              Browser Anda tidak mendukung video tag.
-                            </video>
-                          </div>
+
+                          {/* Check if it's a YouTube URL or direct video URL */}
+                          {currentQuestion.explanation_video_url.includes(
+                            "youtube.com"
+                          ) ||
+                          currentQuestion.explanation_video_url.includes(
+                            "youtu.be"
+                          ) ? (
+                            <YoutubeEmbed
+                              videoId={currentQuestion.explanation_video_url}
+                              title={`Video pembahasan untuk soal ${currentQuestion.question_number}`}
+                              className="w-full"
+                            />
+                          ) : (
+                            <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                              <video
+                                controls
+                                className="w-full h-full"
+                                poster={currentQuestion.image_url || undefined}
+                              >
+                                <source
+                                  src={currentQuestion.explanation_video_url}
+                                  type="video/mp4"
+                                />
+                                Browser Anda tidak mendukung video tag.
+                              </video>
+                            </div>
+                          )}
                         </div>
                       )}
                     </CardContent>

@@ -30,41 +30,55 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-20 px-4">
+    <section id="how-it-works" className="py-20 px-4 bg-black text-white">
       <div className="container mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Cara Kerja TryoutKan
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full mb-6">
+            <span className="text-white text-sm font-medium">Proses</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
+            <span className="block text-white">Cara Kerja</span>
+            <span className="block text-gray-400">TryoutKan</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
             Hanya 3 langkah mudah untuk memulai perjalanan suksesmu
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
           {steps.map((step, index) => (
             <div key={index} className="relative">
-              <div className="text-center">
-                <div className="mb-6 relative inline-block">
-                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                    <step.icon className="text-primary" size={32} />
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full hover:bg-white/10 transition-all duration-300 hover:scale-105 group">
+                <div className="text-center">
+                  <div className="mb-6 relative inline-block">
+                    <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto transition-all duration-300">
+                      <step.icon className="text-white" size={32} />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                      <span className="text-black font-bold text-sm">
+                        {step.step}
+                      </span>
+                    </div>
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <span className="text-primary-foreground font-bold text-sm">
-                      {step.step}
-                    </span>
+
+                  {/* Timeline illustration */}
+                  <div className="text-6xl mb-4">
+                    {step.illustration}
                   </div>
+
+                  <h3 className="text-xl md:text-2xl font-semibold mb-4 text-white group-hover:text-gray-200 transition-colors">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
+                    {step.description}
+                  </p>
                 </div>
-
-                {/* Timeline illustration */}
-                <div className="text-6xl mb-4">{step.illustration}</div>
-
-                <h3 className="text-2xl font-semibold mb-3">{step.title}</h3>
-                <p className="text-muted-foreground">{step.description}</p>
               </div>
+
+              {/* Connection line */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-border">
-                  <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-primary rounded-full"></div>
+                <div className="hidden md:block absolute top-1/2 left-[60%] w-[80%] h-0.5 bg-white/20 overflow-hidden">
+                  <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-white rounded-full"></div>
                 </div>
               )}
             </div>
@@ -73,9 +87,10 @@ export default function HowItWorks() {
 
         {/* CTA Button */}
         <div className="text-center">
-          <Button size="lg" className="text-lg px-8" asChild>
+          <Button size="lg" className="text-lg px-8 bg-white text-black hover:bg-gray-200 transition-all duration-300 hover:scale-105" asChild>
             <a href="/register">
-              Mulai dari Langkah Pertama <Rocket className="ml-2" size={20} />
+              Mulai dari Langkah Pertama
+              <Rocket className="ml-2" size={20} />
             </a>
           </Button>
         </div>

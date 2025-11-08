@@ -108,6 +108,11 @@
   margin: 1em 0;
 }
 
+/* YouTube Placeholder (hidden by default, replaced by our component) */
+.youtube-placeholder {
+  display: none;
+}
+
 /* Code blocks */
 .rich-text-display pre {
   background-color: #f3f4f6;

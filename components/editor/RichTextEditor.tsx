@@ -6,6 +6,7 @@ import { TableRow } from "@tiptap/extension-table-row";
 import { TableCell } from "@tiptap/extension-table-cell";
 import { TableHeader } from "@tiptap/extension-table-header";
 import { Youtube } from "@tiptap/extension-youtube";
+import { YoutubeEmbed } from "@/components/ui/YoutubeEmbed";
 import { Link } from "@tiptap/extension-link";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { Color } from "@tiptap/extension-color";
@@ -91,6 +92,14 @@ export function RichTextEditor({
         HTMLAttributes: {
           class: "rounded-lg",
         },
+        // Use privacy-enhanced YouTube embed
+        nocookie: true,
+        // Enable modest branding
+        modestBranding: true,
+        // Disable related videos to improve privacy
+        ivLoadPolicy: 3,
+        // Disable keyboard controls for better privacy
+        disableKBcontrols: true,
       }),
       Link.configure({
         openOnClick: false,
@@ -210,9 +219,24 @@ export function RichTextEditor({
   const handleYoutubeEmbed = () => {
     const url = prompt("Masukkan URL YouTube:");
     if (url) {
-      editor?.commands.setYoutubeVideo({
-        src: url,
-      });
+      // Extract video ID from URL for better privacy
+      const videoIdMatch = url.match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/
+      );
+      const videoId = videoIdMatch ? videoIdMatch[1] : null;
+
+      if (videoId) {
+        // Use youtube-nocookie.com for better privacy
+        const privacyUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&showinfo=0&modestbranding=1`;
+        editor?.commands.setYoutubeVideo({
+          src: privacyUrl,
+        });
+      } else {
+        // Fallback to original URL if extraction fails
+        editor?.commands.setYoutubeVideo({
+          src: url,
+        });
+      }
     }
   };
 

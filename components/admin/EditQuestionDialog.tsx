@@ -58,6 +58,19 @@ export function EditQuestionDialog({
   useEffect(() => {
     if (open && questionId) {
       loadQuestionData();
+    } else if (!open) {
+      // Reset form when dialog closes
+      setFormData({
+        question_number: 1,
+        question_text: "",
+        question_text_html: "",
+        question_type: "multiple_choice",
+        points: 5,
+        correct_answer: "A",
+        explanation: "",
+        explanation_html: "",
+      });
+      setOptions([]);
     }
   }, [open, questionId]);
 
@@ -67,25 +80,40 @@ export function EditQuestionDialog({
     try {
       setLoadingData(true);
 
-      // Load question
-      const { data: question, error: questionError } = await supabase
-        .from("questions")
+      // Try to load from practice_questions first, then fallback to questions
+      let { data: question, error: questionError } = await supabase
+        .from("practice_questions")
         .select("*")
         .eq("id", questionId)
         .single();
 
+      let optionsTable = "practice_question_options";
+
+      if (questionError) {
+        // Fallback to questions table
+        const result = await supabase
+          .from("questions")
+          .select("*")
+          .eq("id", questionId)
+          .single();
+
+        question = result.data;
+        questionError = result.error;
+        optionsTable = "question_options";
+      }
+
       if (questionError) throw questionError;
 
-      // Load options
+      // Load options from the appropriate table
       const { data: questionOptions, error: optionsError } = await supabase
-        .from("question_options")
+        .from(optionsTable)
         .select("*")
         .eq("question_id", questionId)
         .order("option_key", { ascending: true });
 
       if (optionsError) throw optionsError;
 
-      // Set form data
+      // Set form data with proper field mapping
       setFormData({
         question_number: question.question_number,
         question_text: question.question_text || "",
@@ -114,28 +142,46 @@ export function EditQuestionDialog({
     try {
       setLoading(true);
 
-      // Update question
-      const { error: questionError } = await supabase
-        .from("questions")
-        .update({
-          question_number: formData.question_number,
-          question_text: formData.question_text,
-          question_text_html: formData.question_text_html,
-          question_type: formData.question_type,
-          points: formData.points,
-          correct_answer: formData.correct_answer,
-          explanation: formData.explanation,
-          explanation_html: formData.explanation_html,
-          updated_at: new Date().toISOString(),
-        })
+      // Try to update practice_questions first, then fallback to questions
+      let questionError;
+      let optionsTable = "practice_question_options";
+
+      const updateData = {
+        question_number: formData.question_number,
+        question_text: formData.question_text,
+        question_text_html: formData.question_text_html,
+        question_type: formData.question_type,
+        points: formData.points,
+        correct_answer: formData.correct_answer,
+        explanation: formData.explanation,
+        explanation_html: formData.explanation_html,
+        updated_at: new Date().toISOString(),
+      };
+
+      const { error } = await supabase
+        .from("practice_questions")
+        .update(updateData)
         .eq("id", questionId);
+
+      if (error) {
+        // Fallback to questions table
+        const result = await supabase
+          .from("questions")
+          .update(updateData)
+          .eq("id", questionId);
+
+        questionError = result.error;
+        optionsTable = "question_options";
+      } else {
+        questionError = error;
+      }
 
       if (questionError) throw questionError;
 
       // Update options
       for (const option of options) {
         const { error: optionError } = await supabase
-          .from("question_options")
+          .from(optionsTable)
           .update({
             option_text: option.option_text,
             option_text_html: option.option_text_html,
@@ -148,6 +194,9 @@ export function EditQuestionDialog({
       toast.success("Soal berhasil diupdate!");
       onSuccess();
       onOpenChange(false);
+
+      // Trigger refresh event for parent components
+      window.dispatchEvent(new CustomEvent("refresh-practice-questions"));
     } catch (error: any) {
       console.error("Error updating question:", error);
       toast.error("Gagal update soal: " + error.message);

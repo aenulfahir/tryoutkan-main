@@ -51,6 +51,7 @@ export interface Question {
   correct_answer: string | null;
   explanation: string | null;
   explanation_html?: string | null; // Rich text HTML
+  explanation_video_url: string | null; // URL to explanation video (YouTube or direct video)
   points: number;
   time_limit?: number | null; // Time limit per question
   image_url: string | null;

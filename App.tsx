@@ -13,10 +13,13 @@ import Dashboard from "@/pages/dashboard/Dashboard";
 import Billing from "@/pages/dashboard/Billing";
 import Invoice from "@/pages/dashboard/Invoice";
 import Tryout from "@/pages/dashboard/Tryout";
+import Practice from "@/pages/dashboard/Practice";
+import PracticeSession from "@/pages/dashboard/PracticeSession";
 import TryoutSession from "@/pages/dashboard/TryoutSession";
 import Results from "@/pages/dashboard/Results";
 import ResultDetail from "@/pages/dashboard/ResultDetail";
 import ReviewQuestions from "@/pages/dashboard/ReviewQuestions";
+import PracticeReview from "@/pages/dashboard/PracticeReview";
 import Ranking from "@/pages/dashboard/Ranking";
 import History from "@/pages/dashboard/History";
 import Settings from "@/pages/dashboard/Settings";
@@ -33,6 +36,10 @@ import AdminPromoCodeManagement from "@/pages/admin/PromoCodeManagement";
 import AdminUserList from "@/pages/admin/UserList";
 import AdminSettings from "@/pages/admin/Settings";
 import AdminNotifications from "@/pages/admin/Notifications";
+import AdminPracticeList from "@/pages/admin/PracticeList";
+import AdminPracticeQuestions from "@/pages/admin/PracticeQuestions";
+import AdminPracticeQuestionForm from "@/pages/admin/PracticeQuestionForm";
+import PracticePackageQuestions from "@/pages/admin/PracticePackageQuestions";
 import TambahTryoutPage from "@/pages/TambahTryoutPage";
 import TambahSoalPageV2 from "@/pages/TambahSoalPageV2";
 
@@ -64,6 +71,7 @@ export default function App() {
 
             {/* Tryout Routes */}
             <Route path="tryout" element={<Tryout />} />
+            <Route path="practice" element={<Practice />} />
             <Route path="results" element={<Results />} />
             <Route path="ranking" element={<Ranking />} />
             <Route path="history" element={<History />} />
@@ -79,6 +87,15 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <TryoutSession />
+              </ProtectedRoute>
+            }
+          />
+n          {/* Practice Execution - Outside dashboard layout for fullscreen */}
+          <Route
+            path="/dashboard/practice/:sessionId"
+            element={
+              <ProtectedRoute>
+                <PracticeSession />
               </ProtectedRoute>
             }
           />
@@ -107,11 +124,31 @@ export default function App() {
             <Route index element={<ReviewQuestions />} />
           </Route>
 
+          {/* Practice Review - Full page for better experience */}
+          <Route
+            path="/dashboard/practice-review/:sessionId"
+            element={
+              <ProtectedRoute>
+                <PracticeReview />
+              </ProtectedRoute>
+          }
+          />
+
           {/* Admin Routes - Protected with AdminRoute */}
           <Route path="/admin" element={<AdminRoute />}>
             <Route element={<AdminLayout />}>
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="tryouts" element={<AdminTryoutList />} />
+              <Route path="practice" element={<AdminPracticeList />} />
+              <Route path="practice-questions" element={<AdminPracticeQuestions />} />
+              <Route path="practice-questions/create" element={<AdminPracticeQuestionForm />} />
+              <Route path="practice-questions/:id/edit" element={<AdminPracticeQuestionForm />} />
+
+              {/* Package-specific practice question routes */}
+              <Route path="practice/:packageId/questions" element={<PracticePackageQuestions />} />
+              <Route path="practice/:packageId/questions/create" element={<AdminPracticeQuestionForm />} />
+              <Route path="practice/:packageId/questions/:questionId/edit" element={<AdminPracticeQuestionForm />} />
+              <Route path="practice/:packageId/questions/:questionId/view" element={<AdminPracticeQuestionForm />} />
               <Route path="questions" element={<AdminQuestionList />} />
               <Route path="ranking" element={<AdminRanking />} />
               <Route path="revenue" element={<AdminRevenue />} />

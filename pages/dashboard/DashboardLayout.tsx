@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  Target,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,6 +46,12 @@ const navItems: NavItem[] = [
     name: "Tryout",
     href: "/dashboard/tryout",
     icon: BookOpen,
+    section: "MENU UTAMA",
+  },
+  {
+    name: "Latihan Soal",
+    href: "/dashboard/practice",
+    icon: Target,
     section: "MENU UTAMA",
   },
   {
@@ -113,25 +120,12 @@ export default function DashboardLayout() {
     }
   }
 
-  const isActive = (href: string) => {
-    // Check if the current path starts with the href (for nested routes)
-    return location.pathname.startsWith(href);
-  };
-
-  const handleLogout = async () => {
+  const handleSignOut = async () => {
     await signOut();
     navigate("/login");
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
+  // Group nav items by section
   const groupedNavItems = navItems.reduce((acc, item) => {
     const section = item.section || "OTHER";
     if (!acc[section]) {
@@ -142,182 +136,42 @@ export default function DashboardLayout() {
   }, {} as Record<string, NavItem[]>);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-card border-b border-border z-50">
-        <div className="h-full px-4 flex items-center justify-between">
-          {/* Left: Logo + Mobile Menu Button */}
-          <div className="flex items-center space-x-4">
-            <button
-              className="lg:hidden p-2 hover:bg-accent rounded-lg"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">
-                  T
-                </span>
-              </div>
-              <span className="text-xl font-bold hidden sm:block">
-                TryoutKan
-              </span>
-            </Link>
+    <div className="flex h-screen bg-background">
+      {/* Sidebar */}
+      <div className="hidden md:flex md:flex-shrink-0">
+        <div className="flex flex-col w-64 bg-sidebar border-r border-sidebar-border">
+          {/* Logo */}
+          <div className="flex items-center h-16 flex-shrink-0 px-6 border-b border-sidebar-border">
+            <h1 className="text-xl font-bold text-sidebar-foreground">TryoutKan</h1>
           </div>
 
-          {/* Right: User Profile Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="flex items-center space-x-3 p-2 hover:bg-accent rounded-lg transition-colors"
-              >
-                <Avatar className="w-9 h-9">
-                  <AvatarImage src={userProfile?.avatar_url} />
-                  <AvatarFallback className="bg-primary/20 text-primary">
-                    {getInitials(
-                      userProfile?.name ||
-                        user?.user_metadata?.name ||
-                        user?.email ||
-                        "User"
-                    )}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium">
-                    {userProfile?.name || user?.user_metadata?.name || "User"}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {user?.email || ""}
-                  </p>
-                </div>
-                <ChevronDown className="w-4 h-4 text-muted-foreground hidden md:block" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>
-                <div className="flex items-center space-x-3">
-                  <Avatar className="w-10 h-10">
-                    <AvatarImage src={userProfile?.avatar_url} />
-                    <AvatarFallback className="bg-primary/20 text-primary">
-                      {getInitials(
-                        userProfile?.name ||
-                          user?.user_metadata?.name ||
-                          user?.email ||
-                          "User"
-                      )}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-medium">
-                      {userProfile?.name || user?.user_metadata?.name || "User"}
-                    </p>
-                    <p className="text-xs text-muted-foreground font-normal">
-                      {user?.email || ""}
-                    </p>
-                  </div>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/dashboard/settings" className="cursor-pointer">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Settings
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/dashboard/support" className="cursor-pointer">
-                  <HelpCircle className="w-4 h-4 mr-2" />
-                  Help & Support
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="text-red-600 focus:text-red-600 cursor-pointer"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </header>
-
-      <div className="flex pt-16">
-        {/* Sidebar - Desktop */}
-        <aside className="hidden lg:flex w-64 border-r border-border bg-card flex-col fixed left-0 top-16 bottom-0">
           {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto p-4">
-            {Object.entries(groupedNavItems).map(([section, items]) => (
-              <div key={section} className="mb-6">
-                <h3 className="text-xs font-semibold text-muted-foreground mb-2 px-3">
-                  {section}
-                </h3>
-                <div className="space-y-1">
-                  {items.map((item) => {
-                    const Icon = item.icon;
-                    const active = isActive(item.href);
-
-                    return (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        className={`
-                          flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors
-                          ${
-                            active
-                              ? "bg-primary/10 text-primary font-medium"
-                              : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                          }
-                        `}
-                      >
-                        <Icon className="w-5 h-5" />
-                        <span>{item.name}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </nav>
-        </aside>
-
-        {/* Sidebar - Mobile */}
-        {isMobileMenuOpen && (
-          <aside className="lg:hidden fixed left-0 top-16 bottom-0 w-64 border-r border-border bg-card z-40 flex flex-col">
-            <nav className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 flex flex-col overflow-y-auto">
+            <nav className="flex-1 px-4 py-6 space-y-6">
               {Object.entries(groupedNavItems).map(([section, items]) => (
-                <div key={section} className="mb-6">
-                  <h3 className="text-xs font-semibold text-muted-foreground mb-2 px-3">
+                <div key={section} className="space-y-2">
+                  <h3 className="px-3 text-xs font-semibold text-sidebar-accent-foreground uppercase tracking-wider">
                     {section}
                   </h3>
                   <div className="space-y-1">
                     {items.map((item) => {
-                      const Icon = item.icon;
-                      const active = isActive(item.href);
-
+                      const isActive = location.pathname === item.href;
                       return (
                         <Link
-                          key={item.href}
+                          key={item.name}
                           to={item.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className={`
-                            flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors
-                            ${
-                              active
-                                ? "bg-primary/10 text-primary font-medium"
-                                : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                            }
-                          `}
+                          className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ease-in-out ${
+                            isActive
+                              ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+                              : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                          }`}
                         >
-                          <Icon className="w-5 h-5" />
-                          <span>{item.name}</span>
+                          <item.icon
+                            className={`mr-3 h-5 w-5 flex-shrink-0 transition-colors duration-200 ${
+                              isActive ? "text-sidebar-primary-foreground" : "text-sidebar-foreground/60 group-hover:text-sidebar-foreground"
+                            }`}
+                          />
+                          <span className="truncate">{item.name}</span>
                         </Link>
                       );
                     })}
@@ -325,20 +179,160 @@ export default function DashboardLayout() {
                 </div>
               ))}
             </nav>
-          </aside>
-        )}
+          </div>
+        </div>
+      </div>
 
-        {/* Overlay for mobile menu */}
-        {isMobileMenuOpen && (
+      {/* Mobile sidebar */}
+      <div className={`md:hidden ${isMobileMenuOpen ? "block" : "hidden"}`}>
+        <div className="fixed inset-0 flex z-40">
           <div
-            className="lg:hidden fixed inset-0 bg-black/50 z-30 top-16"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-        )}
+          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-sidebar border-r border-sidebar-border">
+            <div className="absolute top-0 right-0 -mr-12 pt-2">
+              <button
+                type="button"
+                className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white bg-white/10 backdrop-blur-sm"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <X className="h-6 w-6 text-white" />
+              </button>
+            </div>
 
-        {/* Main Content */}
-        <main className="flex-1 lg:ml-64 overflow-y-auto">
-          <Outlet />
+            {/* Logo */}
+            <div className="flex items-center h-16 flex-shrink-0 px-6 border-b border-sidebar-border">
+              <h1 className="text-xl font-bold text-sidebar-foreground">TryoutKan</h1>
+            </div>
+
+            {/* Navigation */}
+            <div className="flex-1 flex flex-col overflow-y-auto">
+              <nav className="flex-1 px-4 py-6 space-y-6">
+                {Object.entries(groupedNavItems).map(([section, items]) => (
+                  <div key={section} className="space-y-2">
+                    <h3 className="px-3 text-xs font-semibold text-sidebar-accent-foreground uppercase tracking-wider">
+                      {section}
+                    </h3>
+                    <div className="space-y-1">
+                      {items.map((item) => {
+                        const isActive = location.pathname === item.href;
+                        return (
+                          <Link
+                            key={item.name}
+                            to={item.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ease-in-out ${
+                              isActive
+                                ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+                                : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            }`}
+                          >
+                            <item.icon
+                              className={`mr-3 h-5 w-5 flex-shrink-0 transition-colors duration-200 ${
+                                isActive ? "text-sidebar-primary-foreground" : "text-sidebar-foreground/60 group-hover:text-sidebar-foreground"
+                              }`}
+                            />
+                            <span className="truncate">{item.name}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="flex flex-col w-0 flex-1 overflow-hidden">
+        {/* Top bar */}
+        <header className="relative z-10 flex-shrink-0 flex h-16 bg-card border-b border-border shadow-sm">
+          <button
+            type="button"
+            className="md:hidden px-4 border-r border-border text-muted-foreground focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary hover:bg-accent hover:text-accent-foreground transition-colors"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+
+          <div className="flex-1 px-4 sm:px-6 flex justify-between">
+            <div className="flex-1 flex items-center">
+              {/* Page title */}
+              <h1 className="text-lg font-semibold text-foreground">
+                {navItems.find(item => item.href === location.pathname)?.name || "Dashboard"}
+              </h1>
+            </div>
+
+            {/* User menu */}
+            <div className="ml-4 flex items-center md:ml-6">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="relative h-9 w-9 rounded-full hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-primary transition-colors"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={userProfile?.avatar_url} alt={userProfile?.name || user?.email} />
+                      <AvatarFallback className="bg-primary text-primary-foreground font-medium">
+                        {userProfile?.name?.[0] || user?.email?.[0]?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {userProfile?.name || "Pengguna"}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user?.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => navigate("/dashboard/settings")}
+                    className="cursor-pointer hover:bg-accent focus:bg-accent"
+                  >
+                    Pengaturan
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => navigate("/dashboard/billing")}
+                    className="cursor-pointer hover:bg-accent focus:bg-accent"
+                  >
+                    Billing
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => navigate("/dashboard/support")}
+                    className="cursor-pointer hover:bg-accent focus:bg-accent"
+                  >
+                    Bantuan
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground text-destructive"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Keluar
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </header>
+
+        {/* Page content */}
+        <main className="flex-1 relative overflow-y-auto focus:outline-none bg-background">
+          <div className="py-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Outlet />
+            </div>
+          </div>
         </main>
       </div>
     </div>
