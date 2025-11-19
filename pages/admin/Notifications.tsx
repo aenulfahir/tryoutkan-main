@@ -136,28 +136,28 @@ export default function AdminNotifications() {
   function getNotificationIcon(type: string) {
     switch (type) {
       case "purchase":
-        return <ShoppingBag className="w-5 h-5 text-green-600" />;
+        return <ShoppingBag className="w-5 h-5 text-black" />;
       default:
-        return <Bell className="w-5 h-5 text-blue-600" />;
+        return <Bell className="w-5 h-5 text-black" />;
     }
   }
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 p-4 sm:p-6 md:p-8 bg-white min-h-screen text-black">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Notifikasi</h1>
+          <h1 className="text-3xl font-black tracking-tight">Notifikasi</h1>
         </div>
         <div className="space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
-            <Card key={i} className="animate-pulse">
+            <Card key={i} className="animate-pulse border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               <CardContent className="p-4">
                 <div className="flex items-start space-x-3">
-                  <div className="w-5 h-5 bg-muted rounded-full" />
+                  <div className="w-5 h-5 bg-gray-200 rounded-full" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-muted rounded w-3/4" />
-                    <div className="h-3 bg-muted rounded w-full" />
-                    <div className="h-3 bg-muted rounded w-1/4" />
+                    <div className="h-4 bg-gray-200 rounded w-3/4" />
+                    <div className="h-3 bg-gray-200 rounded w-full" />
+                    <div className="h-3 bg-gray-200 rounded w-1/4" />
                   </div>
                 </div>
               </CardContent>
@@ -169,12 +169,12 @@ export default function AdminNotifications() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 md:p-8 bg-white min-h-screen text-black">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Notifikasi</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-3xl font-black tracking-tight">Notifikasi</h1>
+          <p className="text-gray-600 font-medium mt-1">
             {unreadCount > 0
               ? `${unreadCount} notifikasi belum dibaca`
               : "Tidak ada notifikasi baru"}
@@ -184,7 +184,7 @@ export default function AdminNotifications() {
           {unreadCount > 0 && (
             <Button
               onClick={handleMarkAllAsRead}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
             >
               <Check className="w-4 h-4" />
               <span>Tandai semua dibaca</span>
@@ -192,18 +192,18 @@ export default function AdminNotifications() {
           )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center space-x-2">
+              <Button variant="outline" className="flex items-center space-x-2 border-2 border-black font-bold hover:bg-gray-100">
                 <Trash2 className="w-4 h-4" />
                 <span>Hapus</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleDeleteReadNotifications}>
+            <DropdownMenuContent align="end" className="border-2 border-black font-medium">
+              <DropdownMenuItem onClick={handleDeleteReadNotifications} className="cursor-pointer focus:bg-gray-100">
                 Hapus yang sudah dibaca
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleDeleteAllNotifications}
-                className="text-red-600"
+                className="text-red-600 cursor-pointer focus:bg-red-50 focus:text-red-700"
               >
                 Hapus semua notifikasi
               </DropdownMenuItem>
@@ -214,11 +214,11 @@ export default function AdminNotifications() {
 
       {/* Notifications List */}
       {notifications.length === 0 ? (
-        <Card>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Bell className="w-12 h-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">Tidak ada notifikasi</h3>
-            <p className="text-muted-foreground text-center">
+            <Bell className="w-12 h-12 text-gray-400 mb-4" />
+            <h3 className="text-lg font-black mb-2">Tidak ada notifikasi</h3>
+            <p className="text-gray-500 font-medium text-center">
               Belum ada notifikasi yang masuk. Notifikasi akan muncul di sini
               ketika ada aktivitas baru.
             </p>
@@ -229,57 +229,56 @@ export default function AdminNotifications() {
           {notifications.map((notification) => (
             <Card
               key={notification.id}
-              className={`transition-all ${
-                !notification.is_read
-                  ? "bg-muted/30 border-l-4 border-l-blue-500"
-                  : ""
-              }`}
+              className={`transition-all border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${!notification.is_read
+                  ? "bg-gray-50"
+                  : "bg-white"
+                }`}
             >
               <CardContent className="p-4">
                 <div className="flex items-start space-x-3">
-                  <div className="mt-0.5">
+                  <div className="mt-0.5 p-2 bg-white border-2 border-black rounded-full">
                     {getNotificationIcon(notification.type)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">{notification.title}</h3>
+                      <h3 className="font-bold text-lg">{notification.title}</h3>
                       <div className="flex items-center space-x-2">
                         {!notification.is_read && (
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge className="bg-black text-white border-2 border-black font-bold text-xs">
                             Baru
                           </Badge>
                         )}
-                        <div className="flex items-center text-xs text-muted-foreground">
+                        <div className="flex items-center text-xs text-gray-500 font-bold">
                           <Clock className="w-3 h-3 mr-1" />
                           {formatTime(notification.created_at)}
                         </div>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-2">
+                    <p className="text-sm text-gray-600 font-medium mb-2">
                       {notification.message}
                     </p>
                     {notification.data && notification.type === "purchase" && (
-                      <div className="bg-muted/50 rounded-md p-3 mt-2">
+                      <div className="bg-white border-2 border-black rounded-md p-3 mt-2">
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div>
-                            <span className="font-medium">User:</span>{" "}
-                            {notification.data.user_name}
+                            <span className="font-bold">User:</span>{" "}
+                            <span className="font-medium">{notification.data.user_name}</span>
                           </div>
                           <div>
-                            <span className="font-medium">Paket:</span>{" "}
-                            {notification.data.package_title}
+                            <span className="font-bold">Paket:</span>{" "}
+                            <span className="font-medium">{notification.data.package_title}</span>
                           </div>
                           <div>
-                            <span className="font-medium">Harga:</span> Rp{" "}
-                            {notification.data.purchase_price?.toLocaleString(
-                              "id-ID"
-                            ) || 0}
+                            <span className="font-bold">Harga:</span> <span className="font-black">Rp{" "}
+                              {notification.data.purchase_price?.toLocaleString(
+                                "id-ID"
+                              ) || 0}</span>
                           </div>
                           <div>
-                            <span className="font-medium">Waktu:</span>{" "}
-                            {new Date(
+                            <span className="font-bold">Waktu:</span>{" "}
+                            <span className="font-medium">{new Date(
                               notification.data.purchased_at
-                            ).toLocaleString("id-ID")}
+                            ).toLocaleString("id-ID")}</span>
                           </div>
                         </div>
                       </div>
@@ -291,16 +290,18 @@ export default function AdminNotifications() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleMarkAsRead(notification.id)}
-                        className="h-auto p-1"
+                        className="h-auto p-1 hover:bg-gray-100 rounded-full"
+                        title="Tandai sudah dibaca"
                       >
-                        <Check className="w-4 h-4" />
+                        <Check className="w-4 h-4 text-black" />
                       </Button>
                     )}
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => handleDeleteNotification(notification.id)}
-                      className="h-auto p-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="h-auto p-1 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-full"
+                      title="Hapus notifikasi"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>

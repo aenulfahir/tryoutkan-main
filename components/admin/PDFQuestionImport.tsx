@@ -139,10 +139,10 @@ export function PDFQuestionImport({
   return (
     <>
       <Dialog open={open && !showPreview} onOpenChange={handleClose}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <DialogHeader>
-            <DialogTitle>Import Soal dari PDF dengan AI</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="font-black text-xl">Import Soal dari PDF dengan AI</DialogTitle>
+            <DialogDescription className="font-medium text-gray-600">
               Upload file PDF berisi soal, AI akan otomatis mendeteksi dan
               mengekstrak soal beserta pilihan jawaban.
             </DialogDescription>
@@ -151,19 +151,19 @@ export function PDFQuestionImport({
           <div className="space-y-6">
             {/* AI Status */}
             {isAIConfigured() ? (
-              <Alert>
-                <CheckCircle2 className="w-4 h-4" />
-                <AlertDescription>
+              <Alert className="border-2 border-black bg-gray-50">
+                <CheckCircle2 className="w-4 h-4 text-black" />
+                <AlertDescription className="font-medium text-black">
                   AI sudah dikonfigurasi: <strong>{getAIProvider()}</strong>
                 </AlertDescription>
               </Alert>
             ) : (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="border-2 border-red-600 bg-red-50">
                 <AlertCircle className="w-4 h-4" />
-                <AlertDescription>
+                <AlertDescription className="font-medium">
                   AI belum dikonfigurasi. Tambahkan API key ke .env.local
                   <br />
-                  <code className="text-xs">
+                  <code className="text-xs font-bold">
                     VITE_OPENAI_API_KEY=sk-... atau VITE_GEMINI_API_KEY=...
                   </code>
                 </AlertDescription>
@@ -172,7 +172,7 @@ export function PDFQuestionImport({
 
             {/* File Upload */}
             <div className="space-y-2">
-              <Label htmlFor="pdf-file">File PDF</Label>
+              <Label htmlFor="pdf-file" className="font-bold">File PDF</Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="pdf-file"
@@ -180,6 +180,7 @@ export function PDFQuestionImport({
                   accept=".pdf"
                   onChange={handleFileChange}
                   disabled={extracting}
+                  className="border-2 border-black font-medium focus-visible:ring-0"
                 />
                 {file && (
                   <Button
@@ -187,13 +188,14 @@ export function PDFQuestionImport({
                     size="icon"
                     onClick={handleReset}
                     disabled={extracting}
+                    className="hover:bg-gray-200"
                   >
                     <X className="w-4 h-4" />
                   </Button>
                 )}
               </div>
               {file && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-600">
                   <FileText className="w-4 h-4" />
                   <span>{file.name}</span>
                   <span>({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
@@ -203,10 +205,10 @@ export function PDFQuestionImport({
 
             {/* Errors */}
             {errors.length > 0 && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="border-2 border-red-600 bg-red-50">
                 <AlertCircle className="w-4 h-4" />
-                <AlertDescription>
-                  <div className="font-semibold mb-2">
+                <AlertDescription className="font-medium">
+                  <div className="font-bold mb-2">
                     Peringatan ({errors.length}):
                   </div>
                   <ul className="list-disc list-inside space-y-1 text-xs">
@@ -222,9 +224,9 @@ export function PDFQuestionImport({
             )}
 
             {/* Instructions */}
-            <div className="bg-muted p-4 rounded-lg space-y-2 text-sm">
-              <p className="font-semibold">Tips untuk hasil terbaik:</p>
-              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+            <div className="bg-gray-100 border-2 border-black p-4 rounded-lg space-y-2 text-sm">
+              <p className="font-black">Tips untuk hasil terbaik:</p>
+              <ul className="list-disc list-inside space-y-1 font-medium text-gray-600">
                 <li>Pastikan PDF berisi teks (bukan scan gambar)</li>
                 <li>Format soal harus jelas (nomor, pertanyaan, pilihan)</li>
                 <li>Sertakan jawaban dan pembahasan jika ada</li>
@@ -234,10 +236,19 @@ export function PDFQuestionImport({
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={handleClose} disabled={extracting}>
+            <Button
+              variant="outline"
+              onClick={handleClose}
+              disabled={extracting}
+              className="border-2 border-black font-bold hover:bg-gray-100"
+            >
               Batal
             </Button>
-            <Button onClick={handleExtract} disabled={!file || extracting}>
+            <Button
+              onClick={handleExtract}
+              disabled={!file || extracting}
+              className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+            >
               {extracting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -271,4 +282,3 @@ export function PDFQuestionImport({
     </>
   );
 }
-

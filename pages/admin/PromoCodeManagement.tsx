@@ -18,13 +18,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -63,7 +56,6 @@ export default function PromoCodeManagement() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedPromo, setSelectedPromo] = useState<PromoCode | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [showStats, setShowStats] = useState(false);
 
@@ -168,14 +160,14 @@ export default function PromoCodeManagement() {
 
   const getStatusBadge = (isActive: boolean, expiresAt: string | null) => {
     if (!isActive) {
-      return <Badge variant="secondary">Non-aktif</Badge>;
+      return <Badge variant="secondary" className="bg-gray-100 text-gray-600 border-2 border-gray-400 font-bold">Non-aktif</Badge>;
     }
 
     if (expiresAt && new Date(expiresAt) < new Date()) {
-      return <Badge variant="destructive">Kadaluarsa</Badge>;
+      return <Badge variant="destructive" className="bg-red-100 text-red-700 border-2 border-red-600 font-bold">Kadaluarsa</Badge>;
     }
 
-    return <Badge className="bg-green-100 text-green-800">Aktif</Badge>;
+    return <Badge className="bg-green-100 text-green-700 border-2 border-green-600 font-bold">Aktif</Badge>;
   };
 
   const exportToCSV = () => {
@@ -225,14 +217,14 @@ export default function PromoCodeManagement() {
   };
 
   return (
-    <div className="p-4 sm:p-6">
+    <div className="p-4 sm:p-6 bg-white min-h-screen text-black">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
             Manajemen Kode Promo
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
+          <p className="text-sm sm:text-base text-gray-600 font-medium">
             Kelola kode promo untuk top-up saldo pengguna
           </p>
         </div>
@@ -241,7 +233,7 @@ export default function PromoCodeManagement() {
             variant="outline"
             onClick={loadStats}
             disabled={statsLoading}
-            className="w-full sm:w-auto min-h-[44px]"
+            className="w-full sm:w-auto min-h-[44px] border-2 border-black font-bold hover:bg-gray-100"
           >
             {statsLoading ? (
               <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
@@ -255,14 +247,14 @@ export default function PromoCodeManagement() {
           <Button
             variant="outline"
             onClick={exportToCSV}
-            className="w-full sm:w-auto min-h-[44px]"
+            className="w-full sm:w-auto min-h-[44px] border-2 border-black font-bold hover:bg-gray-100"
           >
             <Download className="w-4 h-4 mr-2" />
             <span className="text-sm sm:text-base">Export CSV</span>
           </Button>
           <Button
             onClick={() => setIsCreateModalOpen(true)}
-            className="w-full sm:w-auto min-h-[44px]"
+            className="w-full sm:w-auto min-h-[44px] bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
           >
             <Plus className="w-4 h-4 mr-2" />
             <span className="text-sm sm:text-base">Buat Kode Promo</span>
@@ -273,15 +265,15 @@ export default function PromoCodeManagement() {
       {/* Stats Cards - Mobile-First */}
       {showStats && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 sm:mb-6">
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center">
-                <Gift className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+                <Gift className="h-6 w-6 sm:h-8 sm:w-8 text-black" />
                 <div className="ml-4">
-                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">
+                  <p className="text-xs sm:text-sm font-bold text-gray-600">
                     Total Kode Promo
                   </p>
-                  <p className="text-xl sm:text-2xl font-bold">
+                  <p className="text-xl sm:text-2xl font-black text-black">
                     {promoStats.length}
                   </p>
                 </div>
@@ -289,15 +281,15 @@ export default function PromoCodeManagement() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center">
-                <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+                <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-black" />
                 <div className="ml-4">
-                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">
+                  <p className="text-xs sm:text-sm font-bold text-gray-600">
                     Kode Aktif
                   </p>
-                  <p className="text-xl sm:text-2xl font-bold">
+                  <p className="text-xl sm:text-2xl font-black text-black">
                     {promoStats.filter((s) => s.is_active).length}
                   </p>
                 </div>
@@ -305,15 +297,15 @@ export default function PromoCodeManagement() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center">
-                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
+                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-black" />
                 <div className="ml-4">
-                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">
+                  <p className="text-xs sm:text-sm font-bold text-gray-600">
                     Total User
                   </p>
-                  <p className="text-xl sm:text-2xl font-bold">
+                  <p className="text-xl sm:text-2xl font-black text-black">
                     {promoStats.reduce(
                       (sum, s) => sum + s.unique_users_count,
                       0
@@ -324,15 +316,15 @@ export default function PromoCodeManagement() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center">
-                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
+                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-black" />
                 <div className="ml-4">
-                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">
+                  <p className="text-xs sm:text-sm font-bold text-gray-600">
                     Total Amount
                   </p>
-                  <p className="text-xl sm:text-2xl font-bold">
+                  <p className="text-xl sm:text-2xl font-black text-black">
                     {formatCurrency(
                       promoStats.reduce(
                         (sum, s) => sum + s.total_amount_credited,
@@ -348,15 +340,15 @@ export default function PromoCodeManagement() {
       )}
 
       {/* Search and Filters - Mobile-First */}
-      <Card className="mb-4 sm:mb-6">
+      <Card className="mb-4 sm:mb-6 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <CardContent className="p-4">
           <div className="flex items-center space-x-2">
-            <Search className="w-4 h-4 text-muted-foreground" />
+            <Search className="w-4 h-4 text-gray-500" />
             <Input
               placeholder="Cari kode promo atau deskripsi..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-sm min-h-[44px]"
+              className="max-w-sm min-h-[44px] border-2 border-black font-medium focus-visible:ring-0"
               style={{ fontSize: "16px" }} // Prevent zoom on iOS
             />
           </div>
@@ -364,30 +356,30 @@ export default function PromoCodeManagement() {
       </Card>
 
       {/* Promo Codes Table - Mobile-First */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-sm sm:text-base">
+      <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <CardHeader className="bg-black text-white border-b-2 border-black">
+          <CardTitle className="text-sm sm:text-base font-black">
             Daftar Kode Promo
           </CardTitle>
-          <CardDescription className="text-xs sm:text-sm">
+          <CardDescription className="text-xs sm:text-sm text-gray-300 font-medium">
             Kelola semua kode promo yang tersedia di platform
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <RefreshCw className="w-5 h-5 sm:w-6 sm:h-6 animate-spin mr-2" />
-              <span className="text-sm sm:text-base">Loading...</span>
+              <span className="text-sm sm:text-base font-bold">Loading...</span>
             </div>
           ) : filteredPromoCodes.length === 0 ? (
             <div className="text-center py-6 sm:py-8">
-              <Gift className="w-10 h-10 sm:w-12 sm:h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg sm:text-xl font-semibold mb-2">
+              <Gift className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg sm:text-xl font-black mb-2">
                 {searchTerm
                   ? "Tidak ada hasil pencarian"
                   : "Belum ada kode promo"}
               </h3>
-              <p className="text-xs sm:text-sm text-muted-foreground mb-4">
+              <p className="text-xs sm:text-sm text-gray-500 font-medium mb-4">
                 {searchTerm
                   ? "Coba kata kunci pencarian lain"
                   : "Buat kode promo pertama untuk memulai"}
@@ -395,7 +387,7 @@ export default function PromoCodeManagement() {
               {!searchTerm && (
                 <Button
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="min-h-[44px]"
+                  className="min-h-[44px] bg-black text-white font-bold border-2 border-black hover:bg-gray-800"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   <span className="text-sm sm:text-base">Buat Kode Promo</span>
@@ -406,52 +398,52 @@ export default function PromoCodeManagement() {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs sm:text-sm">Kode</TableHead>
-                    <TableHead className="text-xs sm:text-sm">
+                  <TableRow className="border-b-2 border-black bg-gray-50 hover:bg-gray-50">
+                    <TableHead className="text-xs sm:text-sm font-black text-black">Kode</TableHead>
+                    <TableHead className="text-xs sm:text-sm font-black text-black">
                       Deskripsi
                     </TableHead>
-                    <TableHead className="text-xs sm:text-sm">Amount</TableHead>
-                    <TableHead className="text-xs sm:text-sm">Usage</TableHead>
-                    <TableHead className="text-xs sm:text-sm">
+                    <TableHead className="text-xs sm:text-sm font-black text-black">Amount</TableHead>
+                    <TableHead className="text-xs sm:text-sm font-black text-black">Usage</TableHead>
+                    <TableHead className="text-xs sm:text-sm font-black text-black">
                       Kadaluarsa
                     </TableHead>
-                    <TableHead className="text-xs sm:text-sm">Status</TableHead>
-                    <TableHead className="text-right text-xs sm:text-sm">
+                    <TableHead className="text-xs sm:text-sm font-black text-black">Status</TableHead>
+                    <TableHead className="text-right text-xs sm:text-sm font-black text-black">
                       Aksi
                     </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredPromoCodes.map((promo) => (
-                    <TableRow key={promo.id}>
+                    <TableRow key={promo.id} className="border-b-2 border-gray-100 hover:bg-gray-50">
                       <TableCell className="font-medium">
                         <div className="flex items-center space-x-2">
-                          <span className="font-mono bg-gray-100 px-2 py-1 rounded text-xs sm:text-sm">
+                          <span className="font-mono bg-black text-white px-2 py-1 rounded border-2 border-black text-xs sm:text-sm font-bold">
                             {promo.code}
                           </span>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="max-w-xs truncate">
+                        <div className="max-w-xs truncate font-medium text-gray-700">
                           {promo.description || "-"}
                         </div>
                       </TableCell>
-                      <TableCell className="text-xs sm:text-sm">
+                      <TableCell className="text-xs sm:text-sm font-black">
                         {formatCurrency(promo.topup_amount)}
                       </TableCell>
                       <TableCell>
-                        <div className="text-xs sm:text-sm">
+                        <div className="text-xs sm:text-sm font-medium">
                           <div>{promo.current_usage}</div>
                           {promo.max_usage && (
-                            <div className="text-muted-foreground">
+                            <div className="text-gray-500">
                               / {promo.max_usage}
                             </div>
                           )}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="text-xs sm:text-sm">
+                        <div className="text-xs sm:text-sm font-medium text-gray-600">
                           {formatDate(promo.expires_at)}
                         </div>
                       </TableCell>
@@ -464,38 +456,39 @@ export default function PromoCodeManagement() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px]"
+                              className="min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] hover:bg-gray-200"
                             >
-                              <MoreHorizontal className="w-3 h-3 sm:w-4 sm:h-4" />
+                              <MoreHorizontal className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
+                          <DropdownMenuContent align="end" className="border-2 border-black font-medium">
                             <DropdownMenuItem
                               onClick={() => handleToggleStatus(promo)}
+                              className="focus:bg-gray-100 focus:text-black cursor-pointer"
                             >
                               {promo.is_active ? (
                                 <>
                                   <XCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-                                  <span className="text-xs sm:text-sm">
+                                  <span className="text-xs sm:text-sm font-bold">
                                     Non-aktifkan
                                   </span>
                                 </>
                               ) : (
                                 <>
                                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-                                  <span className="text-xs sm:text-sm">
+                                  <span className="text-xs sm:text-sm font-bold">
                                     Aktifkan
                                   </span>
                                 </>
                               )}
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
+                            <DropdownMenuSeparator className="bg-gray-200" />
                             <DropdownMenuItem
-                              className="text-red-600"
+                              className="text-red-600 focus:bg-red-50 focus:text-red-700 cursor-pointer"
                               onClick={() => handleDeletePromo(promo)}
                             >
                               <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-                              <span className="text-xs sm:text-sm">Hapus</span>
+                              <span className="text-xs sm:text-sm font-bold">Hapus</span>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

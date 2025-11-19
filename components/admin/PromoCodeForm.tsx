@@ -11,15 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
 import {
   createPromoCode,
   generatePromoCode,
@@ -187,12 +179,12 @@ export function PromoCodeForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="font-black text-xl">
             {editData ? "Edit Kode Promo" : "Buat Kode Promo Baru"}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="font-medium text-gray-600">
             {editData
               ? "Edit detail kode promo yang sudah ada"
               : "Buat kode promo baru untuk top-up saldo"}
@@ -202,7 +194,7 @@ export function PromoCodeForm({
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           {/* Kode Promo */}
           <div className="space-y-2">
-            <Label htmlFor="code">Kode Promo</Label>
+            <Label htmlFor="code" className="font-bold">Kode Promo</Label>
             <div className="flex gap-2">
               <Input
                 id="code"
@@ -212,7 +204,7 @@ export function PromoCodeForm({
                 }
                 placeholder="Masukkan kode promo"
                 disabled={isLoading}
-                className={errors.code ? "border-red-500" : ""}
+                className={`border-2 border-black font-black tracking-wider ${errors.code ? "border-red-500" : ""}`}
                 maxLength={50}
               />
               <Button
@@ -220,18 +212,19 @@ export function PromoCodeForm({
                 variant="outline"
                 onClick={generateNewCode}
                 disabled={isLoading}
+                className="border-2 border-black font-bold hover:bg-gray-100"
               >
                 Generate
               </Button>
             </div>
             {errors.code && (
-              <p className="text-sm text-red-500">{errors.code}</p>
+              <p className="text-sm text-red-500 font-bold">{errors.code}</p>
             )}
           </div>
 
           {/* Deskripsi */}
           <div className="space-y-2">
-            <Label htmlFor="description">Deskripsi (Opsional)</Label>
+            <Label htmlFor="description" className="font-bold">Deskripsi (Opsional)</Label>
             <Textarea
               id="description"
               value={formData.description}
@@ -239,12 +232,13 @@ export function PromoCodeForm({
               placeholder="Deskripsi kode promo"
               disabled={isLoading}
               rows={2}
+              className="border-2 border-black font-medium focus-visible:ring-0"
             />
           </div>
 
           {/* Amount Top-up */}
           <div className="space-y-2">
-            <Label htmlFor="topup_amount">Amount Top-up (Rp)</Label>
+            <Label htmlFor="topup_amount" className="font-bold">Amount Top-up (Rp)</Label>
             <Input
               id="topup_amount"
               type="number"
@@ -254,18 +248,18 @@ export function PromoCodeForm({
               }
               placeholder="Masukkan amount"
               disabled={isLoading}
-              className={errors.topup_amount ? "border-red-500" : ""}
+              className={`border-2 border-black font-medium ${errors.topup_amount ? "border-red-500" : ""}`}
               min={1000}
               step={1000}
             />
             {errors.topup_amount && (
-              <p className="text-sm text-red-500">{errors.topup_amount}</p>
+              <p className="text-sm text-red-500 font-bold">{errors.topup_amount}</p>
             )}
           </div>
 
           {/* Max Usage */}
           <div className="space-y-2">
-            <Label htmlFor="max_usage">Max Usage (Opsional)</Label>
+            <Label htmlFor="max_usage" className="font-bold">Max Usage (Opsional)</Label>
             <Input
               id="max_usage"
               type="number"
@@ -273,20 +267,20 @@ export function PromoCodeForm({
               onChange={(e) => handleInputChange("max_usage", e.target.value)}
               placeholder="Kosongkan untuk unlimited"
               disabled={isLoading}
-              className={errors.max_usage ? "border-red-500" : ""}
+              className={`border-2 border-black font-medium ${errors.max_usage ? "border-red-500" : ""}`}
               min={1}
             />
             {errors.max_usage && (
-              <p className="text-sm text-red-500">{errors.max_usage}</p>
+              <p className="text-sm text-red-500 font-bold">{errors.max_usage}</p>
             )}
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 font-medium">
               Kosongkan jika kode promo bisa digunakan tanpa batas
             </p>
           </div>
 
           {/* Per User Limit */}
           <div className="space-y-2">
-            <Label htmlFor="per_user_limit">Per User Limit</Label>
+            <Label htmlFor="per_user_limit" className="font-bold">Per User Limit</Label>
             <Input
               id="per_user_limit"
               type="number"
@@ -296,13 +290,13 @@ export function PromoCodeForm({
               }
               placeholder="Jumlah maksimal per user"
               disabled={isLoading}
-              className={errors.per_user_limit ? "border-red-500" : ""}
+              className={`border-2 border-black font-medium ${errors.per_user_limit ? "border-red-500" : ""}`}
               min={1}
             />
             {errors.per_user_limit && (
-              <p className="text-sm text-red-500">{errors.per_user_limit}</p>
+              <p className="text-sm text-red-500 font-bold">{errors.per_user_limit}</p>
             )}
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 font-medium">
               Jumlah maksimal satu user bisa menggunakan kode ini
             </p>
           </div>
@@ -317,8 +311,9 @@ export function PromoCodeForm({
                   handleInputChange("has_expiry", checked)
                 }
                 disabled={isLoading}
+                className="border-2 border-black data-[state=checked]:bg-black data-[state=checked]:text-white"
               />
-              <Label htmlFor="has_expiry">Tanggal Kadaluarsa</Label>
+              <Label htmlFor="has_expiry" className="font-bold">Tanggal Kadaluarsa</Label>
             </div>
 
             {formData.has_expiry && (
@@ -327,11 +322,11 @@ export function PromoCodeForm({
                 value={
                   formData.expires_at
                     ? new Date(
-                        formData.expires_at.getTime() -
-                          formData.expires_at.getTimezoneOffset() * 60000
-                      )
-                        .toISOString()
-                        .slice(0, 16)
+                      formData.expires_at.getTime() -
+                      formData.expires_at.getTimezoneOffset() * 60000
+                    )
+                      .toISOString()
+                      .slice(0, 16)
                     : ""
                 }
                 onChange={(e) => {
@@ -341,13 +336,13 @@ export function PromoCodeForm({
                   handleInputChange("expires_at", date);
                 }}
                 disabled={isLoading}
-                className={errors.expires_at ? "border-red-500" : ""}
+                className={`border-2 border-black font-medium ${errors.expires_at ? "border-red-500" : ""}`}
                 min={new Date().toISOString().slice(0, 16)}
               />
             )}
 
             {errors.expires_at && (
-              <p className="text-sm text-red-500">{errors.expires_at}</p>
+              <p className="text-sm text-red-500 font-bold">{errors.expires_at}</p>
             )}
           </div>
 
@@ -357,10 +352,15 @@ export function PromoCodeForm({
               variant="outline"
               onClick={onClose}
               disabled={isLoading}
+              className="border-2 border-black font-bold hover:bg-gray-100"
             >
               Batal
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+            >
               {isLoading ? "Menyimpan..." : editData ? "Update" : "Buat"}
             </Button>
           </DialogFooter>

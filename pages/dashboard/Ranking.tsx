@@ -85,9 +85,9 @@ export default function RankingPage() {
   }
 
   const getRankIcon = (position: number) => {
-    if (position === 1) return <Trophy className="w-6 h-6 text-yellow-500" />;
-    if (position === 2) return <Medal className="w-6 h-6 text-gray-400" />;
-    if (position === 3) return <Award className="w-6 h-6 text-amber-600" />;
+    if (position === 1) return <Trophy className="w-6 h-6 text-black" />;
+    if (position === 2) return <Medal className="w-6 h-6 text-gray-600" />;
+    if (position === 3) return <Award className="w-6 h-6 text-gray-400" />;
     return null;
   };
 
@@ -102,8 +102,8 @@ export default function RankingPage() {
 
   if (loading && tryouts.length === 0) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <Loader2 className="w-8 h-8 animate-spin" />
+      <div className="flex items-center justify-center h-96 bg-white">
+        <Loader2 className="w-8 h-8 animate-spin text-black" />
       </div>
     );
   }
@@ -113,22 +113,22 @@ export default function RankingPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">Ranking Tryout</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-black tracking-tight">Ranking Tryout</h1>
+          <p className="text-gray-600 mt-2 font-medium">
             Lihat posisi Anda di antara peserta lainnya
           </p>
         </div>
 
         {/* Tryout Selector */}
-        <Card className="mb-8 border border-gray-200">
+        <Card className="mb-8 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <label className="text-sm font-medium">Pilih Tryout:</label>
+            <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <label className="text-sm font-bold whitespace-nowrap">Pilih Tryout:</label>
               <Select value={selectedTryout} onValueChange={setSelectedTryout}>
-                <SelectTrigger className="w-full max-w-md">
+                <SelectTrigger className="w-full max-w-md border-2 border-black font-bold focus:ring-0 focus:ring-offset-0">
                   <SelectValue placeholder="Pilih tryout" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="border-2 border-black">
                   {tryouts.map((tryout) => (
                     <SelectItem key={tryout.id} value={tryout.id}>
                       {tryout.title}
@@ -142,7 +142,7 @@ export default function RankingPage() {
 
         {/* User Rank Card */}
         {userRank && (
-          <Card className="mb-8 border-2 border-black">
+          <Card className="mb-8 border-2 border-black bg-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <TrendingUp className="w-5 h-5" />
@@ -152,18 +152,18 @@ export default function RankingPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-black text-white font-bold text-lg">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white text-black font-black text-lg border-2 border-white">
                     #{userRank.rank_position}
                   </div>
                   <div>
-                    <p className="font-semibold">Anda</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-bold text-lg">Anda</p>
+                    <p className="text-sm text-gray-300 font-medium">
                       Skor: {userRank.score.toFixed(0)}
                     </p>
                   </div>
                 </div>
                 {userRank.percentile && (
-                  <Badge variant="secondary" className="text-lg px-4 py-2">
+                  <Badge variant="secondary" className="text-lg px-4 py-2 bg-white text-black font-bold border-2 border-white">
                     Top {(100 - userRank.percentile).toFixed(0)}%
                   </Badge>
                 )}
@@ -174,88 +174,88 @@ export default function RankingPage() {
 
         {/* Top 3 Podium */}
         {rankings.length >= 3 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-end">
             {/* 2nd Place */}
-            <Card className="mt-8">
+            <Card className="mt-8 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] order-2 md:order-1">
               <CardContent className="p-6 text-center">
                 <div className="flex justify-center mb-4">
                   <Medal className="w-16 h-16 text-gray-400" />
                 </div>
-                <Avatar className="w-20 h-20 mx-auto mb-4">
-                  <AvatarFallback className="bg-gray-200 text-gray-700">
+                <Avatar className="w-20 h-20 mx-auto mb-4 border-2 border-black">
+                  <AvatarFallback className="bg-gray-100 text-black font-bold">
                     {getInitials(rankings[1]?.user?.name || "")}
                   </AvatarFallback>
                 </Avatar>
-                <p className="font-semibold truncate">
+                <p className="font-bold truncate text-lg">
                   {rankings[1]?.user?.name || "Peserta"}
                 </p>
-                <p className="text-2xl font-bold text-gray-600 mt-2">
+                <p className="text-2xl font-black text-gray-600 mt-2">
                   {rankings[1]?.score?.toFixed(0) || "0"}
                 </p>
-                <Badge className="mt-2 bg-gray-100 text-gray-800">#2</Badge>
+                <Badge className="mt-2 bg-gray-200 text-black border-2 border-black font-bold">#2</Badge>
               </CardContent>
             </Card>
 
             {/* 1st Place */}
-            <Card className="border-2 border-yellow-500 bg-yellow-50">
-              <CardContent className="p-6 text-center">
+            <Card className="border-2 border-black bg-black text-white shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] order-1 md:order-2 transform md:-translate-y-4 z-10">
+              <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-4">
-                  <Trophy className="w-16 h-16 text-yellow-500" />
+                  <Trophy className="w-20 h-20 text-white" />
                 </div>
-                <Avatar className="w-20 h-20 mx-auto mb-4 ring-4 ring-yellow-500">
-                  <AvatarFallback className="bg-yellow-200 text-yellow-800">
+                <Avatar className="w-24 h-24 mx-auto mb-4 ring-4 ring-white border-2 border-black">
+                  <AvatarFallback className="bg-white text-black font-black text-xl">
                     {getInitials(rankings[0]?.user?.name || "")}
                   </AvatarFallback>
                 </Avatar>
-                <p className="font-bold text-lg truncate">
+                <p className="font-black text-xl truncate">
                   {rankings[0]?.user?.name || "Juara"}
                 </p>
-                <p className="text-3xl font-bold text-yellow-600 mt-2">
+                <p className="text-4xl font-black text-white mt-2">
                   {rankings[0]?.score?.toFixed(0) || "0"}
                 </p>
-                <Badge className="mt-2 bg-yellow-500 text-white">
+                <Badge className="mt-2 bg-white text-black border-2 border-white font-bold text-lg px-4 py-1">
                   #1 Juara
                 </Badge>
               </CardContent>
             </Card>
 
             {/* 3rd Place */}
-            <Card className="mt-8">
+            <Card className="mt-8 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] order-3">
               <CardContent className="p-6 text-center">
                 <div className="flex justify-center mb-4">
-                  <Award className="w-16 h-16 text-amber-600" />
+                  <Award className="w-16 h-16 text-gray-600" />
                 </div>
-                <Avatar className="w-20 h-20 mx-auto mb-4">
-                  <AvatarFallback className="bg-amber-200 text-amber-800">
+                <Avatar className="w-20 h-20 mx-auto mb-4 border-2 border-black">
+                  <AvatarFallback className="bg-gray-50 text-black font-bold">
                     {getInitials(rankings[2]?.user?.name || "")}
                   </AvatarFallback>
                 </Avatar>
-                <p className="font-semibold truncate">
+                <p className="font-bold truncate text-lg">
                   {rankings[2]?.user?.name || "Peserta"}
                 </p>
-                <p className="text-3xl font-bold text-amber-600 mt-2">
+                <p className="text-2xl font-black text-gray-600 mt-2">
                   {rankings[2]?.score?.toFixed(0) || "0"}
                 </p>
-                <Badge className="mt-2 bg-amber-100 text-amber-800">#3</Badge>
+                <Badge className="mt-2 bg-gray-100 text-black border-2 border-black font-bold">#3</Badge>
               </CardContent>
             </Card>
           </div>
         )}
 
         {/* Full Rankings Table */}
-        <Card>
-          <CardHeader className="bg-black text-white">
-            <CardTitle>Daftar Lengkap</CardTitle>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <CardHeader className="bg-black text-white border-b-2 border-black">
+            <CardTitle className="font-black">Daftar Lengkap</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {rankings.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-600">
+                <p className="text-gray-600 font-medium">
                   Belum ada data ranking untuk tryout ini
                 </p>
               </div>
             ) : (
-              <div className="space-y-2">
+              <div className="divide-y-2 divide-gray-100">
                 {rankings.map((rank) => {
                   const isCurrentUser = rank.user_id === userId;
 
@@ -263,24 +263,23 @@ export default function RankingPage() {
                     <div
                       key={rank.id}
                       className={cn(
-                        "flex items-center justify-between p-4 rounded-lg border transition-colors",
-                        isCurrentUser && "bg-gray-100 border-black",
-                        !isCurrentUser && "hover:bg-gray-50"
+                        "flex items-center justify-between p-4 transition-colors",
+                        isCurrentUser ? "bg-gray-50" : "hover:bg-gray-50"
                       )}
                     >
                       <div className="flex items-center space-x-4 flex-1">
                         {/* Rank */}
                         <div className="flex items-center justify-center w-12">
                           {getRankIcon(rank.rank_position) || (
-                            <span className="text-lg font-bold">
+                            <span className="text-lg font-black text-gray-400">
                               #{rank.rank_position}
                             </span>
                           )}
                         </div>
 
                         {/* Avatar */}
-                        <Avatar>
-                          <AvatarFallback className="bg-gray-200 text-gray-700">
+                        <Avatar className="border-2 border-black">
+                          <AvatarFallback className="bg-white text-black font-bold">
                             {getInitials(rank.user?.name || "")}
                           </AvatarFallback>
                         </Avatar>
@@ -289,8 +288,8 @@ export default function RankingPage() {
                         <div className="flex-1">
                           <p
                             className={cn(
-                              "font-semibold",
-                              isCurrentUser && "text-black"
+                              "font-bold text-lg",
+                              isCurrentUser ? "text-black" : "text-gray-800"
                             )}
                           >
                             {isCurrentUser
@@ -298,7 +297,7 @@ export default function RankingPage() {
                               : rank.user?.name || "Peserta"}
                           </p>
                           {rank.percentile && (
-                            <p className="text-xs text-gray-600">
+                            <p className="text-xs text-gray-500 font-medium">
                               Top {(100 - rank.percentile).toFixed(0)}%
                             </p>
                           )}
@@ -307,10 +306,10 @@ export default function RankingPage() {
 
                       {/* Score */}
                       <div className="text-right">
-                        <p className="text-xl font-bold">
+                        <p className="text-xl font-black text-black">
                           {rank.score?.toFixed(0)}
                         </p>
-                        <p className="text-xs text-gray-600">poin</p>
+                        <p className="text-xs text-gray-500 font-bold">poin</p>
                       </div>
                     </div>
                   );

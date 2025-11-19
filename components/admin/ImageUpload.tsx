@@ -167,8 +167,8 @@ export default function ImageUpload({
           className={cn(
             "relative border-2 border-dashed rounded-lg p-8 text-center transition-colors",
             dragActive
-              ? "border-primary bg-primary/5"
-              : "border-muted-foreground/25 hover:border-primary/50",
+              ? "border-black bg-gray-50"
+              : "border-gray-300 hover:border-black",
             uploading && "pointer-events-none opacity-50"
           )}
           onDragEnter={handleDrag}
@@ -189,24 +189,24 @@ export default function ImageUpload({
           <div className="flex flex-col items-center space-y-4">
             {uploading ? (
               <>
-                <Loader2 className="w-12 h-12 text-primary animate-spin" />
+                <Loader2 className="w-12 h-12 text-black animate-spin" />
                 <div className="w-full max-w-xs">
-                  <Progress value={progress} className="h-2" />
-                  <p className="text-sm text-muted-foreground mt-2">
+                  <Progress value={progress} className="h-2 border-2 border-black bg-gray-100" />
+                  <p className="text-sm font-medium text-gray-600 mt-2">
                     Uploading... {progress}%
                   </p>
                 </div>
               </>
             ) : (
               <>
-                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                  <Upload className="w-8 h-8 text-muted-foreground" />
+                <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                  <Upload className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">
+                  <p className="text-sm font-bold text-black">
                     Drag & drop gambar atau klik untuk upload
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs font-medium text-gray-500 mt-1">
                     PNG, JPG, GIF hingga {maxSize}MB
                   </p>
                 </div>
@@ -222,7 +222,7 @@ export default function ImageUpload({
           <img
             src={preview}
             alt="Preview"
-            className="w-full h-48 object-cover rounded-lg"
+            className="w-full h-48 object-cover rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
           />
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
             <Button
@@ -230,6 +230,7 @@ export default function ImageUpload({
               variant="destructive"
               size="sm"
               onClick={handleRemove}
+              className="bg-red-600 hover:bg-red-700 border-2 border-red-800 font-bold"
             >
               <X className="w-4 h-4 mr-2" />
               Hapus

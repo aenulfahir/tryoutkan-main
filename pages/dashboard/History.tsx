@@ -134,49 +134,49 @@ export default function History() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <Loader2 className="w-8 h-8 animate-spin" />
+      <div className="flex items-center justify-center h-96 bg-white">
+        <Loader2 className="w-8 h-8 animate-spin text-black" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white min-h-screen text-black">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Riwayat Aktivitas</h1>
-        <p className="text-muted-foreground mt-2">
+        <h1 className="text-3xl font-black tracking-tight">Riwayat Aktivitas</h1>
+        <p className="text-gray-600 font-medium mt-2">
           Timeline semua aktivitas tryout Anda
         </p>
       </div>
 
       {/* Minimal Analytics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardContent className="p-6">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <div className="p-3 bg-black text-white rounded-lg border-2 border-black">
+                <FileText className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Tryout Selesai</p>
-                <p className="text-2xl font-bold">{totalCompleted}</p>
+                <p className="text-sm text-gray-600 font-bold">Tryout Selesai</p>
+                <p className="text-2xl font-black">{totalCompleted}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardContent className="p-6">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                <Clock className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              <div className="p-3 bg-white text-black rounded-lg border-2 border-black">
+                <Clock className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-600 font-bold">
                   Total Waktu Belajar
                 </p>
-                <p className="text-2xl font-bold">{totalHours.toFixed(1)}h</p>
+                <p className="text-2xl font-black">{totalHours.toFixed(1)}h</p>
               </div>
             </div>
           </CardContent>
@@ -186,14 +186,14 @@ export default function History() {
       {/* Filter */}
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-muted-foreground" />
-          <span className="text-sm font-medium">Filter:</span>
+          <Filter className="w-4 h-4 text-gray-500" />
+          <span className="text-sm font-bold">Filter:</span>
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[200px]">
+          <SelectTrigger className="w-[200px] border-2 border-black font-bold focus:ring-0 focus:ring-offset-0">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="border-2 border-black">
             <SelectItem value="all">Semua</SelectItem>
             <SelectItem value="completed">Selesai</SelectItem>
             <SelectItem value="in_progress">Belum Selesai</SelectItem>
@@ -202,27 +202,30 @@ export default function History() {
       </div>
 
       {/* Timeline */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Timeline Aktivitas</CardTitle>
+      <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <CardHeader className="border-b-2 border-gray-100">
+          <CardTitle className="font-black text-xl">Timeline Aktivitas</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           {filteredSessions.length === 0 ? (
             <div className="text-center py-12">
-              <FileText className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground mb-4">
+              <FileText className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+              <p className="text-gray-500 font-medium mb-4">
                 {statusFilter === "all"
                   ? "Belum ada riwayat tryout"
                   : statusFilter === "completed"
-                  ? "Belum ada tryout yang selesai"
-                  : "Tidak ada tryout yang sedang berjalan"}
+                    ? "Belum ada tryout yang selesai"
+                    : "Tidak ada tryout yang sedang berjalan"}
               </p>
-              <Button onClick={() => navigate("/dashboard/tryout")}>
+              <Button
+                onClick={() => navigate("/dashboard/tryout")}
+                className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
+              >
                 Mulai Tryout Pertama
               </Button>
             </div>
           ) : (
-            <div className="relative">
+            <div className="relative space-y-6 pl-2">
               {filteredSessions.map((session, index) => {
                 const isCompleted = !!session.completed_at;
                 const result = session.tryout_results?.[0];

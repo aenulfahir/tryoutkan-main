@@ -329,13 +329,13 @@ export default function SectionManager({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 font-black text-xl">
             <FileText className="w-5 h-5" />
             Kelola Bagian Soal - {tryoutPackage?.title}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="font-medium text-gray-600">
             Atur bagian-bagian soal untuk paket tryout ini
           </DialogDescription>
         </DialogHeader>
@@ -343,27 +343,27 @@ export default function SectionManager({
         <div className="space-y-6 py-4">
           {/* Stats Summary */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+            <div className="bg-white border-2 border-black p-4 rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
               <div className="flex items-center gap-2 mb-2">
-                <FileText className="w-5 h-5 text-blue-600" />
-                <span className="font-semibold">Total Soal</span>
+                <FileText className="w-5 h-5 text-black" />
+                <span className="font-bold">Total Soal</span>
               </div>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-black text-black">
                 {calculateTotal("total_questions")}
               </p>
-              <p className="text-sm text-blue-600">
+              <p className="text-sm font-medium text-gray-600">
                 Dari {sections.length} bagian
               </p>
             </div>
-            <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
+            <div className="bg-white border-2 border-black p-4 rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
               <div className="flex items-center gap-2 mb-2">
-                <Clock className="w-5 h-5 text-green-600" />
-                <span className="font-semibold">Total Durasi</span>
+                <Clock className="w-5 h-5 text-black" />
+                <span className="font-bold">Total Durasi</span>
               </div>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-black text-black">
                 {calculateTotal("duration_minutes")} menit
               </p>
-              <p className="text-sm text-green-600">
+              <p className="text-sm font-medium text-gray-600">
                 Dari {sections.length} bagian
               </p>
             </div>
@@ -371,25 +371,30 @@ export default function SectionManager({
 
           {/* Template Button */}
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm font-medium text-gray-600">
               Gunakan template untuk kategori {tryoutPackage?.category}
             </p>
             <Button
               variant="outline"
               onClick={handleUseTemplate}
               disabled={loading}
+              className="border-2 border-black font-bold hover:bg-gray-100"
             >
               Gunakan Template
             </Button>
           </div>
 
-          <Separator />
+          <Separator className="bg-black" />
 
           {/* Sections List */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold">Daftar Bagian Soal</h3>
-              <Button onClick={handleAddSection} size="sm">
+              <h3 className="font-black text-lg">Daftar Bagian Soal</h3>
+              <Button
+                onClick={handleAddSection}
+                size="sm"
+                className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 Tambah Bagian
               </Button>
@@ -397,13 +402,13 @@ export default function SectionManager({
 
             {loading ? (
               <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
               </div>
             ) : sections.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>Belum ada bagian soal</p>
-                <p className="text-sm">
+              <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <p className="font-medium text-gray-500">Belum ada bagian soal</p>
+                <p className="text-sm text-gray-400">
                   Tambah bagian soal atau gunakan template
                 </p>
               </div>
@@ -412,21 +417,21 @@ export default function SectionManager({
                 {sections.map((section, index) => (
                   <div
                     key={section.id}
-                    className="flex items-start justify-between p-4 border rounded-lg hover:bg-accent transition-colors"
+                    className="flex items-start justify-between p-4 border-2 border-black rounded-lg hover:bg-gray-50 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="outline">Bagian {index + 1}</Badge>
-                        <h4 className="font-semibold">
+                        <Badge variant="outline" className="border-2 border-black font-bold">Bagian {index + 1}</Badge>
+                        <h4 className="font-black text-lg">
                           {section.section_name}
                         </h4>
                       </div>
                       {section.description && (
-                        <p className="text-sm text-muted-foreground mb-2">
+                        <p className="text-sm font-medium text-gray-600 mb-2">
                           {section.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-4 text-sm font-bold">
                         <span className="flex items-center gap-1">
                           <FileText className="w-4 h-4" />
                           {section.total_questions} soal
@@ -444,6 +449,7 @@ export default function SectionManager({
                         variant="ghost"
                         size="sm"
                         onClick={() => handleEditSection(section)}
+                        className="hover:bg-gray-200"
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
@@ -451,7 +457,7 @@ export default function SectionManager({
                         variant="ghost"
                         size="sm"
                         onClick={() => handleDeleteSection(section.id)}
-                        className="text-destructive hover:text-destructive"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -465,16 +471,16 @@ export default function SectionManager({
 
         {/* Section Form Dialog */}
         <Dialog open={formOpen} onOpenChange={setFormOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="font-black text-xl">
                 {isEditing ? "Edit Bagian Soal" : "Tambah Bagian Soal"}
               </DialogTitle>
             </DialogHeader>
 
             <div className="space-y-4 py-4">
               <div>
-                <Label htmlFor="section_name">Nama Bagian *</Label>
+                <Label htmlFor="section_name" className="font-bold">Nama Bagian *</Label>
                 <Input
                   id="section_name"
                   value={sectionForm.section_name}
@@ -485,8 +491,9 @@ export default function SectionManager({
                     })
                   }
                   placeholder="Contoh: TWK, TIU, TKP (harus cocok dengan subject di form soal)"
+                  className="border-2 border-black font-medium focus-visible:ring-0"
                 />
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs font-medium text-gray-500 mt-1">
                   Nama bagian harus cocok dengan subject yang digunakan di form
                   soal
                 </p>
@@ -494,7 +501,7 @@ export default function SectionManager({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="total_questions">Jumlah Soal *</Label>
+                  <Label htmlFor="total_questions" className="font-bold">Jumlah Soal *</Label>
                   <Input
                     id="total_questions"
                     type="number"
@@ -505,10 +512,11 @@ export default function SectionManager({
                         total_questions: parseInt(e.target.value) || 0,
                       })
                     }
+                    className="border-2 border-black font-medium focus-visible:ring-0"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="duration_minutes">Durasi (menit) *</Label>
+                  <Label htmlFor="duration_minutes" className="font-bold">Durasi (menit) *</Label>
                   <Input
                     id="duration_minutes"
                     type="number"
@@ -519,12 +527,13 @@ export default function SectionManager({
                         duration_minutes: parseInt(e.target.value) || 0,
                       })
                     }
+                    className="border-2 border-black font-medium focus-visible:ring-0"
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="description">Deskripsi</Label>
+                <Label htmlFor="description" className="font-bold">Deskripsi</Label>
                 <Textarea
                   id="description"
                   value={sectionForm.description}
@@ -536,15 +545,23 @@ export default function SectionManager({
                   }
                   placeholder="Deskripsi singkat tentang bagian ini"
                   rows={3}
+                  className="border-2 border-black font-medium focus-visible:ring-0"
                 />
               </div>
             </div>
 
             <DialogFooter>
-              <Button variant="outline" onClick={() => setFormOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setFormOpen(false)}
+                className="border-2 border-black font-bold hover:bg-gray-100"
+              >
                 Batal
               </Button>
-              <Button onClick={handleSaveSection}>
+              <Button
+                onClick={handleSaveSection}
+                className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+              >
                 {isEditing ? "Update" : "Simpan"}
               </Button>
             </DialogFooter>
@@ -552,7 +569,11 @@ export default function SectionManager({
         </Dialog>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            className="border-2 border-black font-bold hover:bg-gray-100"
+          >
             Selesai
           </Button>
         </DialogFooter>

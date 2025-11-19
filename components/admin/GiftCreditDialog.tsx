@@ -94,15 +94,15 @@ export function GiftCreditDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <DialogHeader>
           <div className="flex items-center space-x-3 mb-2">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-              <Gift className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            <div className="p-2 bg-black text-white border-2 border-black rounded-lg">
+              <Gift className="w-6 h-6" />
             </div>
             <div>
-              <DialogTitle>Gift Credit ke User</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="font-black text-xl">Gift Credit ke User</DialogTitle>
+              <DialogDescription className="font-medium text-gray-600">
                 Berikan credit/gift kepada {userName || "user ini"}
               </DialogDescription>
             </div>
@@ -111,20 +111,20 @@ export function GiftCreditDialog({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* User Info Display */}
-          <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-            <p className="text-sm font-medium">User:</p>
-            <p className="text-lg font-semibold">
+          <div className="bg-gray-50 border-2 border-black p-3 rounded-lg">
+            <p className="text-sm font-bold text-gray-600">User:</p>
+            <p className="text-lg font-black text-black">
               {userName || "Unknown User"}
             </p>
           </div>
 
           {/* Amount */}
           <div className="space-y-2">
-            <Label htmlFor="amount">
+            <Label htmlFor="amount" className="font-bold">
               Jumlah Gift (Rp) <span className="text-red-500">*</span>
             </Label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-black font-bold">
                 Rp
               </span>
               <Input
@@ -136,20 +136,20 @@ export function GiftCreditDialog({
                   setFormData({ ...formData, amount: e.target.value })
                 }
                 disabled={loading}
-                className="pl-10"
+                className="pl-10 border-2 border-black font-black focus-visible:ring-0"
                 min="1"
                 max="10000000"
                 required
               />
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-gray-500 font-medium">
               Minimal: Rp 1.000, Maksimal: Rp 10.000.000
             </p>
           </div>
 
           {/* Preset Amount Buttons */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Quick Amount</Label>
+            <Label className="text-sm font-bold">Quick Amount</Label>
             <div className="grid grid-cols-3 gap-2">
               {[10000, 25000, 50000, 100000, 250000, 500000].map((amount) => (
                 <Button
@@ -161,7 +161,7 @@ export function GiftCreditDialog({
                     setFormData({ ...formData, amount: amount.toString() })
                   }
                   disabled={loading}
-                  className="h-10"
+                  className="h-10 border-2 border-black font-bold hover:bg-gray-100"
                 >
                   Rp {(amount / 1000).toFixed(0)}K
                 </Button>
@@ -171,7 +171,7 @@ export function GiftCreditDialog({
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description">Deskripsi (Opsional)</Label>
+            <Label htmlFor="description" className="font-bold">Deskripsi (Opsional)</Label>
             <Textarea
               id="description"
               placeholder="Masukkan deskripsi untuk gift ini"
@@ -182,8 +182,9 @@ export function GiftCreditDialog({
               disabled={loading}
               rows={3}
               maxLength={200}
+              className="border-2 border-black font-medium focus-visible:ring-0"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-gray-500 font-medium">
               {formData.description.length}/200 karakter
             </p>
           </div>
@@ -194,10 +195,15 @@ export function GiftCreditDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={loading}
+              className="border-2 border-black font-bold hover:bg-gray-100"
             >
               Batal
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+            >
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Gift Credit
             </Button>

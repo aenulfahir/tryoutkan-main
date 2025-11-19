@@ -178,9 +178,9 @@ export function QuestionImportPreview({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="font-black text-xl">
             Preview & Edit Soal ({selectedQuestions.size}/{questions.length}{" "}
             dipilih)
           </DialogTitle>
@@ -188,12 +188,13 @@ export function QuestionImportPreview({
 
         <div className="space-y-4">
           {/* Select All */}
-          <div className="flex items-center gap-2 p-4 bg-muted rounded-lg">
+          <div className="flex items-center gap-2 p-4 bg-gray-100 border-2 border-black rounded-lg">
             <Checkbox
               checked={selectedQuestions.size === questions.length}
               onCheckedChange={handleToggleAll}
+              className="border-2 border-black data-[state=checked]:bg-black data-[state=checked]:text-white"
             />
-            <Label className="cursor-pointer">Pilih Semua Soal</Label>
+            <Label className="cursor-pointer font-bold">Pilih Semua Soal</Label>
           </div>
 
           {/* Questions List */}
@@ -201,11 +202,10 @@ export function QuestionImportPreview({
             {questions.map((question, index) => (
               <div
                 key={index}
-                className={`border rounded-lg p-4 space-y-3 ${
-                  selectedQuestions.has(index)
-                    ? "border-primary bg-primary/5"
-                    : "border-border"
-                }`}
+                className={`border-2 rounded-lg p-4 space-y-3 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${selectedQuestions.has(index)
+                    ? "border-black bg-white"
+                    : "border-gray-300 bg-gray-50 opacity-70"
+                  }`}
               >
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4">
@@ -213,21 +213,28 @@ export function QuestionImportPreview({
                     <Checkbox
                       checked={selectedQuestions.has(index)}
                       onCheckedChange={() => handleToggleQuestion(index)}
+                      className="border-2 border-black data-[state=checked]:bg-black data-[state=checked]:text-white mt-1"
                     />
                     <div className="flex-1 space-y-2">
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline">
+                        <Badge variant="outline" className="border-2 border-black font-bold">
                           Soal #{question.question_number}
                         </Badge>
-                        <Badge>{question.question_type}</Badge>
+                        <Badge className="bg-black text-white border-2 border-black font-bold">{question.question_type}</Badge>
                         <Badge
                           variant={
                             question.confidence > 0.8
                               ? "default"
                               : question.confidence > 0.6
-                              ? "secondary"
-                              : "destructive"
+                                ? "secondary"
+                                : "destructive"
                           }
+                          className={`border-2 font-bold ${question.confidence > 0.8
+                              ? "bg-green-100 text-green-800 border-green-800"
+                              : question.confidence > 0.6
+                                ? "bg-yellow-100 text-yellow-800 border-yellow-800"
+                                : "bg-red-100 text-red-800 border-red-800"
+                            }`}
                         >
                           {question.confidence > 0.8 ? (
                             <CheckCircle2 className="w-3 h-3 mr-1" />
@@ -250,10 +257,11 @@ export function QuestionImportPreview({
                               )
                             }
                             rows={3}
+                            className="border-2 border-black font-medium focus-visible:ring-0"
                           />
                           <div className="grid grid-cols-2 gap-2">
                             <div>
-                              <Label>Jenis Soal</Label>
+                              <Label className="font-bold">Jenis Soal</Label>
                               <Select
                                 value={question.question_type}
                                 onValueChange={(value) =>
@@ -264,10 +272,10 @@ export function QuestionImportPreview({
                                   )
                                 }
                               >
-                                <SelectTrigger>
+                                <SelectTrigger className="border-2 border-black font-bold focus:ring-0">
                                   <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="border-2 border-black font-medium">
                                   <SelectItem value="TWK">TWK</SelectItem>
                                   <SelectItem value="TIU">TIU</SelectItem>
                                   <SelectItem value="TKP">TKP</SelectItem>
@@ -278,7 +286,7 @@ export function QuestionImportPreview({
                               </Select>
                             </div>
                             <div>
-                              <Label>Jawaban Benar</Label>
+                              <Label className="font-bold">Jawaban Benar</Label>
                               <Select
                                 value={question.correct_answer}
                                 onValueChange={(value) =>
@@ -289,10 +297,10 @@ export function QuestionImportPreview({
                                   )
                                 }
                               >
-                                <SelectTrigger>
+                                <SelectTrigger className="border-2 border-black font-bold focus:ring-0">
                                   <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="border-2 border-black font-medium">
                                   {question.options.map((opt) => (
                                     <SelectItem key={opt.key} value={opt.key}>
                                       {opt.key}
@@ -304,7 +312,7 @@ export function QuestionImportPreview({
                           </div>
                         </div>
                       ) : (
-                        <p className="text-sm">{question.question_text}</p>
+                        <p className="text-sm font-medium text-gray-800">{question.question_text}</p>
                       )}
                     </div>
                     <Button
@@ -313,6 +321,7 @@ export function QuestionImportPreview({
                       onClick={() =>
                         setEditingIndex(editingIndex === index ? null : index)
                       }
+                      className="hover:bg-gray-200"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
@@ -323,7 +332,7 @@ export function QuestionImportPreview({
                 <div className="space-y-2 pl-9">
                   {question.options.map((option, optIndex) => (
                     <div key={option.key} className="flex items-start gap-2">
-                      <span className="font-semibold text-sm min-w-[20px]">
+                      <span className="font-black text-sm min-w-[20px]">
                         {option.key}.
                       </span>
                       {editingIndex === index ? (
@@ -332,19 +341,18 @@ export function QuestionImportPreview({
                           onChange={(e) =>
                             handleEditOption(index, optIndex, e.target.value)
                           }
-                          className="flex-1"
+                          className="flex-1 border-2 border-black font-medium focus-visible:ring-0"
                         />
                       ) : (
                         <span
-                          className={`text-sm flex-1 ${
-                            option.key === question.correct_answer
-                              ? "font-semibold text-green-600 dark:text-green-400"
-                              : ""
-                          }`}
+                          className={`text-sm flex-1 font-medium ${option.key === question.correct_answer
+                              ? "font-bold text-green-700"
+                              : "text-gray-600"
+                            }`}
                         >
                           {option.text}
                           {option.key === question.correct_answer && (
-                            <CheckCircle2 className="w-4 h-4 inline ml-2" />
+                            <CheckCircle2 className="w-4 h-4 inline ml-2 text-green-600" />
                           )}
                         </span>
                       )}
@@ -354,8 +362,8 @@ export function QuestionImportPreview({
 
                 {/* Explanation */}
                 {question.explanation && (
-                  <div className="pl-9 pt-2 border-t">
-                    <Label className="text-xs text-muted-foreground">
+                  <div className="pl-9 pt-2 border-t-2 border-gray-200">
+                    <Label className="text-xs font-bold text-gray-500">
                       Pembahasan:
                     </Label>
                     {editingIndex === index ? (
@@ -369,10 +377,10 @@ export function QuestionImportPreview({
                           )
                         }
                         rows={2}
-                        className="mt-1"
+                        className="mt-1 border-2 border-black font-medium focus-visible:ring-0"
                       />
                     ) : (
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <p className="text-sm font-medium text-gray-600 mt-1">
                         {question.explanation}
                       </p>
                     )}
@@ -384,11 +392,20 @@ export function QuestionImportPreview({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onBack} disabled={importing}>
+          <Button
+            variant="outline"
+            onClick={onBack}
+            disabled={importing}
+            className="border-2 border-black font-bold hover:bg-gray-100"
+          >
             <ChevronLeft className="w-4 h-4 mr-2" />
             Kembali
           </Button>
-          <Button onClick={handleImport} disabled={importing}>
+          <Button
+            onClick={handleImport}
+            disabled={importing}
+            className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+          >
             {importing ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

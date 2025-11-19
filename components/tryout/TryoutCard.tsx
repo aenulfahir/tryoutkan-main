@@ -44,41 +44,32 @@ export function TryoutCard({
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 flex flex-col h-full border-gray-200 hover:border-black overflow-hidden">
-      {/* Card Header with gradient accent */}
-      <div className="h-2 bg-gradient-to-r from-gray-900 to-black"></div>
-
+    <Card className="group hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 flex flex-col h-full border-2 border-black overflow-hidden bg-white">
       <CardHeader className="space-y-4 pb-4">
         {/* Category and Difficulty Badges */}
         <div className="flex items-center justify-between">
           <Badge
             variant="secondary"
-            className="text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+            className="text-xs font-bold bg-black text-white hover:bg-gray-800 transition-colors border-2 border-black"
           >
             {categoryInfo.icon} {categoryInfo.name}
           </Badge>
           <Badge
             variant="outline"
-            className={`text-xs font-medium ${
-              difficultyInfo.color === "yellow"
-                ? "border-yellow-400 text-yellow-700 bg-yellow-50"
-                : difficultyInfo.color === "red"
-                ? "border-red-400 text-red-700 bg-red-50"
-                : "border-green-400 text-green-700 bg-green-50"
-            }`}
+            className="text-xs font-bold border-2 border-black text-black bg-transparent"
           >
             {difficultyInfo.label}
           </Badge>
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-black transition-colors">
+        <h3 className="text-xl font-black text-black line-clamp-2 group-hover:underline decoration-2 underline-offset-4 transition-all">
           {tryout.title}
         </h3>
 
         {/* Description */}
         {tryout.description && (
-          <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed font-medium">
             {tryout.description}
           </p>
         )}
@@ -87,30 +78,30 @@ export function TryoutCard({
       <CardContent className="flex-1 space-y-4 pb-4">
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg group-hover:bg-gray-100 transition-colors">
-            <Clock className="w-5 h-5 text-gray-500 flex-shrink-0" />
+          <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-transparent group-hover:border-black transition-all">
+            <Clock className="w-5 h-5 text-black flex-shrink-0" />
             <div className="min-w-0">
-              <p className="text-xs text-gray-500">Durasi</p>
-              <p className="text-sm font-semibold text-gray-900">
+              <p className="text-xs text-gray-500 font-bold uppercase">Durasi</p>
+              <p className="text-sm font-bold text-black">
                 {tryout.duration_minutes} menit
               </p>
             </div>
           </div>
-          <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg group-hover:bg-gray-100 transition-colors">
-            <FileText className="w-5 h-5 text-gray-500 flex-shrink-0" />
+          <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-transparent group-hover:border-black transition-all">
+            <FileText className="w-5 h-5 text-black flex-shrink-0" />
             <div className="min-w-0">
-              <p className="text-xs text-gray-500">Soal</p>
-              <p className="text-sm font-semibold text-gray-900">
+              <p className="text-xs text-gray-500 font-bold uppercase">Soal</p>
+              <p className="text-sm font-bold text-black">
                 {tryout.total_questions} soal
               </p>
             </div>
           </div>
           {tryout.passing_grade && (
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg group-hover:bg-gray-100 transition-colors col-span-2">
-              <Award className="w-5 h-5 text-gray-500 flex-shrink-0" />
+            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-transparent group-hover:border-black transition-all col-span-2">
+              <Award className="w-5 h-5 text-black flex-shrink-0" />
               <div className="min-w-0">
-                <p className="text-xs text-gray-500">Passing Grade</p>
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-xs text-gray-500 font-bold uppercase">Passing Grade</p>
+                <p className="text-sm font-bold text-black">
                   {tryout.passing_grade}%
                 </p>
               </div>
@@ -119,13 +110,13 @@ export function TryoutCard({
         </div>
 
         {/* Price Section */}
-        <div className="pt-4 border-t border-gray-200">
+        <div className="pt-4 border-t-2 border-gray-100">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-600">Harga</span>
+            <span className="text-sm font-bold text-gray-600 uppercase">Harga</span>
             {tryout.is_free ? (
-              <p className="text-2xl font-bold text-green-600">GRATIS</p>
+              <p className="text-2xl font-black text-black">GRATIS</p>
             ) : (
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-black text-black">
                 {formatPrice(tryout.price)}
               </p>
             )}
@@ -133,12 +124,12 @@ export function TryoutCard({
         </div>
       </CardContent>
 
-      <CardFooter className="pt-4 border-t border-gray-100">
+      <CardFooter className="pt-4 border-t-2 border-gray-100">
         <div className="w-full space-y-3">
           {isPurchased && (
-            <div className="flex items-center justify-center space-x-2 text-sm text-green-700 bg-green-50 py-3 px-4 rounded-lg border border-green-200">
+            <div className="flex items-center justify-center space-x-2 text-sm text-black bg-gray-100 py-3 px-4 rounded-lg border-2 border-black font-bold">
               <CheckCircle className="w-4 h-4" />
-              <span className="font-medium">Sudah Dibeli</span>
+              <span>Sudah Dibeli</span>
             </div>
           )}
 
@@ -146,23 +137,22 @@ export function TryoutCard({
           <div className="flex gap-3">
             <Button
               onClick={onViewDetail}
-              className="flex-1 bg-white text-black border-2 border-black hover:bg-black hover:text-white transition-all duration-200 font-medium"
+              className="flex-1 bg-white text-black border-2 border-black hover:bg-gray-100 transition-all duration-200 font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5"
               size="lg"
-              variant="outline"
             >
               <Eye className="w-4 h-4 mr-2" />
-              Lihat Detail
+              Detail
             </Button>
 
             {!isPurchased && onPurchase && (
               <Button
                 onClick={onPurchase}
-                className="flex-1 bg-black text-white hover:bg-gray-800 transition-all duration-200 font-medium"
+                className="flex-1 bg-black text-white border-2 border-black hover:bg-gray-800 transition-all duration-200 font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,0)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] hover:-translate-y-0.5"
                 size="lg"
                 disabled={purchaseLoading}
               >
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                {purchaseLoading ? "Memproses..." : "Beli Paket"}
+                {purchaseLoading ? "..." : "Beli"}
               </Button>
             )}
           </div>

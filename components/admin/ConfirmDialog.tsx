@@ -42,26 +42,30 @@ export default function ConfirmDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <AlertDialogHeader>
           <div className="flex items-center space-x-2">
             {variant === "destructive" && (
-              <AlertTriangle className="w-5 h-5 text-destructive" />
+              <AlertTriangle className="w-5 h-5 text-red-600" />
             )}
-            <AlertDialogTitle>{title}</AlertDialogTitle>
+            <AlertDialogTitle className="font-black text-xl">{title}</AlertDialogTitle>
           </div>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogDescription className="font-medium text-gray-600">{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={loading}>{cancelText}</AlertDialogCancel>
+          <AlertDialogCancel
+            disabled={loading}
+            className="border-2 border-black font-bold hover:bg-gray-100"
+          >
+            {cancelText}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
             disabled={loading}
-            className={
-              variant === "destructive"
-                ? "bg-destructive hover:bg-destructive/90"
-                : ""
-            }
+            className={`border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all ${variant === "destructive"
+                ? "bg-red-600 text-white hover:bg-red-700 border-red-700"
+                : "bg-black text-white hover:bg-gray-800"
+              }`}
           >
             {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             {confirmText}
@@ -71,4 +75,3 @@ export default function ConfirmDialog({
     </AlertDialog>
   );
 }
-

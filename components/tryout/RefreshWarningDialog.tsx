@@ -49,18 +49,18 @@ export function RefreshWarningDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-md mx-auto"
+        className="max-w-md mx-auto border-2 border-black bg-white"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center mb-4">
-            <AlertTriangle className="w-8 h-8 text-orange-600 dark:text-orange-400 animate-pulse" />
+          <div className="mx-auto w-16 h-16 bg-white border-2 border-black rounded-full flex items-center justify-center mb-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <AlertTriangle className="w-8 h-8 text-black animate-pulse" />
           </div>
-          <DialogTitle className="text-xl font-bold text-orange-600 dark:text-orange-400">
+          <DialogTitle className="text-xl font-black text-black">
             Peringatan Refresh Halaman
           </DialogTitle>
-          <DialogDescription className="text-base mt-2">
+          <DialogDescription className="text-base mt-2 text-gray-600 font-medium">
             Apakah Anda yakin ingin memuat ulang halaman?
           </DialogDescription>
         </DialogHeader>
@@ -68,25 +68,25 @@ export function RefreshWarningDialog({
         <div className="space-y-4 py-4">
           {/* Warning Info Cards */}
           <div className="grid grid-cols-1 gap-3">
-            <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-              <Save className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+              <Save className="w-5 h-5 text-black flex-shrink-0" />
               <div className="text-sm">
-                <p className="font-medium text-blue-800 dark:text-blue-200">
+                <p className="font-bold text-black">
                   Progress Tersimpan
                 </p>
-                <p className="text-blue-600 dark:text-blue-400">
+                <p className="text-gray-600 font-medium">
                   Jawaban Anda sudah otomatis tersimpan
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-800">
-              <Clock className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+              <Clock className="w-5 h-5 text-black flex-shrink-0" />
               <div className="text-sm">
-                <p className="font-medium text-red-800 dark:text-red-200">
+                <p className="font-bold text-black">
                   Timer Tetap Berjalan
                 </p>
-                <p className="text-red-600 dark:text-red-400">
+                <p className="text-gray-600 font-medium">
                   Waktu tryout akan terus dihitung
                 </p>
               </div>
@@ -94,32 +94,36 @@ export function RefreshWarningDialog({
           </div>
 
           {/* Countdown Timer */}
-          <div className="text-center p-4 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground mb-2">
+          <div className="text-center p-4 bg-gray-50 rounded-lg border-2 border-black border-dashed">
+            <p className="text-sm text-gray-600 font-medium mb-2">
               Halaman akan otomatis dimuat ulang dalam:
             </p>
             <div
               className={cn(
-                "text-3xl font-bold tabular-nums",
-                countdown <= 3 ? "text-red-600 animate-pulse" : "text-primary"
+                "text-3xl font-black tabular-nums",
+                countdown <= 3 ? "text-red-600 animate-pulse" : "text-black"
               )}
             >
               {countdown}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">detik</p>
+            <p className="text-xs text-gray-500 font-bold mt-1">detik</p>
           </div>
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
-            <Button variant="outline" onClick={onCancel} className="flex-1">
-              Batal, Lanjut Mengerjakan
+            <Button
+              variant="outline"
+              onClick={onCancel}
+              className="flex-1 border-2 border-black font-bold hover:bg-gray-100"
+            >
+              Batal
             </Button>
             <Button
               variant="destructive"
               onClick={onConfirm}
-              className="flex-1"
+              className="flex-1 bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
             >
-              Ya, Muat Ulang Halaman
+              Ya, Muat Ulang
             </Button>
           </div>
         </div>

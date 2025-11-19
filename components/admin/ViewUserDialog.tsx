@@ -92,44 +92,47 @@ export function ViewUserDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <DialogHeader>
-          <DialogTitle>Detail User</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="font-black text-xl">Detail User</DialogTitle>
+          <DialogDescription className="font-medium text-gray-600">
             Informasi lengkap tentang user
           </DialogDescription>
         </DialogHeader>
 
         {loading ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-8 h-8 animate-spin" />
+            <Loader2 className="w-8 h-8 animate-spin text-black" />
           </div>
         ) : user ? (
           <div className="space-y-6">
             {/* Basic Info */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">{user.name}</h3>
-                <Badge variant={user.role === "admin" ? "default" : "secondary"}>
+                <h3 className="text-xl font-black">{user.name}</h3>
+                <Badge
+                  variant={user.role === "admin" ? "default" : "secondary"}
+                  className={`font-bold border-2 border-black ${user.role === "admin" ? "bg-black text-white" : "bg-white text-black"}`}
+                >
                   {user.role}
                 </Badge>
               </div>
 
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Mail className="w-4 h-4" />
+              <div className="space-y-2 text-sm font-medium">
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Mail className="w-4 h-4 text-black" />
                   <span>{user.email}</span>
                 </div>
 
                 {user.phone && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Phone className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <Phone className="w-4 h-4 text-black" />
                     <span>{user.phone}</span>
                   </div>
                 )}
 
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Calendar className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Calendar className="w-4 h-4 text-black" />
                   <span>
                     Bergabung: {new Date(user.created_at).toLocaleDateString("id-ID")}
                   </span>
@@ -139,40 +142,40 @@ export function ViewUserDialog({
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4">
-              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
+              <div className="p-4 bg-white border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                 <div className="flex items-center gap-2 mb-2">
-                  <ShoppingCart className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                  <span className="text-xs text-muted-foreground">Pembelian</span>
+                  <ShoppingCart className="w-4 h-4 text-black" />
+                  <span className="text-xs text-gray-600 font-bold">Pembelian</span>
                 </div>
-                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                <p className="text-2xl font-black text-black">
                   {user.purchaseCount}
                 </p>
               </div>
 
-              <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
+              <div className="p-4 bg-white border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                 <div className="flex items-center gap-2 mb-2">
-                  <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
-                  <span className="text-xs text-muted-foreground">Tryout</span>
+                  <FileText className="w-4 h-4 text-black" />
+                  <span className="text-xs text-gray-600 font-bold">Tryout</span>
                 </div>
-                <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                <p className="text-2xl font-black text-black">
                   {user.sessionCount}
                 </p>
               </div>
 
-              <div className="p-4 bg-purple-50 dark:bg-purple-950 rounded-lg">
+              <div className="p-4 bg-white border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs text-muted-foreground">Total Skor</span>
+                  <span className="text-xs text-gray-600 font-bold">Total Skor</span>
                 </div>
-                <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                <p className="text-2xl font-black text-black">
                   {user.totalScore}
                 </p>
               </div>
             </div>
 
             {/* Additional Info */}
-            <div className="p-4 bg-muted rounded-lg">
-              <h4 className="font-semibold mb-2">Informasi Tambahan</h4>
-              <div className="space-y-1 text-sm text-muted-foreground">
+            <div className="p-4 bg-gray-50 border-2 border-black rounded-lg">
+              <h4 className="font-bold mb-2">Informasi Tambahan</h4>
+              <div className="space-y-1 text-sm text-gray-600 font-medium">
                 <p>User ID: {user.id}</p>
                 <p>
                   Akun dibuat: {new Date(user.created_at).toLocaleString("id-ID")}
@@ -181,7 +184,7 @@ export function ViewUserDialog({
             </div>
           </div>
         ) : (
-          <p className="text-center text-muted-foreground py-8">
+          <p className="text-center text-gray-500 font-medium py-8">
             User tidak ditemukan
           </p>
         )}
@@ -189,4 +192,3 @@ export function ViewUserDialog({
     </Dialog>
   );
 }
-

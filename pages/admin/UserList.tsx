@@ -138,15 +138,15 @@ export default function AdminUserList() {
       label: "User",
       render: (item: User) => (
         <div className="flex items-center space-x-3">
-          <Avatar>
+          <Avatar className="border-2 border-black">
             <AvatarImage src={item.avatar_url} />
-            <AvatarFallback>
+            <AvatarFallback className="bg-black text-white font-bold">
               {item.name.substring(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-medium">{item.name}</p>
-            <p className="text-sm text-muted-foreground">{item.email}</p>
+            <p className="font-bold text-black">{item.name}</p>
+            <p className="text-sm text-gray-600 font-medium">{item.email}</p>
           </div>
         </div>
       ),
@@ -154,12 +154,21 @@ export default function AdminUserList() {
     {
       key: "phone",
       label: "Phone",
+      render: (item: User) => (
+        <span className="font-medium text-gray-700">{item.phone || "-"}</span>
+      ),
     },
     {
       key: "role",
       label: "Role",
       render: (item: User) => (
-        <Badge variant={item.role === "admin" ? "default" : "secondary"}>
+        <Badge
+          variant={item.role === "admin" ? "default" : "secondary"}
+          className={`font-bold border-2 border-black ${item.role === "admin"
+              ? "bg-black text-white hover:bg-gray-800"
+              : "bg-white text-black hover:bg-gray-100"
+            }`}
+        >
           {item.role}
         </Badge>
       ),
@@ -168,7 +177,7 @@ export default function AdminUserList() {
       key: "created_at",
       label: "Registered",
       render: (item: User) => (
-        <span className="text-sm">
+        <span className="text-sm font-medium text-gray-600">
           {new Date(item.created_at).toLocaleDateString("id-ID")}
         </span>
       ),
@@ -183,25 +192,27 @@ export default function AdminUserList() {
             size="icon"
             title="View"
             onClick={() => handleView(item.id)}
+            className="hover:bg-gray-100 border-2 border-transparent hover:border-black transition-all"
           >
-            <Eye className="w-4 h-4" />
+            <Eye className="w-4 h-4 text-black" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
             title="Edit"
             onClick={() => handleEdit(item.id)}
+            className="hover:bg-gray-100 border-2 border-transparent hover:border-black transition-all"
           >
-            <Edit className="w-4 h-4" />
+            <Edit className="w-4 h-4 text-black" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
             title="Gift Credit"
             onClick={() => handleGift(item.id, item.name)}
-            className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/20"
+            className="hover:bg-gray-100 border-2 border-transparent hover:border-black transition-all"
           >
-            <Gift className="w-4 h-4" />
+            <Gift className="w-4 h-4 text-black" />
           </Button>
           <Button
             variant="ghost"
@@ -211,8 +222,9 @@ export default function AdminUserList() {
               setDeleteDialogOpen(true);
             }}
             title="Delete"
+            className="hover:bg-red-50 border-2 border-transparent hover:border-red-600 transition-all group"
           >
-            <Trash2 className="w-4 h-4 text-destructive" />
+            <Trash2 className="w-4 h-4 text-red-600 group-hover:text-red-700" />
           </Button>
         </div>
       ),
@@ -220,15 +232,18 @@ export default function AdminUserList() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 md:p-8 bg-white min-h-screen text-black">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Kelola Akun</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-3xl font-black tracking-tight">Kelola Akun</h1>
+          <p className="text-gray-600 font-medium mt-1">
             User management dan role assignment
           </p>
         </div>
-        <Button onClick={() => setAddDialogOpen(true)}>
+        <Button
+          onClick={() => setAddDialogOpen(true)}
+          className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+        >
           <Plus className="w-4 h-4 mr-2" />
           Tambah User
         </Button>
@@ -236,10 +251,10 @@ export default function AdminUserList() {
 
       <div className="flex items-center space-x-4">
         <Select value={roleFilter} onValueChange={setRoleFilter}>
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-48 border-2 border-black font-bold focus:ring-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <SelectValue placeholder="Filter Role" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="border-2 border-black font-medium">
             <SelectItem value="all">Semua Role</SelectItem>
             <SelectItem value="user">User</SelectItem>
             <SelectItem value="admin">Admin</SelectItem>
@@ -247,15 +262,17 @@ export default function AdminUserList() {
         </Select>
       </div>
 
-      <DataTable
-        data={filteredUsers}
-        columns={columns}
-        searchable
-        searchPlaceholder="Cari user..."
-        onSearch={handleSearch}
-        loading={loading}
-        emptyMessage="Belum ada user"
-      />
+      <div className="border-2 border-black rounded-lg overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <DataTable
+          data={filteredUsers}
+          columns={columns}
+          searchable
+          searchPlaceholder="Cari user..."
+          onSearch={handleSearch}
+          loading={loading}
+          emptyMessage="Belum ada user"
+        />
+      </div>
 
       <ConfirmDialog
         open={deleteDialogOpen}

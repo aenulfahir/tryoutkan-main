@@ -274,7 +274,7 @@ export default function AdminRevenue() {
         });
 
         // Convert to chart format
-        const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
+        const COLORS = ["#000000", "#333333", "#666666", "#999999", "#CCCCCC"];
         const chartData = Object.entries(categoryRevenue).map(
           ([category, revenue], index) => ({
             name: category.replace("_", " "),
@@ -358,29 +358,29 @@ export default function AdminRevenue() {
       title: "Total Revenue",
       value: `Rp ${stats.totalRevenue.toLocaleString("id-ID")}`,
       icon: DollarSign,
-      color: "text-green-600",
-      bgColor: "bg-green-100 dark:bg-green-900/30",
+      color: "text-black",
+      bgColor: "bg-white border-2 border-black",
     },
     {
       title: "Revenue Bulan Ini",
       value: `Rp ${stats.monthlyRevenue.toLocaleString("id-ID")}`,
       icon: TrendingUp,
-      color: "text-blue-600",
-      bgColor: "bg-blue-100 dark:bg-blue-900/30",
+      color: "text-black",
+      bgColor: "bg-white border-2 border-black",
     },
     {
       title: "Revenue Hari Ini",
       value: `Rp ${stats.dailyRevenue.toLocaleString("id-ID")}`,
       icon: CreditCard,
-      color: "text-purple-600",
-      bgColor: "bg-purple-100 dark:bg-purple-900/30",
+      color: "text-black",
+      bgColor: "bg-white border-2 border-black",
     },
     {
       title: "Total Transaksi",
       value: stats.totalTransactions,
       icon: Users,
-      color: "text-orange-600",
-      bgColor: "bg-orange-100 dark:bg-orange-900/30",
+      color: "text-black",
+      bgColor: "bg-white border-2 border-black",
       description: `Conversion: ${stats.conversionRate.toFixed(1)}%`,
     },
   ];
@@ -390,7 +390,7 @@ export default function AdminRevenue() {
       key: "created_at",
       label: "Tanggal",
       render: (item: Transaction) => (
-        <span className="text-sm">
+        <span className="text-sm font-medium text-gray-600">
           {new Date(item.created_at).toLocaleDateString("id-ID")}
         </span>
       ),
@@ -400,20 +400,23 @@ export default function AdminRevenue() {
       label: "User",
       render: (item: Transaction) => (
         <div>
-          <p className="font-medium">{item.user_name}</p>
-          <p className="text-sm text-muted-foreground">{item.user_email}</p>
+          <p className="font-bold text-black">{item.user_name}</p>
+          <p className="text-sm text-gray-600 font-medium">{item.user_email}</p>
         </div>
       ),
     },
     {
       key: "package_title",
       label: "Paket",
+      render: (item: Transaction) => (
+        <span className="font-medium text-black">{item.package_title}</span>
+      ),
     },
     {
       key: "amount",
       label: "Jumlah",
       render: (item: Transaction) => (
-        <span className="font-medium">
+        <span className="font-black text-black">
           Rp {item.amount.toLocaleString("id-ID")}
         </span>
       ),
@@ -427,9 +430,15 @@ export default function AdminRevenue() {
             item.status === "paid" || item.status === "completed"
               ? "default"
               : item.status === "pending"
-              ? "secondary"
-              : "destructive"
+                ? "secondary"
+                : "destructive"
           }
+          className={`font-bold border-2 border-black ${item.status === "paid" || item.status === "completed"
+              ? "bg-green-100 text-green-700 border-green-600"
+              : item.status === "pending"
+                ? "bg-yellow-100 text-yellow-700 border-yellow-600"
+                : "bg-red-100 text-red-700 border-red-600"
+            }`}
         >
           {item.status === "completed" ? "paid" : item.status}
         </Badge>
@@ -438,10 +447,10 @@ export default function AdminRevenue() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 md:p-8 bg-white min-h-screen text-black">
       <div>
-        <h1 className="text-3xl font-bold">Pendapatan</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="text-3xl font-black tracking-tight">Pendapatan</h1>
+        <p className="text-gray-600 font-medium mt-1">
           Revenue analytics dan transaction management
         </p>
       </div>
@@ -451,9 +460,9 @@ export default function AdminRevenue() {
         {statsCards.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.title}>
+            <Card key={stat.title} className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="text-sm font-bold text-gray-600">
                   {stat.title}
                 </CardTitle>
                 <div className={`p-2 rounded-lg ${stat.bgColor}`}>
@@ -461,9 +470,9 @@ export default function AdminRevenue() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-2xl font-black">{stat.value}</div>
                 {stat.description && (
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-gray-500 font-medium mt-1">
                     {stat.description}
                   </p>
                 )}
@@ -476,9 +485,9 @@ export default function AdminRevenue() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue by Category Chart */}
-        <Card>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardHeader>
-            <CardTitle>Pendapatan per Kategori</CardTitle>
+            <CardTitle className="font-black">Pendapatan per Kategori</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -489,20 +498,23 @@ export default function AdminRevenue() {
                   cy="50%"
                   labelLine={false}
                   label={({ name, percent }: any) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
+                    `${(percent * 100).toFixed(0)}%`
                   }
                   outerRadius={80}
-                  fill="#8884d8"
+                  fill="#000000"
                   dataKey="value"
+                  stroke="#fff"
+                  strokeWidth={2}
                 >
                   {revenueByCategory.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                    <Cell key={`cell-${index}`} fill={entry.color} stroke="#fff" strokeWidth={2} />
                   ))}
                 </Pie>
                 <Tooltip
                   formatter={(value: number) =>
                     `Rp ${value.toLocaleString("id-ID")}`
                   }
+                  contentStyle={{ backgroundColor: '#fff', border: '2px solid #000', borderRadius: '8px', fontWeight: 'bold' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -510,28 +522,30 @@ export default function AdminRevenue() {
         </Card>
 
         {/* Monthly Comparison Chart */}
-        <Card>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardHeader>
-            <CardTitle>Perbandingan Pendapatan Bulanan</CardTitle>
+            <CardTitle className="font-black">Perbandingan Pendapatan Bulanan</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={monthlyComparison}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="month" stroke="#000000" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#000000" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
                   formatter={(value: number) =>
                     `Rp ${value.toLocaleString("id-ID")}`
                   }
+                  contentStyle={{ backgroundColor: '#fff', border: '2px solid #000', borderRadius: '8px', fontWeight: 'bold' }}
                 />
                 <Area
                   type="monotone"
                   dataKey="revenue"
-                  stroke="#8884d8"
-                  fill="#8884d8"
-                  fillOpacity={0.3}
+                  stroke="#000000"
+                  fill="#000000"
+                  fillOpacity={0.1}
                   name="Revenue"
+                  strokeWidth={3}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -540,9 +554,9 @@ export default function AdminRevenue() {
       </div>
 
       {/* Transactions Table */}
-      <Card>
+      <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
+          <CardTitle className="font-black">Recent Transactions</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable

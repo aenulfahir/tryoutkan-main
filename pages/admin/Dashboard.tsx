@@ -117,7 +117,7 @@ export default function AdminDashboard() {
       const avgScore =
         resultsData && resultsData.length > 0
           ? resultsData.reduce((sum, r) => sum + (r.score || 0), 0) /
-            resultsData.length
+          resultsData.length
           : 0;
 
       setStats({
@@ -239,7 +239,7 @@ export default function AdminDashboard() {
       });
 
       // Convert to chart format
-      const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
+      const COLORS = ["#000000", "#333333", "#666666", "#999999", "#CCCCCC"];
       const distribution = Object.entries(categoryCount).map(
         ([category, count], index) => ({
           name: category.replace("_", " "),
@@ -259,48 +259,48 @@ export default function AdminDashboard() {
       title: "Total Users",
       value: stats.totalUsers,
       icon: Users,
-      color: "text-blue-600",
-      bgColor: "bg-blue-100 dark:bg-blue-900/30",
+      color: "text-black",
+      bgColor: "bg-white border-2 border-black",
       description: `${stats.activeUsers} active (30 days)`,
     },
     {
       title: "Total Tryouts",
       value: stats.totalTryouts,
       icon: BookOpen,
-      color: "text-green-600",
-      bgColor: "bg-green-100 dark:bg-green-900/30",
+      color: "text-black",
+      bgColor: "bg-white border-2 border-black",
       description: `${stats.totalQuestions} total questions`,
     },
     {
       title: "Total Revenue",
       value: `Rp ${stats.totalRevenue.toLocaleString("id-ID")}`,
       icon: DollarSign,
-      color: "text-yellow-600",
-      bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
+      color: "text-black",
+      bgColor: "bg-white border-2 border-black",
       description: `${stats.pendingPayments} inactive purchases`,
     },
     {
       title: "Completed Sessions",
       value: stats.completedSessions,
       icon: TrendingUp,
-      color: "text-purple-600",
-      bgColor: "bg-purple-100 dark:bg-purple-900/30",
+      color: "text-black",
+      bgColor: "bg-white border-2 border-black",
       description: `Avg score: ${stats.averageScore}`,
     },
   ];
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+      <div className="space-y-6 p-4 sm:p-6 md:p-8 bg-white min-h-screen">
+        <h1 className="text-3xl font-black">Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="animate-pulse">
+            <Card key={i} className="animate-pulse border-2 border-black">
               <CardHeader className="pb-2">
-                <div className="h-4 bg-muted rounded w-24" />
+                <div className="h-4 bg-gray-200 rounded w-24" />
               </CardHeader>
               <CardContent>
-                <div className="h-8 bg-muted rounded w-32" />
+                <div className="h-8 bg-gray-200 rounded w-32" />
               </CardContent>
             </Card>
           ))}
@@ -310,11 +310,11 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
+    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 bg-white min-h-screen text-black">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
-        <p className="text-sm sm:text-base text-muted-foreground mt-1">
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Dashboard</h1>
+        <p className="text-sm sm:text-base text-gray-600 font-medium mt-1">
           Selamat datang di Admin Dashboard TryoutKan
         </p>
       </div>
@@ -324,9 +324,9 @@ export default function AdminDashboard() {
         {statsCards.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.title}>
+            <Card key={stat.title} className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 gap-4">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="text-sm font-bold text-gray-600">
                   {stat.title}
                 </CardTitle>
                 <div className={`p-2 rounded-lg ${stat.bgColor}`}>
@@ -334,11 +334,11 @@ export default function AdminDashboard() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-xl sm:text-2xl font-bold">
+                <div className="text-xl sm:text-2xl font-black">
                   {stat.value}
                 </div>
                 {stat.description && (
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-gray-500 font-medium mt-1">
                     {stat.description}
                   </p>
                 )}
@@ -351,9 +351,9 @@ export default function AdminDashboard() {
       {/* Charts - Mobile-First */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* User Growth Chart */}
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardHeader>
-            <CardTitle className="text-sm sm:text-base">
+            <CardTitle className="text-sm sm:text-base font-black">
               Pertumbuhan User
             </CardTitle>
           </CardHeader>
@@ -361,17 +361,21 @@ export default function AdminDashboard() {
             <div className="w-full overflow-x-auto">
               <ResponsiveContainer width="100%" height={250} minHeight={200}>
                 <LineChart data={userGrowthData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="month" stroke="#000000" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#000000" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#fff', border: '2px solid #000', borderRadius: '8px', fontWeight: 'bold' }}
+                  />
                   <Legend />
                   <Line
                     type="monotone"
                     dataKey="users"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
+                    stroke="#000000"
+                    strokeWidth={3}
                     name="Users"
+                    dot={{ r: 4, fill: "#000000", strokeWidth: 2, stroke: "#fff" }}
+                    activeDot={{ r: 6, fill: "#000000" }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -380,9 +384,9 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Category Distribution Chart */}
-        <Card>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardHeader>
-            <CardTitle className="text-sm sm:text-base">
+            <CardTitle className="text-sm sm:text-base font-black">
               Distribusi Kategori
             </CardTitle>
           </CardHeader>
@@ -396,17 +400,21 @@ export default function AdminDashboard() {
                     cy="50%"
                     labelLine={false}
                     label={({ name, percent }: any) =>
-                      `${name} ${(percent * 100).toFixed(0)}%`
+                      `${(percent * 100).toFixed(0)}%`
                     }
                     outerRadius={80}
-                    fill="#8884d8"
+                    fill="#000000"
                     dataKey="value"
+                    stroke="#fff"
+                    strokeWidth={2}
                   >
                     {categoryDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      <Cell key={`cell-${index}`} fill={entry.color} stroke="#fff" strokeWidth={2} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#fff', border: '2px solid #000', borderRadius: '8px', fontWeight: 'bold' }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -415,9 +423,9 @@ export default function AdminDashboard() {
       </div>
 
       {/* Revenue Trend Chart */}
-      <Card>
+      <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <CardHeader>
-          <CardTitle className="text-sm sm:text-base">
+          <CardTitle className="text-sm sm:text-base font-black">
             Tren Pendapatan
           </CardTitle>
         </CardHeader>
@@ -425,16 +433,17 @@ export default function AdminDashboard() {
           <div className="w-full overflow-x-auto">
             <ResponsiveContainer width="100%" height={250} minHeight={200}>
               <BarChart data={revenueTrendData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="month" stroke="#000000" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#000000" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
                   formatter={(value: number) =>
                     `Rp ${value.toLocaleString("id-ID")}`
                   }
+                  contentStyle={{ backgroundColor: '#fff', border: '2px solid #000', borderRadius: '8px', fontWeight: 'bold' }}
                 />
                 <Legend />
-                <Bar dataKey="revenue" fill="#eab308" name="Revenue" />
+                <Bar dataKey="revenue" fill="#000000" name="Revenue" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

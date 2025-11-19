@@ -89,7 +89,7 @@ export default function AdminQuestionList() {
       key: "question_number",
       label: "No",
       render: (item: Question) => (
-        <span className="font-medium">{item.question_number}</span>
+        <span className="font-black text-black">{item.question_number}</span>
       ),
     },
     {
@@ -97,7 +97,7 @@ export default function AdminQuestionList() {
       label: "Pertanyaan",
       render: (item: Question) => (
         <div className="max-w-md">
-          <p className="line-clamp-2">{item.question_text}</p>
+          <p className="line-clamp-2 font-medium text-black">{item.question_text}</p>
         </div>
       ),
     },
@@ -105,20 +105,26 @@ export default function AdminQuestionList() {
       key: "question_type",
       label: "Tipe",
       render: (item: Question) => (
-        <Badge variant="outline">{item.question_type}</Badge>
+        <Badge variant="outline" className="border-2 border-black font-bold">
+          {item.question_type}
+        </Badge>
       ),
     },
     {
       key: "points",
       label: "Poin",
       render: (item: Question) => (
-        <span className="font-medium">{item.points}</span>
+        <span className="font-bold text-black">{item.points}</span>
       ),
     },
     {
       key: "correct_answer",
       label: "Jawaban",
-      render: (item: Question) => <Badge>{item.correct_answer}</Badge>,
+      render: (item: Question) => (
+        <Badge className="bg-black text-white border-2 border-black font-bold hover:bg-gray-800">
+          {item.correct_answer}
+        </Badge>
+      ),
     },
     {
       key: "actions",
@@ -133,8 +139,9 @@ export default function AdminQuestionList() {
               setEditDialogOpen(true);
             }}
             title="Edit"
+            className="hover:bg-gray-100 border-2 border-transparent hover:border-black transition-all"
           >
-            <Edit className="w-4 h-4" />
+            <Edit className="w-4 h-4 text-black" />
           </Button>
           <Button
             variant="ghost"
@@ -144,8 +151,9 @@ export default function AdminQuestionList() {
               setDeleteDialogOpen(true);
             }}
             title="Delete"
+            className="hover:bg-red-50 border-2 border-transparent hover:border-red-600 transition-all group"
           >
-            <Trash2 className="w-4 h-4 text-destructive" />
+            <Trash2 className="w-4 h-4 text-red-600 group-hover:text-red-700" />
           </Button>
         </div>
       ),
@@ -163,28 +171,33 @@ export default function AdminQuestionList() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 md:p-8 bg-white min-h-screen text-black">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Kelola Soal</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-3xl font-black tracking-tight">Kelola Soal</h1>
+          <p className="text-gray-600 font-medium mt-1">
             Manage soal untuk paket tryout
           </p>
         </div>
-        <Button onClick={() => navigate(`/admin/tambah-soal/${packageId}`)}>
+        <Button
+          onClick={() => navigate(`/admin/tambah-soal/${packageId}`)}
+          className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+        >
           <Plus className="w-4 h-4 mr-2" />
           Tambah Soal
         </Button>
       </div>
 
-      <DataTable
-        data={questions}
-        columns={columns}
-        searchable
-        searchPlaceholder="Cari soal..."
-        loading={loading}
-        emptyMessage="Belum ada soal"
-      />
+      <div className="border-2 border-black rounded-lg overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <DataTable
+          data={questions}
+          columns={columns}
+          searchable
+          searchPlaceholder="Cari soal..."
+          loading={loading}
+          emptyMessage="Belum ada soal"
+        />
+      </div>
 
       <EditQuestionDialog
         open={editDialogOpen}

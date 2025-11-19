@@ -179,7 +179,7 @@ export default function AdminRanking() {
         ]),
         startY: 28,
         styles: { fontSize: 8 },
-        headStyles: { fillColor: [59, 130, 246] },
+        headStyles: { fillColor: [0, 0, 0] }, // Black header
       });
 
       doc.save(`rankings-${Date.now()}.pdf`);
@@ -195,7 +195,13 @@ export default function AdminRanking() {
       label: "Rank",
       render: (item: RankingData) => (
         <div className="flex items-center space-x-2">
-          <Badge variant={item.rank <= 3 ? "default" : "outline"}>
+          <Badge
+            variant={item.rank <= 3 ? "default" : "outline"}
+            className={`font-bold border-2 border-black ${item.rank <= 3
+                ? "bg-black text-white"
+                : "bg-white text-black"
+              }`}
+          >
             #{item.rank}
           </Badge>
         </div>
@@ -206,15 +212,15 @@ export default function AdminRanking() {
       label: "User",
       render: (item: RankingData) => (
         <div className="flex items-center space-x-3">
-          <Avatar>
+          <Avatar className="border-2 border-black">
             <AvatarImage src={item.avatar_url} />
-            <AvatarFallback>
+            <AvatarFallback className="bg-black text-white font-bold">
               {item.name.substring(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-medium">{item.name}</p>
-            <p className="text-sm text-muted-foreground">{item.email}</p>
+            <p className="font-bold text-black">{item.name}</p>
+            <p className="text-sm text-gray-600 font-medium">{item.email}</p>
           </div>
         </div>
       ),
@@ -222,45 +228,58 @@ export default function AdminRanking() {
     {
       key: "phone",
       label: "Phone",
+      render: (item: RankingData) => (
+        <span className="font-medium text-gray-700">{item.phone || "-"}</span>
+      ),
     },
     {
       key: "tryout_title",
       label: "Tryout",
       render: (item: RankingData) => (
-        <span className="text-sm">{item.tryout_title}</span>
+        <span className="text-sm font-medium text-black">{item.tryout_title}</span>
       ),
     },
     {
       key: "score",
       label: "Score",
       render: (item: RankingData) => (
-        <span className="font-bold text-lg">{item.score}</span>
+        <span className="font-black text-lg text-black">{item.score}</span>
       ),
     },
     {
       key: "percentile",
       label: "Percentile",
       render: (item: RankingData) => (
-        <Badge variant="secondary">{item.percentile}%</Badge>
+        <Badge variant="secondary" className="bg-gray-100 text-black border-2 border-black font-bold">
+          {item.percentile}%
+        </Badge>
       ),
     },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 md:p-8 bg-white min-h-screen text-black">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Ranking</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-3xl font-black tracking-tight">Ranking</h1>
+          <p className="text-gray-600 font-medium mt-1">
             View dan export ranking data
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" onClick={handleExportExcel}>
+          <Button
+            variant="outline"
+            onClick={handleExportExcel}
+            className="border-2 border-black font-bold hover:bg-gray-100"
+          >
             <FileSpreadsheet className="w-4 h-4 mr-2" />
             Export Excel
           </Button>
-          <Button variant="outline" onClick={handleExportPDF}>
+          <Button
+            variant="outline"
+            onClick={handleExportPDF}
+            className="border-2 border-black font-bold hover:bg-gray-100"
+          >
             <FileText className="w-4 h-4 mr-2" />
             Export PDF
           </Button>
@@ -269,10 +288,10 @@ export default function AdminRanking() {
 
       <div className="flex items-center space-x-4">
         <Select value={selectedTryout} onValueChange={setSelectedTryout}>
-          <SelectTrigger className="w-64">
+          <SelectTrigger className="w-64 border-2 border-black font-bold focus:ring-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <SelectValue placeholder="Filter Tryout" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="border-2 border-black font-medium">
             <SelectItem value="all">Semua Tryout</SelectItem>
             {tryouts.map((tryout) => (
               <SelectItem key={tryout.id} value={tryout.id}>
@@ -283,14 +302,16 @@ export default function AdminRanking() {
         </Select>
       </div>
 
-      <DataTable
-        data={rankings}
-        columns={columns}
-        searchable
-        searchPlaceholder="Cari user..."
-        loading={loading}
-        emptyMessage="Belum ada data ranking"
-      />
+      <div className="border-2 border-black rounded-lg overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <DataTable
+          data={rankings}
+          columns={columns}
+          searchable
+          searchPlaceholder="Cari user..."
+          loading={loading}
+          emptyMessage="Belum ada data ranking"
+        />
+      </div>
     </div>
   );
 }

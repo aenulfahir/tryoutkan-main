@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,14 +18,11 @@ import { RefreshWarningDialog } from "@/components/tryout/RefreshWarningDialog";
 import {
   ChevronLeft,
   ChevronRight,
-  Flag,
   Send,
   Loader2,
   AlertTriangle,
   List,
   ArrowUpDown,
-  ArrowLeft as ChevronLeftIcon,
-  ArrowRight as ChevronRightIcon,
   Bookmark,
   BookmarkCheck,
 } from "lucide-react";
@@ -42,7 +38,6 @@ import {
   submitAnswer,
   getSessionAnswers,
   calculateTryoutResult,
-  updateTryoutSession,
 } from "@/services/tryout";
 import {
   useSwipeNavigation,
@@ -73,7 +68,6 @@ export default function TryoutSession() {
   );
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [showNavigation, setShowNavigation] = useState(false);
   const [submitDialog, setSubmitDialog] = useState(false);
   const [timeUpDialog, setTimeUpDialog] = useState(false);
   const [showJumpDialog, setShowJumpDialog] = useState(false);
@@ -135,7 +129,7 @@ export default function TryoutSession() {
     setIsRefreshing(true);
     setShowRefreshWarning(false);
     // Remove the beforeunload listener temporarily to allow refresh
-    window.removeEventListener("beforeunload", () => {});
+    window.removeEventListener("beforeunload", () => { });
     window.location.reload();
   };
 
@@ -275,7 +269,6 @@ export default function TryoutSession() {
 
   const handleGoToQuestion = (index: number) => {
     setCurrentIndex(index);
-    setShowNavigation(false);
   };
 
   const handleJumpToQuestion = (index: number) => {
@@ -363,23 +356,18 @@ export default function TryoutSession() {
     questions.length
   );
 
-  // Quick jump navigation for mobile
-  // useQuickJumpNavigation(questions.length, handleJumpToQuestion);
-  // Commented out because hook is not defined yet
-  // Will be implemented when needed
-
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="w-8 h-8 animate-spin" />
+      <div className="flex items-center justify-center h-screen bg-white">
+        <Loader2 className="w-8 h-8 animate-spin text-black" />
       </div>
     );
   }
 
   if (!session || questions.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p>Tryout tidak ditemukan</p>
+      <div className="flex items-center justify-center h-screen bg-white">
+        <p className="text-black font-bold">Tryout tidak ditemukan</p>
       </div>
     );
   }
@@ -400,18 +388,6 @@ export default function TryoutSession() {
     (s) => currentIndex >= s.startIndex && currentIndex <= s.endIndex
   );
 
-  // Get section progress
-  const getSectionProgress = (section: SectionInfo) => {
-    const sectionQuestions = questions.slice(
-      section.startIndex,
-      section.endIndex + 1
-    );
-    const sectionAnswered = sectionQuestions.filter(
-      (q) => answers[q.id]
-    ).length;
-    return { answered: sectionAnswered, total: section.totalQuestions };
-  };
-
   // Calculate total duration from sections or fallback to package duration
   const getTotalDuration = () => {
     if (sectionsData.length > 0) {
@@ -428,24 +404,24 @@ export default function TryoutSession() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white text-black">
       {/* Fixed Header */}
-      <div className="sticky top-0 z-50 bg-card border-b shadow-sm">
-        <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3">
+      <div className="sticky top-0 z-50 bg-white border-b-2 border-black shadow-sm">
+        <div className="container mx-auto px-3 sm:px-4 py-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
             {/* Title */}
             <div className="flex-1 min-w-0">
-              <h1 className="text-base sm:text-lg lg:text-xl font-bold truncate">
+              <h1 className="text-base sm:text-lg lg:text-xl font-black truncate text-black">
                 {session.tryout_packages?.title}
               </h1>
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 font-medium">
                 <span>
                   Soal {currentIndex + 1} dari {questions.length}
                 </span>
                 {currentSection && (
                   <>
                     <span className="hidden sm:inline">•</span>
-                    <span className="hidden sm:inline font-medium text-primary">
+                    <span className="hidden sm:inline font-bold text-black">
                       {currentSection.name}
                     </span>
                   </>
@@ -465,7 +441,7 @@ export default function TryoutSession() {
                 variant="destructive"
                 size="sm"
                 onClick={() => setSubmitDialog(true)}
-                className="whitespace-nowrap min-h-[44px] px-3 sm:px-4"
+                className="whitespace-nowrap min-h-[44px] px-3 sm:px-4 bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
               >
                 <Send className="w-4 h-4 mr-1 sm:mr-2" />
                 <span className="hidden xs:inline sm:inline">Submit</span>
@@ -489,17 +465,17 @@ export default function TryoutSession() {
             />
 
             {/* Navigation Buttons */}
-            <div className="flex flex-col xs:flex-row items-center justify-between gap-2 xs:gap-4 pt-4 border-t">
+            <div className="flex flex-col xs:flex-row items-center justify-between gap-2 xs:gap-4 pt-4 border-t-2 border-gray-100">
               <Button
                 variant="outline"
                 onClick={handlePrevious}
                 disabled={currentIndex === 0}
                 size="lg"
-                className="w-full xs:w-auto min-h-[44px]"
+                className="w-full xs:w-auto min-h-[44px] border-2 border-black font-bold hover:bg-gray-100"
               >
-                <ChevronLeftIcon className="w-4 h-4 mr-2" />
-                <span className="hidden xs:inline">←</span>
-                <span className="xs:hidden">←</span>
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                <span className="hidden xs:inline">Sebelumnya</span>
+                <span className="xs:hidden">Prev</span>
               </Button>
 
               <Button
@@ -507,9 +483,10 @@ export default function TryoutSession() {
                 onClick={toggleFlag}
                 size="lg"
                 className={cn(
-                  "w-full xs:w-auto min-h-[44px]",
-                  flaggedQuestions.has(currentQuestion.id) &&
-                    "bg-yellow-100 border-yellow-500 dark:bg-yellow-950"
+                  "w-full xs:w-auto min-h-[44px] border-2 font-bold transition-all",
+                  flaggedQuestions.has(currentQuestion.id)
+                    ? "bg-yellow-50 border-yellow-500 text-yellow-700 hover:bg-yellow-100"
+                    : "border-black hover:bg-gray-100"
                 )}
               >
                 {flaggedQuestions.has(currentQuestion.id) ? (
@@ -520,7 +497,7 @@ export default function TryoutSession() {
                 <span className="hidden xs:inline">
                   {flaggedQuestions.has(currentQuestion.id)
                     ? "Batal Tandai"
-                    : "Tandai"}
+                    : "Tandai Ragu"}
                 </span>
                 <span className="xs:hidden">
                   {flaggedQuestions.has(currentQuestion.id) ? "★" : "☆"}
@@ -532,23 +509,23 @@ export default function TryoutSession() {
                 onClick={handleNext}
                 disabled={currentIndex === questions.length - 1}
                 size="lg"
-                className="w-full xs:w-auto min-h-[44px]"
+                className="w-full xs:w-auto min-h-[44px] bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
               >
-                <span className="hidden xs:inline">→</span>
-                <span className="xs:inline">→</span>
-                <ChevronRightIcon className="w-4 h-4 ml-2 hidden xs:inline" />
+                <span className="hidden xs:inline">Selanjutnya</span>
+                <span className="xs:inline xs:hidden">Next</span>
+                <ChevronRight className="w-4 h-4 ml-2 hidden xs:inline" />
               </Button>
             </div>
 
             {/* Mobile Quick Jump */}
-            <div className="lg:hidden mt-4 p-3 bg-muted rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2 text-sm font-medium">
+            <div className="lg:hidden mt-4 p-4 bg-gray-50 rounded-xl border-2 border-gray-100">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2 text-sm font-bold text-black">
                   <List className="w-4 h-4" />
                   <span>Loncat ke Soal:</span>
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  Tekan 1-9 untuk soal 1-9, atau 0 untuk soal 10
+                <div className="text-xs text-gray-500 font-medium">
+                  Tekan nomor untuk navigasi
                 </div>
               </div>
               <div className="grid grid-cols-5 gap-2">
@@ -560,14 +537,14 @@ export default function TryoutSession() {
                       type="button"
                       onClick={() => setCurrentIndex(i)}
                       className={cn(
-                        "aspect-square rounded-md font-semibold text-sm transition-all relative",
+                        "aspect-square rounded-lg font-bold text-sm transition-all relative",
                         "hover:scale-105 active:scale-95",
                         "border-2 min-h-[44px] min-w-[44px]",
                         currentIndex === i
-                          ? "bg-blue-500 text-white border-blue-600 ring-2 ring-blue-300 ring-offset-2"
+                          ? "bg-black text-white border-black"
                           : answeredQuestions.has(i)
-                          ? "bg-green-500 text-white border-green-600"
-                          : "bg-gray-200 text-gray-700 border-gray-300"
+                            ? "bg-white text-black border-black"
+                            : "bg-white text-gray-400 border-gray-200"
                       )}
                     >
                       {i + 1}
@@ -576,15 +553,15 @@ export default function TryoutSession() {
                 )}
               </div>
               {questions.length > 10 && (
-                <div className="mt-2 text-center">
+                <div className="mt-3 text-center">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setShowJumpDialog(true)}
-                    className="text-xs"
+                    className="text-xs border-2 border-black font-bold hover:bg-gray-100"
                   >
                     <ArrowUpDown className="w-3 h-3 mr-1" />
-                    Soal 11-{questions.length}
+                    Lihat Semua Soal ({questions.length})
                   </Button>
                 </div>
               )}
@@ -623,42 +600,42 @@ export default function TryoutSession() {
 
       {/* Submit Confirmation Dialog */}
       <Dialog open={submitDialog} onOpenChange={setSubmitDialog}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md border-2 border-black bg-white">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-orange-500" />
-              Konfirmasi Submit Tryout
+            <DialogTitle className="flex items-center gap-2 font-black text-xl">
+              <AlertTriangle className="w-5 h-5 text-black" />
+              Konfirmasi Submit
             </DialogTitle>
-            <DialogDescription>
-              Pastikan Anda sudah menjawab semua soal sebelum submit
+            <DialogDescription className="text-gray-600 font-medium">
+              Pastikan Anda sudah yakin dengan jawaban Anda.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             {/* Stats */}
-            <div className="bg-muted rounded-lg p-4 space-y-3">
+            <div className="bg-gray-50 rounded-xl p-4 space-y-3 border-2 border-gray-100">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-gray-600 font-medium">
                   Total Soal:
                 </span>
-                <span className="font-semibold">{questions.length}</span>
+                <span className="font-black">{questions.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-gray-600 font-medium">
                   Sudah Dijawab:
                 </span>
-                <span className="font-semibold text-green-600">
+                <span className="font-black text-black">
                   {answeredCount}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-gray-600 font-medium">
                   Belum Dijawab:
                 </span>
                 <span
                   className={cn(
-                    "font-semibold",
-                    unansweredCount > 0 ? "text-orange-600" : "text-green-600"
+                    "font-black",
+                    unansweredCount > 0 ? "text-red-600" : "text-black"
                   )}
                 >
                   {unansweredCount}
@@ -666,10 +643,10 @@ export default function TryoutSession() {
               </div>
               {flaggedQuestions.size > 0 && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Ditandai untuk Review:
+                  <span className="text-sm text-gray-600 font-medium">
+                    Ditandai Ragu:
                   </span>
-                  <span className="font-semibold text-yellow-600">
+                  <span className="font-black text-yellow-600">
                     {flaggedQuestions.size}
                   </span>
                 </div>
@@ -678,80 +655,66 @@ export default function TryoutSession() {
 
             {/* Warning */}
             {unansweredCount > 0 && (
-              <div className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
-                <p className="text-sm text-orange-800 dark:text-orange-200 font-medium">
-                  ⚠️ Anda masih memiliki {unansweredCount} soal yang belum
-                  dijawab!
+              <div className="bg-red-50 border-2 border-red-100 rounded-xl p-4">
+                <p className="text-sm text-red-800 font-bold">
+                  ⚠️ Peringatan: {unansweredCount} soal belum dijawab!
                 </p>
-                <p className="text-xs text-orange-700 dark:text-orange-300 mt-1">
-                  Soal yang tidak dijawab akan dianggap salah.
+                <p className="text-xs text-red-600 mt-1 font-medium">
+                  Soal kosong akan dianggap salah.
                 </p>
               </div>
             )}
 
-            <p className="text-sm text-muted-foreground">
-              Setelah submit, Anda tidak dapat mengubah jawaban lagi. Yakin
-              ingin submit sekarang?
+            <p className="text-sm text-gray-600 font-medium">
+              Apakah Anda yakin ingin mengakhiri tryout ini sekarang?
             </p>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               variant="outline"
               onClick={() => setSubmitDialog(false)}
               disabled={submitting}
+              className="border-2 border-black font-bold hover:bg-gray-100"
             >
-              Batal, lanjut mengerjakan
+              Batal
             </Button>
             <Button
               variant="destructive"
               onClick={handleSubmit}
               disabled={submitting}
+              className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
             >
               {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Ya, Submit Sekarang
+              Ya, Submit
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Old Navigation Dialog - Remove this section */}
-      <Dialog open={showNavigation} onOpenChange={setShowNavigation}>
-        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Navigasi Soal (Deprecated)</DialogTitle>
-            <DialogDescription>
-              Gunakan sidebar navigasi di sebelah kanan
-            </DialogDescription>
-          </DialogHeader>
-          <div className="p-4 text-center text-muted-foreground">
-            <p>Navigation grid sekarang ada di sidebar kanan</p>
-            <Button onClick={() => setShowNavigation(false)} className="mt-4">
-              Tutup
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Time Up Dialog - Keep existing */}
-      <Dialog open={timeUpDialog} onOpenChange={() => {}}>
+      {/* Time Up Dialog */}
+      <Dialog open={timeUpDialog} onOpenChange={() => { }}>
         <DialogContent
-          className="max-w-md"
+          className="max-w-md border-2 border-black bg-white"
           onInteractOutside={(e) => e.preventDefault()}
         >
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-orange-500" />
+            <DialogTitle className="flex items-center gap-2 font-black text-xl">
+              <AlertTriangle className="w-5 h-5 text-red-600" />
               Waktu Habis!
             </DialogTitle>
-            <DialogDescription>
-              Waktu tryout telah habis. Jawaban Anda akan otomatis disubmit.
+            <DialogDescription className="text-gray-600 font-medium">
+              Waktu pengerjaan telah berakhir. Jawaban Anda akan otomatis disubmit.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={handleSubmit} disabled={submitting}>
+            <Button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="bg-black text-white hover:bg-gray-800 w-full font-bold"
+            >
               {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Submit Sekarang
+              Proses Hasil
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -759,37 +722,37 @@ export default function TryoutSession() {
 
       {/* Jump Dialog for Mobile */}
       <Dialog open={showJumpDialog} onOpenChange={setShowJumpDialog}>
-        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto border-2 border-black bg-white">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 font-black text-xl">
               <List className="w-5 h-5" />
-              Loncat ke Soal
+              Navigasi Soal
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-gray-600 font-medium">
               Pilih nomor soal yang ingin dituju
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid grid-cols-5 gap-3 p-4">
+          <div className="grid grid-cols-5 gap-3 p-2">
             {Array.from({ length: questions.length }, (_, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => handleJumpToQuestion(i)}
                 className={cn(
-                  "aspect-square rounded-lg font-semibold text-sm transition-all relative",
+                  "aspect-square rounded-lg font-bold text-sm transition-all relative",
                   "hover:scale-105 active:scale-95",
                   "border-2 min-h-[44px] min-w-[44px]",
                   currentIndex === i
-                    ? "bg-blue-500 text-white border-blue-600 ring-2 ring-blue-300 ring-offset-2"
+                    ? "bg-black text-white border-black"
                     : answeredQuestions.has(i)
-                    ? "bg-green-500 text-white border-green-600"
-                    : "bg-gray-200 text-gray-700 border-gray-300"
+                      ? "bg-white text-black border-black"
+                      : "bg-white text-gray-400 border-gray-200"
                 )}
               >
                 {i + 1}
                 {answeredQuestions.has(i) && (
-                  <div className="absolute top-0 right-0 w-2 h-2 bg-green-600 rounded-full" />
+                  <div className="absolute top-1 right-1 w-2 h-2 bg-black rounded-full" />
                 )}
               </button>
             ))}
@@ -799,18 +762,17 @@ export default function TryoutSession() {
             <Button
               variant="outline"
               onClick={() => setShowJumpDialog(false)}
-              className="w-full"
+              className="w-full border-2 border-black font-bold"
             >
-              Batal
+              Tutup
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Custom Refresh Warning Dialog */}
+      {/* Refresh Warning Dialog */}
       <RefreshWarningDialog
         open={showRefreshWarning}
-        onOpenChange={setShowRefreshWarning}
         onConfirm={handleRefreshConfirm}
         onCancel={handleRefreshCancel}
       />

@@ -45,14 +45,15 @@ export function QuestionNavigation({
   return (
     <>
       {/* Desktop Navigation - Always Visible */}
-      <Card className="sticky top-20 hidden lg:block">
-        <CardHeader className="pb-3">
+      <Card className="sticky top-20 hidden lg:block border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <CardHeader className="pb-3 border-b-2 border-gray-100">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base">Navigasi Soal</CardTitle>
+            <CardTitle className="text-base font-black">Navigasi Soal</CardTitle>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setCollapsed(!collapsed)}
+              className="hover:bg-gray-100"
             >
               {collapsed ? (
                 <ChevronDown className="w-4 h-4" />
@@ -63,28 +64,28 @@ export function QuestionNavigation({
           </div>
         </CardHeader>
 
-        <CardContent className={cn("space-y-4", collapsed && "hidden")}>
+        <CardContent className={cn("space-y-4 pt-4", collapsed && "hidden")}>
           {/* Summary Stats */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Progress</span>
-              <span className="font-semibold">
+            <div className="flex items-center justify-between text-sm font-medium">
+              <span className="text-gray-600">Progress</span>
+              <span className="font-bold text-black">
                 {answeredCount}/{totalQuestions}
               </span>
             </div>
-            <Progress value={progress} className="h-2" />
+            <Progress value={progress} className="h-2 bg-gray-100 [&>div]:bg-black" />
 
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-2 gap-2 text-xs font-medium">
               <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded bg-green-500"></div>
+                <div className="w-3 h-3 rounded bg-white border border-black"></div>
                 <span>Dijawab: {answeredCount}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded bg-gray-300"></div>
+                <div className="w-3 h-3 rounded bg-gray-100 border border-gray-300"></div>
                 <span>Belum: {unansweredCount}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded bg-blue-500"></div>
+                <div className="w-3 h-3 rounded bg-black"></div>
                 <span>Saat ini</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -94,10 +95,10 @@ export function QuestionNavigation({
             </div>
           </div>
 
-          <Separator />
+          <Separator className="bg-gray-200" />
 
           {/* Question Grid by Section */}
-          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
             {displaySections.map((section, sectionIdx) => {
               const sectionQuestions = Array.from(
                 { length: section.endIndex - section.startIndex + 1 },
@@ -113,8 +114,8 @@ export function QuestionNavigation({
                   {/* Section Header */}
                   {sections.length > 0 && (
                     <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-semibold">{section.name}</h4>
-                      <Badge variant="outline" className="text-xs">
+                      <h4 className="text-sm font-bold text-black">{section.name}</h4>
+                      <Badge variant="outline" className="text-xs border-black text-black font-medium">
                         {sectionAnswered}/{sectionQuestions.length}
                       </Badge>
                     </div>
@@ -133,24 +134,23 @@ export function QuestionNavigation({
                           type="button"
                           onClick={() => onNavigate(questionIndex)}
                           className={cn(
-                            "aspect-square rounded-md font-semibold text-sm transition-all relative",
+                            "aspect-square rounded-md font-bold text-sm transition-all relative",
                             "hover:scale-105 hover:shadow-md",
                             "border-2",
                             isCurrent &&
-                              "bg-blue-500 text-white border-blue-600 ring-2 ring-blue-300 ring-offset-1",
+                            "bg-black text-white border-black",
                             isAnswered &&
-                              !isCurrent &&
-                              "bg-green-500 text-white border-green-600",
+                            !isCurrent &&
+                            "bg-white text-black border-black",
                             !isAnswered &&
-                              !isCurrent &&
-                              "bg-gray-200 text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600",
+                            !isCurrent &&
+                            "bg-white text-gray-400 border-gray-200 hover:border-gray-400",
                             isFlagged &&
-                              !isCurrent &&
-                              "ring-2 ring-yellow-400 ring-offset-1"
+                            !isCurrent &&
+                            "ring-2 ring-yellow-400 ring-offset-1"
                           )}
-                          title={`Soal ${questionIndex + 1}${
-                            isAnswered ? " (Dijawab)" : ""
-                          }${isFlagged ? " (Ditandai)" : ""}`}
+                          title={`Soal ${questionIndex + 1}${isAnswered ? " (Dijawab)" : ""
+                            }${isFlagged ? " (Ditandai)" : ""}`}
                         >
                           {questionIndex + 1}
                           {isFlagged && (
@@ -165,34 +165,34 @@ export function QuestionNavigation({
             })}
           </div>
 
-          <Separator />
+          <Separator className="bg-gray-200" />
 
           {/* Legend */}
           <div className="space-y-2">
-            <p className="text-xs font-semibold text-muted-foreground">
+            <p className="text-xs font-bold text-gray-500">
               Keterangan:
             </p>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-2 gap-2 text-xs font-medium">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded bg-blue-500 border-2 border-blue-600 flex items-center justify-center text-white font-semibold text-[10px]">
+                <div className="w-6 h-6 rounded bg-black border-2 border-black flex items-center justify-center text-white font-bold text-[10px]">
                   1
                 </div>
                 <span>Soal saat ini</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded bg-green-500 border-2 border-green-600 flex items-center justify-center text-white font-semibold text-[10px]">
+                <div className="w-6 h-6 rounded bg-white border-2 border-black flex items-center justify-center text-black font-bold text-[10px]">
                   2
                 </div>
                 <span>Sudah dijawab</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded bg-gray-200 border-2 border-gray-300 flex items-center justify-center text-gray-700 font-semibold text-[10px] dark:bg-gray-700 dark:text-gray-200">
+                <div className="w-6 h-6 rounded bg-white border-2 border-gray-200 flex items-center justify-center text-gray-400 font-bold text-[10px]">
                   3
                 </div>
                 <span>Belum dijawab</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded bg-gray-200 border-2 border-gray-300 ring-2 ring-yellow-400 flex items-center justify-center text-gray-700 font-semibold text-[10px] relative dark:bg-gray-700 dark:text-gray-200">
+                <div className="w-6 h-6 rounded bg-white border-2 border-gray-200 ring-2 ring-yellow-400 flex items-center justify-center text-gray-400 font-bold text-[10px] relative">
                   4
                   <Flag className="w-2 h-2 absolute -top-0.5 -right-0.5 text-yellow-600 fill-yellow-400" />
                 </div>
@@ -206,7 +206,7 @@ export function QuestionNavigation({
       {/* Mobile Floating Button */}
       <Button
         onClick={() => setIsMobileDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full shadow-lg lg:hidden"
+        className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:hidden bg-black text-white border-2 border-black hover:bg-gray-800"
         size="lg"
       >
         <Grid3x3 className="w-6 h-6" />
@@ -217,47 +217,47 @@ export function QuestionNavigation({
         <div className="fixed inset-0 z-50 lg:hidden">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/50"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setIsMobileDrawerOpen(false)}
           />
 
           {/* Drawer Content */}
-          <div className="fixed right-0 top-0 h-full w-full max-w-sm bg-background shadow-xl overflow-hidden">
+          <div className="fixed right-0 top-0 h-full w-full max-w-sm bg-white shadow-xl overflow-hidden border-l-2 border-black">
             <Card className="h-full rounded-none border-0 shadow-none">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <CardTitle className="text-lg">Navigasi Soal</CardTitle>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b-2 border-gray-100">
+                <CardTitle className="text-lg font-black">Navigasi Soal</CardTitle>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsMobileDrawerOpen(false)}
-                  className="h-8 w-8 p-0"
+                  className="h-8 w-8 p-0 hover:bg-gray-100 rounded-full"
                 >
                   <X className="w-4 h-4" />
                 </Button>
               </CardHeader>
 
-              <CardContent className="flex-1 overflow-y-auto pb-20">
+              <CardContent className="flex-1 overflow-y-auto pb-20 pt-4">
                 {/* Summary Stats */}
                 <div className="space-y-4 mb-6">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Progress</span>
-                    <span className="font-semibold">
+                    <span className="text-sm font-bold text-gray-600">Progress</span>
+                    <span className="font-black text-black">
                       {answeredCount}/{totalQuestions}
                     </span>
                   </div>
-                  <Progress value={progress} className="h-3" />
+                  <Progress value={progress} className="h-3 bg-gray-100 [&>div]:bg-black" />
 
-                  <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="grid grid-cols-2 gap-3 text-sm font-medium">
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded bg-green-500"></div>
+                      <div className="w-4 h-4 rounded bg-white border border-black"></div>
                       <span>Dijawab: {answeredCount}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded bg-gray-300"></div>
+                      <div className="w-4 h-4 rounded bg-gray-100 border border-gray-300"></div>
                       <span>Belum: {unansweredCount}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded bg-blue-500"></div>
+                      <div className="w-4 h-4 rounded bg-black"></div>
                       <span>Saat ini</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -267,7 +267,7 @@ export function QuestionNavigation({
                   </div>
                 </div>
 
-                <Separator className="mb-4" />
+                <Separator className="mb-4 bg-gray-200" />
 
                 {/* Question Grid by Section */}
                 <div className="space-y-6">
@@ -286,10 +286,10 @@ export function QuestionNavigation({
                         {/* Section Header */}
                         {sections.length > 0 && (
                           <div className="flex items-center justify-between">
-                            <h4 className="text-base font-semibold">
+                            <h4 className="text-base font-bold text-black">
                               {section.name}
                             </h4>
-                            <Badge variant="outline" className="text-sm">
+                            <Badge variant="outline" className="text-sm border-black text-black font-medium">
                               {sectionAnswered}/{sectionQuestions.length}
                             </Badge>
                           </div>
@@ -313,24 +313,23 @@ export function QuestionNavigation({
                                   setIsMobileDrawerOpen(false);
                                 }}
                                 className={cn(
-                                  "aspect-square rounded-lg font-semibold text-sm transition-all relative",
+                                  "aspect-square rounded-lg font-bold text-sm transition-all relative",
                                   "hover:scale-105 active:scale-95",
                                   "border-2 min-h-[44px] min-w-[44px]", // WCAG touch target
                                   isCurrent &&
-                                    "bg-blue-500 text-white border-blue-600 ring-2 ring-blue-300 ring-offset-2",
+                                  "bg-black text-white border-black",
                                   isAnswered &&
-                                    !isCurrent &&
-                                    "bg-green-500 text-white border-green-600",
+                                  !isCurrent &&
+                                  "bg-white text-black border-black",
                                   !isAnswered &&
-                                    !isCurrent &&
-                                    "bg-gray-200 text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600",
+                                  !isCurrent &&
+                                  "bg-white text-gray-400 border-gray-200",
                                   isFlagged &&
-                                    !isCurrent &&
-                                    "ring-2 ring-yellow-400 ring-offset-2"
+                                  !isCurrent &&
+                                  "ring-2 ring-yellow-400 ring-offset-2"
                                 )}
-                                title={`Soal ${questionIndex + 1}${
-                                  isAnswered ? " (Dijawab)" : ""
-                                }${isFlagged ? " (Ditandai)" : ""}`}
+                                title={`Soal ${questionIndex + 1}${isAnswered ? " (Dijawab)" : ""
+                                  }${isFlagged ? " (Ditandai)" : ""}`}
                               >
                                 {questionIndex + 1}
                                 {isFlagged && (
@@ -345,34 +344,34 @@ export function QuestionNavigation({
                   })}
                 </div>
 
-                <Separator className="my-6" />
+                <Separator className="my-6 bg-gray-200" />
 
                 {/* Legend */}
                 <div className="space-y-3">
-                  <p className="text-sm font-semibold text-muted-foreground">
+                  <p className="text-sm font-bold text-gray-500">
                     Keterangan:
                   </p>
-                  <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="grid grid-cols-2 gap-3 text-sm font-medium">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded bg-blue-500 border-2 border-blue-600 flex items-center justify-center text-white font-semibold text-xs">
+                      <div className="w-6 h-6 rounded bg-black border-2 border-black flex items-center justify-center text-white font-bold text-xs">
                         1
                       </div>
                       <span>Soal saat ini</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded bg-green-500 border-2 border-green-600 flex items-center justify-center text-white font-semibold text-xs">
+                      <div className="w-6 h-6 rounded bg-white border-2 border-black flex items-center justify-center text-black font-bold text-xs">
                         2
                       </div>
                       <span>Sudah dijawab</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded bg-gray-200 border-2 border-gray-300 flex items-center justify-center text-gray-700 font-semibold text-xs dark:bg-gray-700 dark:text-gray-200">
+                      <div className="w-6 h-6 rounded bg-white border-2 border-gray-200 flex items-center justify-center text-gray-400 font-bold text-xs">
                         3
                       </div>
                       <span>Belum dijawab</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded bg-gray-200 border-2 border-gray-300 ring-2 ring-yellow-400 flex items-center justify-center text-gray-700 font-semibold text-xs relative dark:bg-gray-700 dark:text-gray-200">
+                      <div className="w-6 h-6 rounded bg-white border-2 border-gray-200 ring-2 ring-yellow-400 flex items-center justify-center text-gray-400 font-bold text-xs relative">
                         4
                         <Flag className="w-2 h-2 absolute -top-0.5 -right-0.5 text-yellow-600 fill-yellow-400" />
                       </div>

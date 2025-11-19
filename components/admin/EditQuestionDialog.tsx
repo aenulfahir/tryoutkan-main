@@ -166,14 +166,14 @@ export function EditQuestionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-7xl h-[90vh] flex flex-col">
-        <DialogHeader className="flex-shrink-0">
-          <DialogTitle>Edit Soal</DialogTitle>
+      <DialogContent className="max-w-7xl h-[90vh] flex flex-col border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <DialogHeader className="flex-shrink-0 border-b-2 border-black pb-4">
+          <DialogTitle className="font-black text-2xl">Edit Soal</DialogTitle>
         </DialogHeader>
 
         {loadingData ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <Loader2 className="w-8 h-8 animate-spin text-black" />
           </div>
         ) : (
           <div className="flex flex-col flex-1 min-h-0">
@@ -181,11 +181,11 @@ export function EditQuestionDialog({
               onSubmit={handleSubmit}
               className="flex flex-col flex-1 min-h-0"
             >
-              <div className="flex-1 overflow-y-auto space-y-6 pr-2">
+              <div className="flex-1 overflow-y-auto space-y-6 pr-2 py-4">
                 {/* Question Number & Type */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="question_number">Nomor Soal</Label>
+                    <Label htmlFor="question_number" className="font-bold">Nomor Soal</Label>
                     <Input
                       id="question_number"
                       type="number"
@@ -198,21 +198,22 @@ export function EditQuestionDialog({
                         })
                       }
                       required
+                      className="border-2 border-black font-medium focus-visible:ring-0"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="question_type">Tipe Soal</Label>
+                    <Label htmlFor="question_type" className="font-bold">Tipe Soal</Label>
                     <Select
                       value={formData.question_type}
                       onValueChange={(value) =>
                         setFormData({ ...formData, question_type: value })
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="border-2 border-black font-bold focus:ring-0">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="border-2 border-black font-medium">
                         <SelectItem value="multiple_choice">
                           Multiple Choice
                         </SelectItem>
@@ -225,34 +226,36 @@ export function EditQuestionDialog({
 
                 {/* Question Text */}
                 <div className="space-y-2">
-                  <Label>Pertanyaan</Label>
-                  <RichTextEditor
-                    content={
-                      formData.question_text_html || formData.question_text
-                    }
-                    onChange={(html) => {
-                      setFormData({
-                        ...formData,
-                        question_text_html: html,
-                        question_text: html.replace(/<[^>]*>/g, ""), // Strip HTML for plain text
-                      });
-                    }}
-                    placeholder="Tulis pertanyaan di sini..."
-                    minHeight="200px"
-                  />
+                  <Label className="font-bold">Pertanyaan</Label>
+                  <div className="border-2 border-black rounded-md overflow-hidden">
+                    <RichTextEditor
+                      content={
+                        formData.question_text_html || formData.question_text
+                      }
+                      onChange={(html) => {
+                        setFormData({
+                          ...formData,
+                          question_text_html: html,
+                          question_text: html.replace(/<[^>]*>/g, ""), // Strip HTML for plain text
+                        });
+                      }}
+                      placeholder="Tulis pertanyaan di sini..."
+                      minHeight="200px"
+                    />
+                  </div>
                 </div>
 
                 {/* Options */}
                 {formData.question_type === "multiple_choice" && (
                   <div className="space-y-4">
-                    <Label>Pilihan Jawaban</Label>
+                    <Label className="font-bold">Pilihan Jawaban</Label>
                     {options.map((option) => (
                       <div key={option.id} className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold w-8">
+                          <span className="font-black w-8 text-lg">
                             {option.option_key}.
                           </span>
-                          <div className="flex-1">
+                          <div className="flex-1 border-2 border-black rounded-md overflow-hidden">
                             <RichTextEditor
                               content={
                                 option.option_text_html || option.option_text
@@ -282,17 +285,17 @@ export function EditQuestionDialog({
                 {/* Correct Answer & Points */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="correct_answer">Jawaban Benar</Label>
+                    <Label htmlFor="correct_answer" className="font-bold">Jawaban Benar</Label>
                     <Select
                       value={formData.correct_answer}
                       onValueChange={(value) =>
                         setFormData({ ...formData, correct_answer: value })
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="border-2 border-black font-bold focus:ring-0">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="border-2 border-black font-medium">
                         {options.map((opt) => (
                           <SelectItem
                             key={opt.option_key}
@@ -306,7 +309,7 @@ export function EditQuestionDialog({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="points">Poin</Label>
+                    <Label htmlFor="points" className="font-bold">Poin</Label>
                     <Input
                       id="points"
                       type="number"
@@ -319,39 +322,48 @@ export function EditQuestionDialog({
                         })
                       }
                       required
+                      className="border-2 border-black font-medium focus-visible:ring-0"
                     />
                   </div>
                 </div>
 
                 {/* Explanation */}
                 <div className="space-y-2 pb-6">
-                  <Label>Pembahasan</Label>
-                  <RichTextEditor
-                    content={formData.explanation_html || formData.explanation}
-                    onChange={(html) => {
-                      setFormData({
-                        ...formData,
-                        explanation_html: html,
-                        explanation: html.replace(/<[^>]*>/g, ""), // Strip HTML for plain text
-                      });
-                    }}
-                    placeholder="Tulis pembahasan di sini..."
-                    minHeight="150px"
-                  />
+                  <Label className="font-bold">Pembahasan</Label>
+                  <div className="border-2 border-black rounded-md overflow-hidden">
+                    <RichTextEditor
+                      content={formData.explanation_html || formData.explanation}
+                      onChange={(html) => {
+                        setFormData({
+                          ...formData,
+                          explanation_html: html,
+                          explanation: html.replace(/<[^>]*>/g, ""), // Strip HTML for plain text
+                        });
+                      }}
+                      placeholder="Tulis pembahasan di sini..."
+                      minHeight="150px"
+                    />
+                  </div>
                 </div>
               </div>
             </form>
 
-            <DialogFooter className="flex-shrink-0 bg-background border-t pt-4 mt-4">
+            <DialogFooter className="flex-shrink-0 bg-white border-t-2 border-black pt-4 mt-4">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={loading}
+                className="border-2 border-black font-bold hover:bg-gray-100"
               >
                 Batal
               </Button>
-              <Button type="submit" disabled={loading} onClick={handleSubmit}>
+              <Button
+                type="submit"
+                disabled={loading}
+                onClick={handleSubmit}
+                className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+              >
                 {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 Simpan Perubahan
               </Button>

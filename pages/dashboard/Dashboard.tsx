@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { motion, Variants } from "framer-motion";
 
 interface UserStats {
   total_tryouts_completed: number;
@@ -39,13 +40,13 @@ interface UserStats {
 interface RecentSession {
   id: string;
   tryout_packages:
-    | {
-        title: string;
-      }
-    | {
-        title: string;
-      }[]
-    | null;
+  | {
+    title: string;
+  }
+  | {
+    title: string;
+  }[]
+  | null;
   completed_at: string;
   percentage: number;
   status: string;
@@ -84,7 +85,6 @@ export default function Dashboard() {
         console.error("Stats error:", statsError);
       } else {
         setStats(statsData);
-        console.log("📈 Stats loaded:", statsData);
       }
 
       // Load recent sessions (5 terakhir)
@@ -109,7 +109,6 @@ export default function Dashboard() {
         console.error("Sessions error:", sessionsError);
       } else {
         setRecentSessions(sessionsData || []);
-        console.log("📝 Recent sessions loaded:", sessionsData);
       }
 
       // Load balance
@@ -123,7 +122,6 @@ export default function Dashboard() {
         console.error("Balance error:", balanceError);
       } else {
         setBalance(balanceData?.balance || 0);
-        console.log("💰 Balance loaded:", balanceData?.balance);
       }
 
       // Load available packages count
@@ -136,7 +134,6 @@ export default function Dashboard() {
         console.error("Packages error:", packagesError);
       } else {
         setAvailablePackages(count || 0);
-        console.log("📦 Available packages:", count);
       }
 
       // Load best ranking
@@ -152,7 +149,6 @@ export default function Dashboard() {
         console.error("Ranking error:", rankingError);
       } else {
         setBestRanking(rankingData?.rank_position || null);
-        console.log("🏆 Best ranking:", rankingData?.rank_position);
       }
     } catch (error) {
       console.error("Error loading dashboard:", error);
@@ -185,54 +181,111 @@ export default function Dashboard() {
   // Chart options for progress
   const progressChartOptions: Highcharts.Options = {
     chart: {
-      type: "line",
+      type: "area",
       height: 300,
+      backgroundColor: "transparent",
+      style: {
+        fontFamily: "inherit",
+      },
     },
     title: {
-      text: "Progress Skor",
-      style: { fontSize: "16px", fontWeight: "600" },
+      text: "",
     },
     xAxis: {
       categories: recentSessions
         .slice()
         .reverse()
         .map((s) => formatDate(s.completed_at)),
-      title: { text: "Tryout" },
+      title: { text: undefined },
+      labels: {
+        style: { color: "#666" },
+      },
+      lineColor: "#000",
+      tickColor: "#000",
     },
     yAxis: {
-      title: { text: "Skor (%)" },
+      title: { text: undefined },
       min: 0,
       max: 100,
+      gridLineColor: "#e5e5e5",
+      labels: {
+        style: { color: "#666" },
+      },
     },
     series: [
       {
         name: "Skor",
-        type: "line",
+        type: "area",
         data: recentSessions
           .slice()
           .reverse()
           .map((s) => s.percentage),
-        color: "#10b981",
+        color: "#000000",
+        fillColor: {
+          linearGradient: {
+            x1: 0,
+            y1: 0,
+            x2: 0,
+            y2: 1,
+          },
+          stops: [
+            [0, "rgba(0, 0, 0, 0.1)"],
+            [1, "rgba(0, 0, 0, 0)"],
+          ],
+        },
+        marker: {
+          fillColor: "#fff",
+          lineWidth: 2,
+          lineColor: "#000",
+          radius: 4,
+        },
       },
     ],
     credits: { enabled: false },
     legend: { enabled: false },
+    tooltip: {
+      backgroundColor: "#000",
+      style: {
+        color: "#fff",
+      },
+      borderRadius: 4,
+      borderWidth: 0,
+    },
+  };
+
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+      },
+    },
   };
 
   if (loading) {
     return (
-      <div className="p-4 md:p-8">
-        <div className="mb-8">
-          <Skeleton className="h-10 w-64 mb-2" />
+      <div className="p-4 md:p-8 space-y-8">
+        <div className="space-y-2">
+          <Skeleton className="h-10 w-64" />
           <Skeleton className="h-5 w-96" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i}>
-              <CardContent className="pt-6">
-                <Skeleton className="h-24 w-full" />
-              </CardContent>
-            </Card>
+            <Skeleton key={i} className="h-32 w-full rounded-xl" />
           ))}
         </div>
       </div>
@@ -240,321 +293,349 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-4 md:p-8">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="p-4 md:p-8 space-y-8"
+    >
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">
+      <motion.div variants={itemVariants}>
+        <h1 className="text-3xl font-black tracking-tight mb-2">Dashboard</h1>
+        <p className="text-gray-500">
           Selamat datang kembali! Berikut adalah ringkasan aktivitas belajarmu.
         </p>
-      </div>
+      </motion.div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Tryout */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">
-                  Total Tryout
-                </p>
-                <h3 className="text-3xl font-bold mb-1">
-                  {stats?.total_tryouts_completed || 0}
-                </h3>
-                <p className="text-xs text-muted-foreground">Tryout selesai</p>
+        <motion.div variants={itemVariants}>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">
+                    Total Tryout
+                  </p>
+                  <h3 className="text-4xl font-black mb-1">
+                    {stats?.total_tryouts_completed || 0}
+                  </h3>
+                  <p className="text-xs text-gray-500 font-medium">Tryout selesai</p>
+                </div>
+                <div className="p-3 rounded-lg bg-black text-white">
+                  <BookOpen className="w-6 h-6" />
+                </div>
               </div>
-              <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-500">
-                <BookOpen className="w-6 h-6" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Rata-rata Skor */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">
-                  Rata-rata Skor
-                </p>
-                <h3 className="text-3xl font-bold mb-1">
-                  {stats?.average_score?.toFixed(1) || "0.0"}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  Dari {stats?.total_tryouts_completed || 0} tryout
-                </p>
+        <motion.div variants={itemVariants}>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">
+                    Rata-rata Skor
+                  </p>
+                  <h3 className="text-4xl font-black mb-1">
+                    {stats?.average_score?.toFixed(1) || "0.0"}
+                  </h3>
+                  <p className="text-xs text-gray-500 font-medium">
+                    Dari {stats?.total_tryouts_completed || 0} tryout
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg bg-black text-white">
+                  <TrendingUp className="w-6 h-6" />
+                </div>
               </div>
-              <div className="p-3 rounded-lg bg-green-100 dark:bg-green-950 text-green-500">
-                <TrendingUp className="w-6 h-6" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Skor Terbaik */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">
-                  Skor Terbaik
-                </p>
-                <h3 className="text-3xl font-bold mb-1">
-                  {stats?.best_score?.toFixed(1) || "0.0"}
-                </h3>
-                <p className="text-xs text-muted-foreground">Personal best</p>
+        <motion.div variants={itemVariants}>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">
+                    Skor Terbaik
+                  </p>
+                  <h3 className="text-4xl font-black mb-1">
+                    {stats?.best_score?.toFixed(1) || "0.0"}
+                  </h3>
+                  <p className="text-xs text-gray-500 font-medium">Personal best</p>
+                </div>
+                <div className="p-3 rounded-lg bg-black text-white">
+                  <Trophy className="w-6 h-6" />
+                </div>
               </div>
-              <div className="p-3 rounded-lg bg-yellow-100 dark:bg-yellow-950 text-yellow-500">
-                <Trophy className="w-6 h-6" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Ranking Terbaik */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">
-                  Ranking Terbaik
-                </p>
-                <h3 className="text-3xl font-bold mb-1">
-                  {bestRanking ? `#${bestRanking}` : "-"}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  {bestRanking ? "Posisi terbaik" : "Belum ada ranking"}
-                </p>
+        <motion.div variants={itemVariants}>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">
+                    Ranking Terbaik
+                  </p>
+                  <h3 className="text-4xl font-black mb-1">
+                    {bestRanking ? `#${bestRanking}` : "-"}
+                  </h3>
+                  <p className="text-xs text-gray-500 font-medium">
+                    {bestRanking ? "Posisi terbaik" : "Belum ada ranking"}
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg bg-black text-white">
+                  <Award className="w-6 h-6" />
+                </div>
               </div>
-              <div className="p-3 rounded-lg bg-purple-100 dark:bg-purple-950 text-purple-500">
-                <Award className="w-6 h-6" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Tryouts & Chart */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-8">
           {/* Progress Chart */}
           {recentSessions.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Progress Skor</CardTitle>
-                <CardDescription>
-                  Grafik perkembangan skor dari {recentSessions.length} tryout
-                  terakhir
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <HighchartsReact
-                  highcharts={Highcharts}
-                  options={progressChartOptions}
-                />
-              </CardContent>
-            </Card>
+            <motion.div variants={itemVariants}>
+              <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <CardHeader>
+                  <CardTitle className="font-black text-xl">Progress Skor</CardTitle>
+                  <CardDescription>
+                    Grafik perkembangan skor dari {recentSessions.length} tryout
+                    terakhir
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <HighchartsReact
+                    highcharts={Highcharts}
+                    options={progressChartOptions}
+                  />
+                </CardContent>
+              </Card>
+            </motion.div>
           )}
 
           {/* Recent Tryouts List */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Tryout Terbaru</CardTitle>
-              <CardDescription>
-                Hasil tryout yang baru saja kamu selesaikan
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {recentSessions.length === 0 ? (
-                <div className="text-center py-12">
-                  <Target className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">
-                    Belum Ada Tryout
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Mulai tryout pertamamu sekarang!
-                  </p>
-                  <Button onClick={() => navigate("/dashboard/tryout")}>
-                    <BookOpen className="w-4 h-4 mr-2" />
-                    Mulai Tryout
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <div className="space-y-4">
-                    {recentSessions.map((session) => (
-                      <div
-                        key={session.id}
-                        className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-accent transition-colors cursor-pointer"
-                        onClick={() =>
-                          navigate(`/dashboard/results/${session.id}`)
-                        }
-                      >
-                        <div className="flex-1">
-                          <h4 className="font-medium mb-1">
-                            {Array.isArray(session.tryout_packages)
-                              ? session.tryout_packages[0]?.title ||
+          <motion.div variants={itemVariants}>
+            <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <CardHeader>
+                <CardTitle className="font-black text-xl">Tryout Terbaru</CardTitle>
+                <CardDescription>
+                  Hasil tryout yang baru saja kamu selesaikan
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {recentSessions.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Target className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                    <h3 className="text-lg font-bold mb-2">
+                      Belum Ada Tryout
+                    </h3>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Mulai tryout pertamamu sekarang!
+                    </p>
+                    <Button
+                      onClick={() => navigate("/dashboard/tryout")}
+                      className="bg-black text-white hover:bg-gray-800 font-bold"
+                    >
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Mulai Tryout
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-4">
+                      {recentSessions.map((session) => (
+                        <div
+                          key={session.id}
+                          className="flex items-center justify-between p-4 rounded-lg border-2 border-gray-100 hover:border-black transition-colors cursor-pointer group"
+                          onClick={() =>
+                            navigate(`/dashboard/results/${session.id}`)
+                          }
+                        >
+                          <div className="flex-1">
+                            <h4 className="font-bold mb-1 group-hover:text-black transition-colors">
+                              {Array.isArray(session.tryout_packages)
+                                ? session.tryout_packages[0]?.title ||
                                 "Tryout Tanpa Judul"
-                              : session.tryout_packages?.title ||
+                                : session.tryout_packages?.title ||
                                 "Tryout Tanpa Judul"}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            {formatDate(session.completed_at)}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                          <div className="text-right">
-                            <p className="text-2xl font-bold">
-                              {session.percentage.toFixed(1)}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              Skor
+                            </h4>
+                            <p className="text-sm text-gray-500">
+                              {formatDate(session.completed_at)}
                             </p>
                           </div>
-                          <Button variant="ghost" size="sm">
-                            <ArrowRight className="w-4 h-4" />
-                          </Button>
+                          <div className="flex items-center space-x-6">
+                            <div className="text-right">
+                              <p className="text-2xl font-black">
+                                {session.percentage.toFixed(1)}
+                              </p>
+                              <p className="text-xs text-gray-500 font-bold uppercase">
+                                Skor
+                              </p>
+                            </div>
+                            <Button variant="ghost" size="sm" className="group-hover:translate-x-1 transition-transform">
+                              <ArrowRight className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                  <Button
-                    variant="outline"
-                    className="w-full mt-4"
-                    onClick={() => navigate("/dashboard/history")}
-                  >
-                    Lihat Semua Tryout
-                  </Button>
-                </>
-              )}
-            </CardContent>
-          </Card>
+                      ))}
+                    </div>
+                    <Button
+                      variant="outline"
+                      className="w-full mt-6 border-2 border-black hover:bg-gray-100 font-bold"
+                      onClick={() => navigate("/dashboard/history")}
+                    >
+                      Lihat Semua Tryout
+                    </Button>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
 
         {/* Sidebar - Quick Actions & Info */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Balance Card */}
-          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">
-                    Saldo Anda
-                  </p>
-                  <h3 className="text-3xl font-bold">
-                    Rp {balance.toLocaleString("id-ID")}
-                  </h3>
+          <motion.div variants={itemVariants}>
+            <Card className="bg-black text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <p className="text-sm text-gray-400 mb-1 font-medium">
+                      Saldo Anda
+                    </p>
+                    <h3 className="text-3xl font-black">
+                      Rp {balance.toLocaleString("id-ID")}
+                    </h3>
+                  </div>
+                  <div className="p-3 rounded-lg bg-white/10">
+                    <Wallet className="w-6 h-6 text-white" />
+                  </div>
                 </div>
-                <div className="p-3 rounded-lg bg-primary/20">
-                  <Wallet className="w-6 h-6 text-primary" />
-                </div>
-              </div>
-              <Button
-                className="w-full"
-                onClick={() => navigate("/dashboard/billing")}
-              >
-                Top Up Saldo
-              </Button>
-            </CardContent>
-          </Card>
+                <Button
+                  className="w-full bg-white text-black hover:bg-gray-200 font-bold"
+                  onClick={() => navigate("/dashboard/billing")}
+                >
+                  Top Up Saldo
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Aksi Cepat</CardTitle>
-              <CardDescription>Mulai aktivitas belajarmu</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Button
-                  className="w-full justify-start"
-                  size="lg"
-                  onClick={() => navigate("/dashboard/tryout")}
-                >
-                  <BookOpen className="w-5 h-5 mr-2" />
-                  Mulai Tryout Baru
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  size="lg"
-                  onClick={() => navigate("/dashboard/results")}
-                >
-                  <BarChart3 className="w-5 h-5 mr-2" />
-                  Lihat Analisis
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  size="lg"
-                  onClick={() => navigate("/dashboard/ranking")}
-                >
-                  <Award className="w-5 h-5 mr-2" />
-                  Ranking Nasional
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <motion.div variants={itemVariants}>
+            <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <CardHeader>
+                <CardTitle className="font-black text-xl">Aksi Cepat</CardTitle>
+                <CardDescription>Mulai aktivitas belajarmu</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Button
+                    className="w-full justify-start bg-black text-white hover:bg-gray-800 font-bold"
+                    size="lg"
+                    onClick={() => navigate("/dashboard/tryout")}
+                  >
+                    <BookOpen className="w-5 h-5 mr-3" />
+                    Mulai Tryout Baru
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start border-2 border-gray-200 hover:border-black font-bold"
+                    size="lg"
+                    onClick={() => navigate("/dashboard/results")}
+                  >
+                    <BarChart3 className="w-5 h-5 mr-3" />
+                    Lihat Analisis
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start border-2 border-gray-200 hover:border-black font-bold"
+                    size="lg"
+                    onClick={() => navigate("/dashboard/ranking")}
+                  >
+                    <Award className="w-5 h-5 mr-3" />
+                    Ranking Nasional
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Stats Summary */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Ringkasan</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Paket Tersedia
-                  </span>
-                  <span className="font-semibold">{availablePackages}</span>
+          <motion.div variants={itemVariants}>
+            <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <CardHeader>
+                <CardTitle className="font-black text-xl">Ringkasan</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm font-medium text-gray-600">
+                      Paket Tersedia
+                    </span>
+                    <span className="font-black text-lg">{availablePackages}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm font-medium text-gray-600">
+                      Jawaban Benar
+                    </span>
+                    <span className="font-black text-lg text-green-600">
+                      {stats?.total_correct_answers || 0}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm font-medium text-gray-600">
+                      Jawaban Salah
+                    </span>
+                    <span className="font-black text-lg text-red-600">
+                      {stats?.total_wrong_answers || 0}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm font-medium text-gray-600">
+                      Tidak Dijawab
+                    </span>
+                    <span className="font-black text-lg text-gray-400">
+                      {stats?.total_unanswered || 0}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Jawaban Benar
-                  </span>
-                  <span className="font-semibold text-green-600">
-                    {stats?.total_correct_answers || 0}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Jawaban Salah
-                  </span>
-                  <span className="font-semibold text-red-600">
-                    {stats?.total_wrong_answers || 0}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Tidak Dijawab
-                  </span>
-                  <span className="font-semibold text-gray-600">
-                    {stats?.total_unanswered || 0}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Tips Card */}
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
-            <CardContent className="pt-6">
-              <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center">
-                <span className="mr-2">💡</span>
-                Tips Hari Ini
-              </h4>
-              <p className="text-sm text-blue-800 dark:text-blue-200">
-                Konsistensi adalah kunci! Coba selesaikan minimal 1 tryout
-                setiap hari untuk hasil maksimal.
-              </p>
-            </CardContent>
-          </Card>
+          <motion.div variants={itemVariants}>
+            <Card className="bg-gray-50 border-2 border-black border-dashed">
+              <CardContent className="pt-6">
+                <h4 className="font-black text-black mb-2 flex items-center">
+                  <span className="mr-2 text-xl">💡</span>
+                  Tips Hari Ini
+                </h4>
+                <p className="text-sm text-gray-600 font-medium leading-relaxed">
+                  Konsistensi adalah kunci! Coba selesaikan minimal 1 tryout
+                  setiap hari untuk hasil maksimal.
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

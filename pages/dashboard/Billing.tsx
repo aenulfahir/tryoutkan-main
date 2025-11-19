@@ -18,19 +18,15 @@ import {
 } from "@/components/ui/dialog";
 import {
   CreditCard,
-  Download,
   Plus,
   Receipt,
   Loader2,
   Wallet,
-  TrendingUp,
-  TrendingDown,
   FileText,
   CheckCircle,
   Clock,
   XCircle,
   ArrowUpRight,
-  ArrowDownRight,
   ShoppingBag,
   Gift,
   Tag,
@@ -64,9 +60,6 @@ export default function Billing() {
 
   useEffect(() => {
     loadData();
-    // REMOVED: Auto-update expired pending payments
-    // Payment status should be updated by payment gateway webhook only
-    // Frontend only reads the status from database
   }, [activeTab]);
 
   const loadData = async () => {
@@ -79,10 +72,6 @@ export default function Billing() {
         getUserTransactions(),
         getUserPayments(),
       ]);
-
-      console.log("💰 Balance:", balanceData);
-      console.log("📜 Transactions:", transactionsData);
-      console.log("🧾 Payments:", paymentsData);
 
       setBalance(balanceData);
       setTransactions(transactionsData);
@@ -151,16 +140,16 @@ export default function Billing() {
     switch (status.toLowerCase()) {
       case "completed":
       case "paid":
-        return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
+        return "bg-green-100 text-green-700 border-green-600";
       case "pending":
-        return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
+        return "bg-yellow-100 text-yellow-700 border-yellow-600";
       case "unpaid":
-        return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
+        return "bg-orange-100 text-orange-700 border-orange-600";
       case "failed":
       case "expired":
-        return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
+        return "bg-red-100 text-red-700 border-red-600";
       default:
-        return "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
+        return "bg-gray-100 text-gray-700 border-gray-600";
     }
   };
 
@@ -186,7 +175,6 @@ export default function Billing() {
       }
 
       // Get API URL from environment variable
-      // Use Edge Function if available, fallback to direct webhook
       const apiUrl =
         import.meta.env.VITE_TOPUP_FUNCTION_URL ||
         import.meta.env.VITE_N8N_WEBHOOK_URL;
@@ -195,21 +183,7 @@ export default function Billing() {
         throw new Error("API URL tidak dikonfigurasi. Periksa file .env");
       }
 
-      // TEMPORARY: Mock mode for testing UI (uncomment to enable)
-      const MOCK_MODE = false; // Set to true untuk test UI tanpa n8n
-
-      if (MOCK_MODE) {
-        console.log("MOCK MODE: Simulating successful payment");
-        await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate delay
-        const mockInvoiceUrl = `https://payment-gateway.com/invoice/mock-${Date.now()}`;
-        console.log("Mock redirect to:", mockInvoiceUrl);
-        window.location.href = mockInvoiceUrl;
-        return;
-      }
-
-      console.log("Calling API:", apiUrl);
-
-      // Call API (Edge Function or direct webhook)
+      // Call API
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -230,15 +204,7 @@ export default function Billing() {
         );
       }
 
-      // Log for debugging
-      console.log("API Response:", {
-        status: response.status,
-        statusText: response.statusText,
-        data,
-      });
-
       if (!response.ok) {
-        // Show detailed error from API
         let errorMessage = `Server error: ${response.status}`;
 
         if (data.message) {
@@ -249,23 +215,13 @@ export default function Billing() {
           errorMessage = data.detail;
         }
 
-        // Log full error for debugging
-        console.error("API Error Details:", {
-          status: response.status,
-          statusText: response.statusText,
-          data: data,
-          url: apiUrl,
-        });
-
         throw new Error(errorMessage);
       }
 
       // Redirect to invoice URL
       if (data.invoice_url) {
-        console.log("Redirecting to:", data.invoice_url);
         window.location.href = data.invoice_url;
       } else {
-        console.error("No invoice_url in response:", data);
         throw new Error("Invoice URL tidak ditemukan dalam response");
       }
     } catch (error: any) {
@@ -283,38 +239,38 @@ export default function Billing() {
 
   if (loading) {
     return (
-      <div className="p-8 flex items-center justify-center min-h-screen">
+      <div className="p-8 flex items-center justify-center min-h-screen bg-white">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-muted-foreground">Loading billing data...</p>
+          <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-black" />
+          <p className="text-gray-600 font-medium">Loading billing data...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 sm:p-8">
+    <div className="p-4 sm:p-8 bg-white min-h-screen text-black">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Billing</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-black mb-2 tracking-tight">Billing</h1>
+        <p className="text-sm sm:text-base text-gray-600 font-medium">
           Manage your balance and view transaction history
         </p>
       </div>
 
       {/* Current Balance - Mobile-First Design */}
-      <Card className="mb-6 sm:mb-8">
+      <Card className="mb-6 sm:mb-8 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <CardContent className="p-4 sm:p-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-4">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl">
+              <div className="p-3 bg-black text-white rounded-xl border-2 border-black">
                 <Wallet className="w-8 h-8 sm:w-10 sm:h-10" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground mb-1">
+                <p className="text-sm text-gray-600 font-bold mb-1">
                   Total Balance
                 </p>
-                <h2 className="text-2xl sm:text-4xl font-bold">
+                <h2 className="text-2xl sm:text-4xl font-black">
                   {formatCurrency(balance?.balance || 0)}
                 </h2>
               </div>
@@ -323,7 +279,7 @@ export default function Billing() {
               <Button
                 size="lg"
                 onClick={() => setIsTopUpModalOpen(true)}
-                className="w-full sm:w-auto min-h-[44px]"
+                className="w-full sm:w-auto min-h-[44px] bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
               >
                 <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 <span className="text-sm sm:text-base">Top Up</span>
@@ -332,7 +288,7 @@ export default function Billing() {
                 size="lg"
                 variant="outline"
                 onClick={() => setIsRedeemModalOpen(true)}
-                className="w-full sm:w-auto min-h-[44px]"
+                className="w-full sm:w-auto min-h-[44px] border-2 border-black font-bold hover:bg-gray-100"
               >
                 <Receipt className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 <span className="text-sm sm:text-base">Redeem</span>
@@ -341,20 +297,20 @@ export default function Billing() {
           </div>
 
           {/* Quick Stats - Mobile-First */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t-2 border-gray-100">
             <div className="text-center sm:text-left">
-              <p className="text-xs text-muted-foreground mb-1">Transactions</p>
-              <p className="text-xl sm:text-2xl font-bold">
+              <p className="text-xs text-gray-600 font-bold mb-1">Transactions</p>
+              <p className="text-xl sm:text-2xl font-black">
                 {transactions.length}
               </p>
             </div>
             <div className="text-center sm:text-left">
-              <p className="text-xs text-muted-foreground mb-1">Payments</p>
-              <p className="text-xl sm:text-2xl font-bold">{payments.length}</p>
+              <p className="text-xs text-gray-600 font-bold mb-1">Payments</p>
+              <p className="text-xl sm:text-2xl font-black">{payments.length}</p>
             </div>
             <div className="text-center sm:text-left">
-              <p className="text-xs text-muted-foreground mb-1">Last Updated</p>
-              <p className="text-sm font-semibold">
+              <p className="text-xs text-gray-600 font-bold mb-1">Last Updated</p>
+              <p className="text-sm font-bold">
                 {balance?.updated_at ? formatDate(balance.updated_at) : "-"}
               </p>
             </div>
@@ -364,17 +320,17 @@ export default function Billing() {
 
       {/* Top Up Modal - Redesigned */}
       <Dialog open={isTopUpModalOpen} onOpenChange={setIsTopUpModalOpen}>
-        <DialogContent className="sm:max-w-lg max-w-[95vw]">
+        <DialogContent className="sm:max-w-lg max-w-[95vw] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <DialogHeader>
             <div className="flex items-center space-x-3 mb-2">
-              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                <Wallet className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <div className="p-2 bg-black text-white rounded-lg border-2 border-black">
+                <Wallet className="w-6 h-6" />
               </div>
               <div>
-                <DialogTitle className="text-xl sm:text-2xl">
+                <DialogTitle className="text-xl sm:text-2xl font-black">
                   Top Up Balance
                 </DialogTitle>
-                <DialogDescription className="text-sm sm:text-base">
+                <DialogDescription className="text-sm sm:text-base font-medium text-gray-600">
                   Pilih atau masukkan jumlah top up
                 </DialogDescription>
               </div>
@@ -383,18 +339,18 @@ export default function Billing() {
 
           <div className="space-y-6 py-4">
             {/* Current Balance Display */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
-              <p className="text-sm text-muted-foreground mb-1">
+            <div className="bg-gray-50 p-4 rounded-xl border-2 border-black border-dashed">
+              <p className="text-sm text-gray-600 font-bold mb-1">
                 Current Balance
               </p>
-              <p className="text-2xl font-bold text-blue-700 dark:text-blue-400">
+              <p className="text-2xl font-black text-black">
                 {formatCurrency(balance?.balance || 0)}
               </p>
             </div>
 
             {/* Preset Amount Cards - Mobile-First */}
             <div>
-              <label className="text-sm font-medium mb-3 block">
+              <label className="text-sm font-bold mb-3 block">
                 Quick Select
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -404,14 +360,13 @@ export default function Billing() {
                     type="button"
                     onClick={() => handlePresetAmount(amount)}
                     disabled={isTopUpLoading}
-                    className={`p-4 rounded-xl border-2 transition-all hover:scale-105 min-h-[44px] ${
-                      parseInt(topUpAmount) === amount
-                        ? "border-blue-600 bg-blue-50 dark:bg-blue-950/30"
-                        : "border-gray-200 dark:border-gray-700 hover:border-blue-300"
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`p-4 rounded-xl border-2 transition-all hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] min-h-[44px] ${parseInt(topUpAmount) === amount
+                        ? "border-black bg-black text-white"
+                        : "border-black bg-white text-black hover:bg-gray-50"
+                      } disabled:opacity-50 disabled:cursor-not-allowed font-bold`}
                   >
-                    <div className="text-xs text-muted-foreground mb-1">Rp</div>
-                    <div className="text-lg font-bold">
+                    <div className={`text-xs mb-1 ${parseInt(topUpAmount) === amount ? "text-gray-300" : "text-gray-500"}`}>Rp</div>
+                    <div className="text-lg">
                       {(amount / 1000).toFixed(0)}K
                     </div>
                   </button>
@@ -421,9 +376,9 @@ export default function Billing() {
 
             {/* Custom Amount Input - Mobile-First */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Custom Amount</label>
+              <label className="text-sm font-bold">Custom Amount</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">
                   Rp
                 </span>
                 <Input
@@ -435,18 +390,18 @@ export default function Billing() {
                     setTopUpError("");
                   }}
                   disabled={isTopUpLoading}
-                  className="text-base sm:text-lg pl-10 h-12 min-h-[44px]"
+                  className="text-base sm:text-lg pl-10 h-12 min-h-[44px] border-2 border-black font-bold focus-visible:ring-0 focus-visible:ring-offset-0"
                   style={{ fontSize: "16px" }} // Prevent zoom on iOS
                 />
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-gray-500 font-medium">
                 Minimum top up: Rp 10.000
               </p>
             </div>
 
             {/* Error Message */}
             {topUpError && (
-              <div className="flex items-start space-x-2 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
+              <div className="flex items-start space-x-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg border-2 border-red-600 font-bold">
                 <XCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                 <span>{topUpError}</span>
               </div>
@@ -454,7 +409,7 @@ export default function Billing() {
 
             {/* Submit Button - Mobile-First */}
             <Button
-              className="w-full h-12 text-base min-h-[44px]"
+              className="w-full h-12 text-base min-h-[44px] bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
               size="lg"
               onClick={handleTopUpSubmit}
               disabled={
@@ -479,17 +434,17 @@ export default function Billing() {
 
       {/* Redeem Modal */}
       <Dialog open={isRedeemModalOpen} onOpenChange={setIsRedeemModalOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <DialogHeader>
             <div className="flex items-center space-x-3 mb-2">
-              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                <Receipt className="w-6 h-6 text-green-600 dark:text-green-400" />
+              <div className="p-2 bg-black text-white rounded-lg border-2 border-black">
+                <Receipt className="w-6 h-6" />
               </div>
               <div>
-                <DialogTitle className="text-2xl">
+                <DialogTitle className="text-2xl font-black">
                   Redeem Kode Promo
                 </DialogTitle>
-                <DialogDescription>
+                <DialogDescription className="font-medium text-gray-600">
                   Masukkan kode promo untuk menambah saldo Anda
                 </DialogDescription>
               </div>
@@ -504,26 +459,24 @@ export default function Billing() {
 
       {/* Tabs - Mobile-First */}
       <div className="mb-6">
-        <div className="flex space-x-1 border-b border-border overflow-x-auto">
+        <div className="flex space-x-1 border-b-2 border-gray-200 overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab("transactions")}
-            className={`px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors min-h-[44px] whitespace-nowrap ${
-              activeTab === "transactions"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+            className={`px-3 sm:px-4 py-2 text-sm font-bold border-b-2 transition-colors min-h-[44px] whitespace-nowrap -mb-[2px] ${activeTab === "transactions"
+                ? "border-black text-black"
+                : "border-transparent text-gray-500 hover:text-black"
+              }`}
           >
             <span className="text-xs sm:text-sm">Transactions</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("payments")}
-            className={`px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors min-h-[44px] whitespace-nowrap ${
-              activeTab === "payments"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+            className={`px-3 sm:px-4 py-2 text-sm font-bold border-b-2 transition-colors min-h-[44px] whitespace-nowrap -mb-[2px] ${activeTab === "payments"
+                ? "border-black text-black"
+                : "border-transparent text-gray-500 hover:text-black"
+              }`}
           >
             <span className="text-xs sm:text-sm">Payments</span>
           </button>
@@ -535,25 +488,25 @@ export default function Billing() {
         <div>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold">
+              <h2 className="text-xl sm:text-2xl font-black">
                 Transaction History
               </h2>
-              <p className="text-muted-foreground text-xs sm:text-sm mt-1">
+              <p className="text-gray-600 font-medium text-xs sm:text-sm mt-1">
                 View all your credit transactions
               </p>
             </div>
           </div>
 
           {transactions.length === 0 ? (
-            <Card className="p-8 sm:p-12">
+            <Card className="p-8 sm:p-12 border-2 border-black border-dashed bg-gray-50">
               <div className="text-center">
-                <div className="inline-flex p-4 bg-muted rounded-full mb-4">
-                  <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" />
+                <div className="inline-flex p-4 bg-white border-2 border-black rounded-full mb-4">
+                  <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-black" />
                 </div>
-                <p className="text-sm sm:text-base text-muted-foreground">
+                <p className="text-sm sm:text-base font-bold text-black">
                   No transactions yet
                 </p>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium mt-1">
                   Your transaction history will appear here
                 </p>
               </div>
@@ -565,7 +518,6 @@ export default function Billing() {
                 const isGift = transaction.type === "gift";
                 const isPurchase =
                   transaction.type === "usage" && transaction.tryout_packages;
-                // Check if it's a promo redemption by looking at the description or promo_code_usage
                 const isPromoRedeem =
                   (isTopUp && transaction.promo_code_usage?.promo_codes) ||
                   (isTopUp && transaction.description?.includes("kode promo"));
@@ -574,62 +526,42 @@ export default function Billing() {
                 return (
                   <Card
                     key={transaction.id}
-                    className={`hover:shadow-md transition-shadow ${
-                      isPromoRedeem
-                        ? "border-purple-200 dark:border-purple-800"
-                        : isDirectTopUp
-                        ? "border-green-200 dark:border-green-800"
-                        : isGift
-                        ? "border-yellow-200 dark:border-yellow-800"
-                        : isPurchase
-                        ? "border-blue-200 dark:border-blue-800"
-                        : ""
-                    }`}
+                    className={`hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all border-2 border-black group`}
                   >
                     <CardContent className="p-4 sm:p-6">
                       <div className="flex items-center justify-between">
                         {/* Left: Icon + Description */}
                         <div className="flex items-center space-x-2 sm:space-x-4 flex-1">
                           <div
-                            className={`p-3 rounded-xl ${
-                              isPromoRedeem
-                                ? "bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30"
-                                : isDirectTopUp
-                                ? "bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30"
-                                : isGift
-                                ? "bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30"
-                                : isPurchase
-                                ? "bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30"
-                                : "bg-red-100 dark:bg-red-900/30"
-                            }`}
+                            className={`p-3 rounded-xl border-2 border-black bg-white text-black`}
                           >
                             {isPromoRedeem ? (
-                              <Gift className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                              <Gift className="w-6 h-6" />
                             ) : isDirectTopUp ? (
-                              <Wallet className="w-6 h-6 text-green-600 dark:text-green-400" />
+                              <Wallet className="w-6 h-6" />
                             ) : isGift ? (
-                              <Gift className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                              <Gift className="w-6 h-6" />
                             ) : isPurchase ? (
-                              <ShoppingBag className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                              <ShoppingBag className="w-6 h-6" />
                             ) : (
-                              <ArrowUpRight className="w-6 h-6 text-red-600 dark:text-red-400" />
+                              <ArrowUpRight className="w-6 h-6" />
                             )}
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <p className="font-semibold text-sm sm:text-base">
+                              <p className="font-black text-sm sm:text-base text-black">
                                 {isPromoRedeem
                                   ? "Redeem Kode Promo"
                                   : isDirectTopUp
-                                  ? "Top Up Langsung"
-                                  : isGift
-                                  ? "Gift Credit"
-                                  : isPurchase
-                                  ? "Pembelian Paket Tryout"
-                                  : transaction.description || "Transaksi"}
+                                    ? "Top Up Langsung"
+                                    : isGift
+                                      ? "Gift Credit"
+                                      : isPurchase
+                                        ? "Pembelian Paket Tryout"
+                                        : transaction.description || "Transaksi"}
                               </p>
                               {isPromoRedeem && (
-                                <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">
+                                <Badge className="bg-black text-white border-2 border-black text-xs font-bold">
                                   <Tag className="w-3 h-3 mr-1" />
                                   {
                                     transaction.promo_code_usage?.promo_codes
@@ -641,12 +573,12 @@ export default function Billing() {
 
                             {/* Promo Code Detail */}
                             {isPromoRedeem && (
-                              <div className="mt-2 p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border-2 border-black border-dashed">
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <Gift className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                                      <p className="text-sm font-medium text-purple-800 dark:text-purple-300">
+                                      <Gift className="w-4 h-4 text-black" />
+                                      <p className="text-sm font-bold text-black">
                                         Kode Promo:{" "}
                                         {
                                           transaction.promo_code_usage
@@ -656,14 +588,14 @@ export default function Billing() {
                                     </div>
                                     {transaction.promo_code_usage?.promo_codes
                                       ?.description && (
-                                      <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
-                                        {
-                                          transaction.promo_code_usage
-                                            ?.promo_codes?.description
-                                        }
-                                      </p>
-                                    )}
-                                    <p className="text-xs text-purple-500 dark:text-purple-500 mt-2">
+                                        <p className="text-xs text-gray-600 font-medium mt-1">
+                                          {
+                                            transaction.promo_code_usage
+                                              ?.promo_codes?.description
+                                          }
+                                        </p>
+                                      )}
+                                    <p className="text-xs text-gray-500 font-medium mt-2">
                                       Bonus saldo berhasil ditambahkan ke akun
                                       Anda
                                     </p>
@@ -674,16 +606,16 @@ export default function Billing() {
 
                             {/* Direct Top Up Detail */}
                             {isDirectTopUp && (
-                              <div className="mt-2 p-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border-2 border-black border-dashed">
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <Wallet className="w-4 h-4 text-green-600 dark:text-green-400" />
-                                      <p className="text-sm font-medium text-green-800 dark:text-green-300">
+                                      <Wallet className="w-4 h-4 text-black" />
+                                      <p className="text-sm font-bold text-black">
                                         Top Up Saldo Langsung
                                       </p>
                                     </div>
-                                    <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                                    <p className="text-xs text-gray-600 font-medium mt-1">
                                       Saldo berhasil ditambahkan ke akun Anda
                                     </p>
                                   </div>
@@ -693,20 +625,20 @@ export default function Billing() {
 
                             {/* Gift Credit Detail */}
                             {isGift && (
-                              <div className="mt-2 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border-2 border-black border-dashed">
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <Gift className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
-                                      <p className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
+                                      <Gift className="w-4 h-4 text-black" />
+                                      <p className="text-sm font-bold text-black">
                                         Gift Credit
                                       </p>
                                     </div>
-                                    <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                                    <p className="text-xs text-gray-600 font-medium mt-1">
                                       {transaction.description ||
                                         "Gift credit dari admin"}
                                     </p>
-                                    <p className="text-xs text-yellow-500 dark:text-yellow-500 mt-2">
+                                    <p className="text-xs text-gray-500 font-medium mt-2">
                                       Saldo gift berhasil ditambahkan ke akun
                                       Anda
                                     </p>
@@ -717,22 +649,22 @@ export default function Billing() {
 
                             {/* Package Detail (if purchase) */}
                             {isPurchase && (
-                              <div className="mt-2 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border-2 border-black border-dashed">
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <ShoppingBag className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                                      <p className="text-sm font-medium text-blue-800 dark:text-blue-300">
+                                      <ShoppingBag className="w-4 h-4 text-black" />
+                                      <p className="text-sm font-bold text-black">
                                         {Array.isArray(
                                           transaction.tryout_packages
                                         )
                                           ? transaction.tryout_packages[0]
-                                              ?.title || "Tryout Tanpa Judul"
+                                            ?.title || "Tryout Tanpa Judul"
                                           : transaction.tryout_packages
-                                              ?.title || "Tryout Tanpa Judul"}
+                                            ?.title || "Tryout Tanpa Judul"}
                                       </p>
                                     </div>
-                                    <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                                    <p className="text-xs text-gray-600 font-medium mt-1">
                                       Pembelian paket tryout berhasil
                                     </p>
                                   </div>
@@ -741,21 +673,20 @@ export default function Billing() {
                             )}
 
                             <div className="flex items-center space-x-3 mt-3">
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-xs text-gray-500 font-medium">
                                 {formatDateTime(transaction.created_at)}
                               </span>
                               <span
-                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                  isPromoRedeem
-                                    ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 dark:from-purple-900/30 dark:to-pink-900/30 dark:text-purple-400"
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold border-2 ${isPromoRedeem
+                                    ? "bg-purple-100 text-purple-700 border-purple-600"
                                     : isDirectTopUp
-                                    ? "bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 dark:from-green-900/30 dark:to-emerald-900/30 dark:text-green-400"
-                                    : isGift
-                                    ? "bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-700 dark:from-yellow-900/30 dark:to-orange-900/30 dark:text-yellow-400"
-                                    : isPurchase
-                                    ? "bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 dark:from-blue-900/30 dark:to-cyan-900/30 dark:text-blue-400"
-                                    : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                                }`}
+                                      ? "bg-green-100 text-green-700 border-green-600"
+                                      : isGift
+                                        ? "bg-yellow-100 text-yellow-700 border-yellow-600"
+                                        : isPurchase
+                                          ? "bg-blue-100 text-blue-700 border-blue-600"
+                                          : "bg-red-100 text-red-700 border-red-600"
+                                  }`}
                               >
                                 <CheckCircle className="w-3 h-3 mr-1" />
                                 Success
@@ -767,33 +698,24 @@ export default function Billing() {
                         {/* Right: Amount */}
                         <div className="text-right">
                           <p
-                            className={`text-xl font-bold ${
-                              isPromoRedeem
-                                ? "text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600"
-                                : isDirectTopUp
-                                ? "text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600"
-                                : isGift
-                                ? "text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-orange-600"
-                                : isPurchase
-                                ? "text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600"
-                                : transaction.amount > 0
-                                ? "text-green-600 dark:text-green-400"
-                                : "text-red-600 dark:text-red-400"
-                            }`}
+                            className={`text-xl font-black ${transaction.amount > 0
+                                ? "text-green-600"
+                                : "text-red-600"
+                              }`}
                           >
                             {transaction.amount > 0 ? "+" : ""}
                             {formatCurrency(transaction.amount)}
                           </p>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-xs text-gray-500 font-bold mt-1">
                             {isPromoRedeem
                               ? "Bonus Saldo"
                               : isDirectTopUp
-                              ? "Top Up"
-                              : isGift
-                              ? "Gift"
-                              : isPurchase
-                              ? "Pembelian"
-                              : "Transaksi"}
+                                ? "Top Up"
+                                : isGift
+                                  ? "Gift"
+                                  : isPurchase
+                                    ? "Pembelian"
+                                    : "Transaksi"}
                           </p>
                         </div>
                       </div>
@@ -808,114 +730,88 @@ export default function Billing() {
         <div>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold">Payment History</h2>
-              <p className="text-muted-foreground text-xs sm:text-sm mt-1">
-                View all your payment records and invoices
+              <h2 className="text-xl sm:text-2xl font-black">Payment History</h2>
+              <p className="text-gray-600 font-medium text-xs sm:text-sm mt-1">
+                View all your top up payments
               </p>
             </div>
           </div>
 
           {payments.length === 0 ? (
-            <Card className="p-8 sm:p-12">
+            <Card className="p-8 sm:p-12 border-2 border-black border-dashed bg-gray-50">
               <div className="text-center">
-                <div className="inline-flex p-4 bg-muted rounded-full mb-4">
-                  <Receipt className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" />
+                <div className="inline-flex p-4 bg-white border-2 border-black rounded-full mb-4">
+                  <Receipt className="w-6 h-6 sm:w-8 sm:h-8 text-black" />
                 </div>
-                <p className="text-sm sm:text-base text-muted-foreground">
+                <p className="text-sm sm:text-base font-bold text-black">
                   No payments yet
                 </p>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium mt-1">
                   Your payment history will appear here
                 </p>
               </div>
             </Card>
           ) : (
-            <Card>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[600px]">
-                  <thead>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <th className="text-left py-2 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-muted-foreground">
-                        DATE
-                      </th>
-                      <th className="text-left py-2 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-muted-foreground">
-                        AMOUNT
-                      </th>
-                      <th className="text-left py-2 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-muted-foreground">
-                        CREDITS
-                      </th>
-                      <th className="text-left py-2 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-muted-foreground">
-                        STATUS
-                      </th>
-                      <th className="text-right py-2 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-muted-foreground">
-                        ACTIONS
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {payments.map((payment) => {
-                      const statusIcon = getStatusIcon(payment.status);
-                      const statusColor = getStatusColor(payment.status);
-                      const credits = payment.amount.toLocaleString("id-ID");
-
-                      return (
-                        <tr
-                          key={payment.id}
-                          className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
-                        >
-                          <td className="py-2 sm:py-4 px-3 sm:px-6">
-                            <p className="text-xs sm:text-sm font-medium">
-                              {formatDate(payment.created_at)}
-                            </p>
-                          </td>
-                          <td className="py-2 sm:py-4 px-3 sm:px-6">
-                            <p className="text-xs sm:text-sm font-semibold">
-                              {formatCurrency(payment.amount)}
-                            </p>
-                          </td>
-                          <td className="py-2 sm:py-4 px-3 sm:px-6">
-                            <p className="text-xs sm:text-sm font-medium text-primary">
-                              {credits} credits
-                            </p>
-                          </td>
-                          <td className="py-2 sm:py-4 px-3 sm:px-6">
-                            <span
-                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusColor}`}
-                            >
-                              {statusIcon}
-                              {payment.status.charAt(0).toUpperCase() +
-                                payment.status.slice(1)}
+            <div className="space-y-3">
+              {payments.map((payment) => (
+                <Card
+                  key={payment.id}
+                  className="hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all border-2 border-black group"
+                >
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="p-3 bg-white border-2 border-black rounded-xl text-black">
+                          <Receipt className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <p className="font-black text-sm sm:text-base text-black">
+                            Top Up Balance
+                          </p>
+                          <p className="text-xs text-gray-500 font-bold">
+                            {generateInvoiceNumber(payment)}
+                          </p>
+                          <div className="flex items-center space-x-3 mt-1">
+                            <span className="text-xs text-gray-500 font-medium">
+                              {formatDateTime(payment.created_at)}
                             </span>
-                          </td>
-                          <td className="py-2 sm:py-4 px-3 sm:px-6 text-right">
-                            {payment.status.toLowerCase() === "paid" ||
-                            payment.status.toLowerCase() === "completed" ? (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() =>
-                                  (window.location.href = `/dashboard/invoice/${payment.id}`)
-                                }
-                                className="min-h-[36px] min-w-[36px] p-2"
-                              >
-                                <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                                <span className="text-xs sm:text-sm">
-                                  Invoice
-                                </span>
-                              </Button>
-                            ) : (
-                              <span className="text-xs text-muted-foreground">
-                                -
+                            <Badge
+                              variant="secondary"
+                              className={`flex items-center space-x-1 border-2 font-bold ${getStatusColor(
+                                payment.status
+                              )}`}
+                            >
+                              {getStatusIcon(payment.status)}
+                              <span className="capitalize ml-1">
+                                {payment.status}
                               </span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-black text-black">
+                          {formatCurrency(payment.amount)}
+                        </p>
+                        {payment.invoice_url &&
+                          payment.status === "PENDING" && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="mt-2 h-8 text-xs border-2 border-black font-bold hover:bg-gray-100"
+                              onClick={() =>
+                                window.open(payment.invoice_url, "_blank")
+                              }
+                            >
+                              Pay Now
+                            </Button>
+                          )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           )}
         </div>
       )}

@@ -56,13 +56,13 @@ export default function DataTable<T extends Record<string, any>>({
       <div className="space-y-4">
         {searchable && (
           <div className="relative w-full md:w-96">
-            <div className="h-10 bg-muted rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 rounded animate-pulse border-2 border-gray-300" />
           </div>
         )}
-        <div className="border rounded-lg">
+        <div className="border-2 border-black rounded-lg">
           <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
-            <p className="text-muted-foreground mt-4">Loading...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto" />
+            <p className="text-gray-600 font-medium mt-4">Loading...</p>
           </div>
         </div>
       </div>
@@ -74,24 +74,24 @@ export default function DataTable<T extends Record<string, any>>({
       {/* Search */}
       {searchable && (
         <div className="relative w-full md:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <Input
             type="search"
             placeholder={searchPlaceholder}
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
-            className="pl-10"
+            className="pl-10 border-2 border-black font-medium focus-visible:ring-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
           />
         </div>
       )}
 
       {/* Table */}
-      <div className="border rounded-lg overflow-hidden">
+      <div className="border-2 border-black rounded-lg overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <Table>
-          <TableHeader>
-            <TableRow>
+          <TableHeader className="bg-black">
+            <TableRow className="hover:bg-black border-b-2 border-black">
               {columns.map((column) => (
-                <TableHead key={column.key}>{column.label}</TableHead>
+                <TableHead key={column.key} className="text-white font-black">{column.label}</TableHead>
               ))}
             </TableRow>
           </TableHeader>
@@ -100,16 +100,16 @@ export default function DataTable<T extends Record<string, any>>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="text-center py-8 text-muted-foreground"
+                  className="text-center py-8 text-gray-500 font-medium"
                 >
                   {emptyMessage}
                 </TableCell>
               </TableRow>
             ) : (
               data.map((item, index) => (
-                <TableRow key={index}>
+                <TableRow key={index} className="border-b-2 border-gray-100 hover:bg-gray-50 transition-colors">
                   {columns.map((column) => (
-                    <TableCell key={column.key}>
+                    <TableCell key={column.key} className="font-medium">
                       {column.render
                         ? column.render(item)
                         : item[column.key]}
@@ -125,7 +125,7 @@ export default function DataTable<T extends Record<string, any>>({
       {/* Pagination */}
       {pagination && pagination.totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-600 font-bold">
             Page {pagination.currentPage} of {pagination.totalPages}
           </p>
           <div className="flex items-center space-x-2">
@@ -136,8 +136,9 @@ export default function DataTable<T extends Record<string, any>>({
                 pagination.onPageChange(pagination.currentPage - 1)
               }
               disabled={pagination.currentPage === 1}
+              className="border-2 border-black font-bold hover:bg-gray-100 disabled:opacity-50"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4 mr-1" />
               Previous
             </Button>
             <Button
@@ -147,9 +148,10 @@ export default function DataTable<T extends Record<string, any>>({
                 pagination.onPageChange(pagination.currentPage + 1)
               }
               disabled={pagination.currentPage === pagination.totalPages}
+              className="border-2 border-black font-bold hover:bg-gray-100 disabled:opacity-50"
             >
               Next
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
         </div>
@@ -157,4 +159,3 @@ export default function DataTable<T extends Record<string, any>>({
     </div>
   );
 }
-

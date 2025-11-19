@@ -163,37 +163,31 @@ export function TryoutDetailModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto border-gray-200">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto border-2 border-black p-0 gap-0 bg-white sm:rounded-xl">
         {/* Header with gradient accent */}
-        <div className="h-2 bg-gradient-to-r from-gray-900 to-black"></div>
+        <div className="h-2 bg-black w-full"></div>
 
-        <DialogHeader className="pb-6">
+        <DialogHeader className="p-6 pb-4">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <DialogTitle className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
+              <DialogTitle className="text-3xl font-black text-black mb-4 leading-tight">
                 {tryout.title}
               </DialogTitle>
               <div className="flex items-center gap-3 flex-wrap">
                 <Badge
                   variant="secondary"
-                  className="text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+                  className="text-sm font-bold bg-black text-white hover:bg-gray-800 transition-colors border-2 border-black"
                 >
                   {categoryInfo.icon} {categoryInfo.name}
                 </Badge>
                 <Badge
                   variant="outline"
-                  className={`text-sm font-medium ${
-                    difficultyInfo.color === "yellow"
-                      ? "border-yellow-400 text-yellow-700 bg-yellow-50"
-                      : difficultyInfo.color === "red"
-                      ? "border-red-400 text-red-700 bg-red-50"
-                      : "border-green-400 text-green-700 bg-green-50"
-                  }`}
+                  className="text-sm font-bold border-2 border-black text-black bg-transparent"
                 >
                   {difficultyInfo.label}
                 </Badge>
                 {isPurchased && (
-                  <Badge className="bg-green-100 text-green-800 border-green-200 font-medium">
+                  <Badge className="bg-gray-100 text-black border-2 border-black font-bold">
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Sudah Dibeli
                   </Badge>
@@ -203,14 +197,14 @@ export function TryoutDetailModal({
           </div>
         </DialogHeader>
 
-        <div className="space-y-8 py-2">
+        <div className="space-y-8 px-6 py-2">
           {/* Description */}
           {tryout.description && (
-            <div className="bg-gray-50 p-6 rounded-xl">
-              <h4 className="font-semibold text-gray-900 mb-3 text-lg">
+            <div className="bg-gray-50 p-6 rounded-xl border-2 border-gray-100">
+              <h4 className="font-bold text-black mb-3 text-lg">
                 Deskripsi
               </h4>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-700 leading-relaxed font-medium">
                 {tryout.description}
               </p>
             </div>
@@ -218,47 +212,47 @@ export function TryoutDetailModal({
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="flex items-center space-x-4 p-5 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-colors">
-              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <FileText className="w-6 h-6 text-gray-700" />
+            <div className="flex items-center space-x-4 p-5 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+              <div className="w-12 h-12 bg-black rounded-lg flex items-center justify-center flex-shrink-0">
+                <FileText className="w-6 h-6 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-wide">
                   Total Soal
                 </p>
-                <p className="text-xl font-bold text-gray-900">
+                <p className="text-xl font-black text-black">
                   {tryout.total_questions} soal
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-4 p-5 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-colors">
-              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Clock className="w-6 h-6 text-gray-700" />
+            <div className="flex items-center space-x-4 p-5 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+              <div className="w-12 h-12 bg-black rounded-lg flex items-center justify-center flex-shrink-0">
+                <Clock className="w-6 h-6 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-wide">
                   Durasi
                 </p>
-                <p className="text-xl font-bold text-gray-900">
+                <p className="text-xl font-black text-black">
                   {totalDuration} menit
                 </p>
                 {sections.length > 0 && (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 font-medium">
                     {sections.length} bagian
                   </p>
                 )}
               </div>
             </div>
             {tryout.passing_grade && (
-              <div className="flex items-center space-x-4 p-5 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-colors">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Award className="w-6 h-6 text-gray-700" />
+              <div className="flex items-center space-x-4 p-5 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                <div className="w-12 h-12 bg-black rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Award className="w-6 h-6 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                  <p className="text-xs text-gray-500 font-bold uppercase tracking-wide">
                     Passing Grade
                   </p>
-                  <p className="text-xl font-bold text-gray-900">
+                  <p className="text-xl font-black text-black">
                     {tryout.passing_grade}%
                   </p>
                 </div>
@@ -268,31 +262,31 @@ export function TryoutDetailModal({
 
           {/* Section Breakdown */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-4 text-lg">
+            <h4 className="font-bold text-black mb-4 text-lg">
               Rincian Soal per Bagian
             </h4>
             {loadingSections ? (
-              <div className="flex items-center justify-center py-8 bg-gray-50 rounded-xl">
-                <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+              <div className="flex items-center justify-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                <Loader2 className="w-8 h-8 animate-spin text-black" />
               </div>
             ) : sections.length > 0 ? (
               <div className="space-y-3">
                 {sections.map((section, index) => (
                   <div
                     key={section.id}
-                    className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all"
+                    className="flex items-center justify-between p-4 bg-white border-2 border-gray-100 rounded-xl hover:border-black transition-all"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-sm font-bold text-gray-700 flex-shrink-0">
+                        <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
                           {index + 1}
                         </div>
                         <div className="min-w-0">
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-bold text-black">
                             {section.section_name}
                           </span>
                           {section.description && (
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-gray-500 mt-1 font-medium">
                               {section.description}
                             </p>
                           )}
@@ -302,14 +296,14 @@ export function TryoutDetailModal({
                     <div className="flex items-center gap-3 flex-shrink-0">
                       <Badge
                         variant="outline"
-                        className="border-gray-300 text-gray-700"
+                        className="border-2 border-black text-black font-bold"
                       >
                         {section.total_questions} soal
                       </Badge>
                       {section.duration_minutes && (
                         <Badge
                           variant="secondary"
-                          className="bg-gray-100 text-gray-700"
+                          className="bg-gray-100 text-black font-bold"
                         >
                           {section.duration_minutes} menit
                         </Badge>
@@ -323,19 +317,19 @@ export function TryoutDetailModal({
                 {sectionBreakdown.map((section, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all"
+                    className="flex items-center justify-between p-4 bg-white border-2 border-gray-100 rounded-xl hover:border-black transition-all"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-sm font-bold text-gray-700 flex-shrink-0">
+                      <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
                         {index + 1}
                       </div>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm font-bold text-black">
                         {section.name}
                       </span>
                     </div>
                     <Badge
                       variant="outline"
-                      className="border-gray-300 text-gray-700 flex-shrink-0"
+                      className="border-2 border-black text-black flex-shrink-0 font-bold"
                     >
                       {section.questions} soal
                     </Badge>
@@ -343,8 +337,8 @@ export function TryoutDetailModal({
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 bg-gray-50 rounded-xl">
-                <p className="text-sm text-gray-500">
+              <div className="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                <p className="text-sm text-gray-500 font-medium">
                   Belum ada bagian soal yang ditentukan
                 </p>
               </div>
@@ -352,41 +346,41 @@ export function TryoutDetailModal({
           </div>
 
           {/* Upload Date */}
-          <div className="flex items-center space-x-3 text-sm text-gray-500 bg-gray-50 p-4 rounded-xl">
+          <div className="flex items-center space-x-3 text-sm text-gray-500 bg-gray-50 p-4 rounded-xl border-2 border-gray-100">
             <Calendar className="w-4 h-4" />
-            <span>{formatDate(tryout.created_at)}</span>
+            <span className="font-medium">{formatDate(tryout.created_at)}</span>
           </div>
 
           {/* Price */}
           {!isPurchased && (
-            <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
+            <div className="bg-black p-6 rounded-xl border-2 border-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
               <div className="flex items-center justify-between">
                 <div className="min-w-0">
-                  <p className="text-sm text-gray-600 font-medium mb-2">
+                  <p className="text-sm text-gray-400 font-bold mb-2 uppercase tracking-wider">
                     Harga Paket
                   </p>
                   {tryout.is_free ? (
-                    <p className="text-3xl font-bold text-green-600">GRATIS</p>
+                    <p className="text-3xl font-black text-white">GRATIS</p>
                   ) : (
-                    <p className="text-3xl font-bold text-gray-900">
+                    <p className="text-3xl font-black text-white">
                       {formatPrice(tryout.price)}
                     </p>
                   )}
                 </div>
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm flex-shrink-0">
-                  <ShoppingCart className="w-8 h-8 text-gray-700" />
+                <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center shadow-sm flex-shrink-0 backdrop-blur-sm">
+                  <ShoppingCart className="w-8 h-8 text-white" />
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        <DialogFooter className="gap-3 pt-6 border-t border-gray-200">
+        <DialogFooter className="gap-3 p-6 border-t-2 border-gray-100 bg-gray-50/50 sm:rounded-b-xl">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={loading}
-            className="border-gray-300 hover:bg-gray-50"
+            className="border-2 border-gray-200 hover:border-black hover:bg-white font-bold"
           >
             Tutup
           </Button>
@@ -395,7 +389,7 @@ export function TryoutDetailModal({
               onClick={onStart}
               size="lg"
               disabled={loading}
-              className="bg-black text-white hover:bg-gray-800 px-8"
+              className="bg-black text-white hover:bg-gray-800 px-8 font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all"
             >
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               <Play className="w-4 h-4 mr-2" />
@@ -406,7 +400,7 @@ export function TryoutDetailModal({
               onClick={onPurchase}
               size="lg"
               disabled={loading}
-              className="bg-black text-white hover:bg-gray-800 px-8"
+              className="bg-black text-white hover:bg-gray-800 px-8 font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all"
             >
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               <ShoppingCart className="w-4 h-4 mr-2" />

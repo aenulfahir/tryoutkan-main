@@ -103,10 +103,10 @@ export function AddUserDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <DialogHeader>
-          <DialogTitle>Tambah User Baru</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="font-black text-xl">Tambah User Baru</DialogTitle>
+          <DialogDescription className="font-medium text-gray-600">
             Buat akun user baru. Password akan dikirim ke email user.
           </DialogDescription>
         </DialogHeader>
@@ -114,7 +114,7 @@ export function AddUserDialog({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email */}
           <div className="space-y-2">
-            <Label htmlFor="email">
+            <Label htmlFor="email" className="font-bold">
               Email <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -126,12 +126,13 @@ export function AddUserDialog({
                 setFormData({ ...formData, email: e.target.value })
               }
               required
+              className="border-2 border-black font-medium focus-visible:ring-0"
             />
           </div>
 
           {/* Password */}
           <div className="space-y-2">
-            <Label htmlFor="password">
+            <Label htmlFor="password" className="font-bold">
               Password <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -144,12 +145,13 @@ export function AddUserDialog({
               }
               required
               minLength={6}
+              className="border-2 border-black font-medium focus-visible:ring-0"
             />
           </div>
 
           {/* Name */}
           <div className="space-y-2">
-            <Label htmlFor="name">
+            <Label htmlFor="name" className="font-bold">
               Nama Lengkap <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -161,12 +163,13 @@ export function AddUserDialog({
                 setFormData({ ...formData, name: e.target.value })
               }
               required
+              className="border-2 border-black font-medium focus-visible:ring-0"
             />
           </div>
 
           {/* Phone */}
           <div className="space-y-2">
-            <Label htmlFor="phone">Nomor Telepon</Label>
+            <Label htmlFor="phone" className="font-bold">Nomor Telepon</Label>
             <Input
               id="phone"
               type="tel"
@@ -175,22 +178,23 @@ export function AddUserDialog({
               onChange={(e) =>
                 setFormData({ ...formData, phone: e.target.value })
               }
+              className="border-2 border-black font-medium focus-visible:ring-0"
             />
           </div>
 
           {/* Role */}
           <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
+            <Label htmlFor="role" className="font-bold">Role</Label>
             <Select
               value={formData.role}
               onValueChange={(value) =>
                 setFormData({ ...formData, role: value })
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="border-2 border-black font-bold focus:ring-0">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="border-2 border-black font-medium">
                 <SelectItem value="user">User</SelectItem>
                 <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
@@ -203,10 +207,15 @@ export function AddUserDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={loading}
+              className="border-2 border-black font-bold hover:bg-gray-100"
             >
               Batal
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+            >
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Simpan
             </Button>
@@ -216,4 +225,3 @@ export function AddUserDialog({
     </Dialog>
   );
 }
-

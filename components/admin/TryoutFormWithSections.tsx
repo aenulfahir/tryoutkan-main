@@ -318,12 +318,12 @@ export default function TryoutFormWithSections({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="font-black text-xl">
             {tryout ? "Edit Tryout" : "Tambah Tryout Baru"}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="font-medium text-gray-600">
             {tryout
               ? "Update informasi paket tryout"
               : "Buat paket tryout baru untuk siswa"}
@@ -334,29 +334,31 @@ export default function TryoutFormWithSections({
           {/* Basic Info */}
           <div className="space-y-4">
             <div>
-              <Label htmlFor="title">Judul Tryout *</Label>
+              <Label htmlFor="title" className="font-bold">Judul Tryout *</Label>
               <Input
                 id="title"
                 {...register("title")}
                 placeholder="Contoh: CPNS 2024 - Paket 1"
+                className="border-2 border-black font-medium focus-visible:ring-0"
               />
               {errors.title && (
-                <p className="text-sm text-destructive mt-1">
+                <p className="text-sm text-red-600 font-bold mt-1">
                   {errors.title.message}
                 </p>
               )}
             </div>
 
             <div>
-              <Label htmlFor="description">Deskripsi *</Label>
+              <Label htmlFor="description" className="font-bold">Deskripsi *</Label>
               <Textarea
                 id="description"
                 {...register("description")}
                 placeholder="Deskripsi lengkap tentang tryout ini..."
                 rows={3}
+                className="border-2 border-black font-medium focus-visible:ring-0"
               />
               {errors.description && (
-                <p className="text-sm text-destructive mt-1">
+                <p className="text-sm text-red-600 font-bold mt-1">
                   {errors.description.message}
                 </p>
               )}
@@ -364,15 +366,15 @@ export default function TryoutFormWithSections({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="category">Kategori *</Label>
+                <Label htmlFor="category" className="font-bold">Kategori *</Label>
                 <Select
                   value={watch("category")}
                   onValueChange={(value) => setValue("category", value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="border-2 border-black font-bold focus:ring-0">
                     <SelectValue placeholder="Pilih kategori" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="border-2 border-black font-medium">
                     <SelectItem value="CPNS">🏛️ CPNS</SelectItem>
                     <SelectItem value="BUMN_TKD">🏢 BUMN TKD</SelectItem>
                     <SelectItem value="BUMN_AKHLAK">⭐ BUMN AKHLAK</SelectItem>
@@ -383,24 +385,24 @@ export default function TryoutFormWithSections({
                   </SelectContent>
                 </Select>
                 {errors.category && (
-                  <p className="text-sm text-destructive mt-1">
+                  <p className="text-sm text-red-600 font-bold mt-1">
                     {errors.category.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="difficulty">Tingkat Kesulitan *</Label>
+                <Label htmlFor="difficulty" className="font-bold">Tingkat Kesulitan *</Label>
                 <Select
                   value={watch("difficulty")}
                   onValueChange={(value) =>
                     setValue("difficulty", value as "easy" | "medium" | "hard")
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="border-2 border-black font-bold focus:ring-0">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="border-2 border-black font-medium">
                     <SelectItem value="easy">Mudah</SelectItem>
                     <SelectItem value="medium">Sedang</SelectItem>
                     <SelectItem value="hard">Sulit</SelectItem>
@@ -410,17 +412,18 @@ export default function TryoutFormWithSections({
             </div>
           </div>
 
-          <Separator />
+          <Separator className="bg-black" />
 
           {/* Sections Configuration */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Rincian Bagian Soal</h3>
+              <h3 className="text-lg font-black">Rincian Bagian Soal</h3>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={addSection}
+                className="border-2 border-black font-bold hover:bg-gray-100"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Tambah Bagian
@@ -429,16 +432,16 @@ export default function TryoutFormWithSections({
 
             <div className="space-y-3">
               {sections.map((section, index) => (
-                <div key={index} className="border rounded-lg p-4 space-y-3">
+                <div key={index} className="border-2 border-black rounded-lg p-4 space-y-3 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-medium">Bagian {index + 1}</h4>
+                    <h4 className="font-bold">Bagian {index + 1}</h4>
                     {sections.length > 1 && (
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
                         onClick={() => removeSection(index)}
-                        className="text-red-500 hover:text-red-700"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -447,7 +450,7 @@ export default function TryoutFormWithSections({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <Label htmlFor={`section-name-${index}`}>
+                      <Label htmlFor={`section-name-${index}`} className="font-bold">
                         Nama Bagian *
                       </Label>
                       <Input
@@ -457,11 +460,12 @@ export default function TryoutFormWithSections({
                           updateSection(index, "name", e.target.value)
                         }
                         placeholder="Contoh: TWK, TIU, TKP"
+                        className="border-2 border-black font-medium focus-visible:ring-0"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor={`section-desc-${index}`}>Deskripsi</Label>
+                      <Label htmlFor={`section-desc-${index}`} className="font-bold">Deskripsi</Label>
                       <Input
                         id={`section-desc-${index}`}
                         value={section.description || ""}
@@ -469,11 +473,12 @@ export default function TryoutFormWithSections({
                           updateSection(index, "description", e.target.value)
                         }
                         placeholder="Deskripsi singkat"
+                        className="border-2 border-black font-medium focus-visible:ring-0"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor={`section-questions-${index}`}>
+                      <Label htmlFor={`section-questions-${index}`} className="font-bold">
                         Jumlah Soal *
                       </Label>
                       <Input
@@ -488,11 +493,12 @@ export default function TryoutFormWithSections({
                             parseInt(e.target.value) || 0
                           )
                         }
+                        className="border-2 border-black font-medium focus-visible:ring-0"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor={`section-duration-${index}`}>
+                      <Label htmlFor={`section-duration-${index}`} className="font-bold">
                         Durasi (menit) *
                       </Label>
                       <Input
@@ -507,6 +513,7 @@ export default function TryoutFormWithSections({
                             parseInt(e.target.value) || 0
                           )
                         }
+                        className="border-2 border-black font-medium focus-visible:ring-0"
                       />
                     </div>
                   </div>
@@ -515,18 +522,18 @@ export default function TryoutFormWithSections({
             </div>
 
             {sections.length > 0 && (
-              <div className="bg-muted p-3 rounded-lg">
+              <div className="bg-gray-100 border-2 border-black p-3 rounded-lg">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    <span>
-                      Total Soal: <strong>{totalQuestions}</strong>
+                    <FileText className="w-4 h-4 text-black" />
+                    <span className="font-medium">
+                      Total Soal: <strong className="font-black">{totalQuestions}</strong>
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" />
-                    <span>
-                      Total Durasi: <strong>{totalDuration} menit</strong>
+                    <Clock className="w-4 h-4 text-black" />
+                    <span className="font-medium">
+                      Total Durasi: <strong className="font-black">{totalDuration} menit</strong>
                     </span>
                   </div>
                 </div>
@@ -534,34 +541,36 @@ export default function TryoutFormWithSections({
             )}
           </div>
 
-          <Separator />
+          <Separator className="bg-black" />
 
           {/* Price & Passing Grade */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="price">Harga (Rp) *</Label>
+              <Label htmlFor="price" className="font-bold">Harga (Rp) *</Label>
               <Input
                 id="price"
                 type="number"
                 {...register("price", { valueAsNumber: true })}
                 disabled={isFree}
+                className="border-2 border-black font-medium focus-visible:ring-0"
               />
               {errors.price && (
-                <p className="text-sm text-destructive mt-1">
+                <p className="text-sm text-red-600 font-bold mt-1">
                   {errors.price.message}
                 </p>
               )}
             </div>
 
             <div>
-              <Label htmlFor="passing_grade">Passing Grade (%) *</Label>
+              <Label htmlFor="passing_grade" className="font-bold">Passing Grade (%) *</Label>
               <Input
                 id="passing_grade"
                 type="number"
                 {...register("passing_grade", { valueAsNumber: true })}
+                className="border-2 border-black font-medium focus-visible:ring-0"
               />
               {errors.passing_grade && (
-                <p className="text-sm text-destructive mt-1">
+                <p className="text-sm text-red-600 font-bold mt-1">
                   {errors.passing_grade.message}
                 </p>
               )}
@@ -570,18 +579,19 @@ export default function TryoutFormWithSections({
 
           {/* Thumbnail Upload */}
           <div>
-            <Label htmlFor="thumbnail">Thumbnail</Label>
+            <Label htmlFor="thumbnail" className="font-bold">Thumbnail</Label>
             <Input
               id="thumbnail"
               type="file"
               accept="image/*"
               onChange={handleThumbnailChange}
+              className="border-2 border-black font-medium focus-visible:ring-0"
             />
             {thumbnailPreview && (
               <img
                 src={thumbnailPreview}
                 alt="Preview"
-                className="mt-2 w-32 h-32 object-cover rounded-lg"
+                className="mt-2 w-32 h-32 object-cover rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
               />
             )}
           </div>
@@ -589,20 +599,22 @@ export default function TryoutFormWithSections({
           {/* Switches */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label htmlFor="is_free">Gratis</Label>
+              <Label htmlFor="is_free" className="font-bold">Gratis</Label>
               <Switch
                 id="is_free"
                 checked={watch("is_free")}
                 onCheckedChange={(checked) => setValue("is_free", checked)}
+                className="data-[state=checked]:bg-black data-[state=unchecked]:bg-gray-200 border-2 border-black"
               />
             </div>
 
             <div className="flex items-center justify-between">
-              <Label htmlFor="is_active">Aktif</Label>
+              <Label htmlFor="is_active" className="font-bold">Aktif</Label>
               <Switch
                 id="is_active"
                 checked={watch("is_active")}
                 onCheckedChange={(checked) => setValue("is_active", checked)}
+                className="data-[state=checked]:bg-black data-[state=unchecked]:bg-gray-200 border-2 border-black"
               />
             </div>
           </div>
@@ -613,10 +625,15 @@ export default function TryoutFormWithSections({
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={loading}
+              className="border-2 border-black font-bold hover:bg-gray-100"
             >
               Batal
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+            >
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               {tryout ? "Update" : "Simpan"}
             </Button>

@@ -25,13 +25,10 @@ import {
   Trophy,
   Target,
   TrendingUp,
-  TrendingDown,
   Calendar,
   Search,
   Filter,
-  ArrowUpDown,
   Eye,
-  BarChart3,
   CheckCircle,
   XCircle,
   Award,
@@ -54,15 +51,15 @@ interface TryoutResultItem {
   passed: boolean;
   created_at: string;
   tryout_packages:
-    | {
-        title: string;
-        category: string;
-      }
-    | {
-        title: string;
-        category: string;
-      }[]
-    | null;
+  | {
+    title: string;
+    category: string;
+  }
+  | {
+    title: string;
+    category: string;
+  }[]
+  | null;
 }
 
 export default function Results() {
@@ -226,18 +223,23 @@ export default function Results() {
 
   // Chart data
   const progressChartOptions: Highcharts.Options = {
-    chart: { type: "line", height: 300 },
+    chart: { type: "line", height: 300, backgroundColor: "transparent" },
     title: { text: "" },
     xAxis: {
       categories: results
         .slice(0, 10)
         .reverse()
         .map((r) => formatDate(r.created_at)),
+      lineColor: "#000000",
+      tickColor: "#000000",
+      labels: { style: { color: "#000000", fontWeight: "bold" } },
     },
     yAxis: {
-      title: { text: "Skor (%)" },
+      title: { text: "Skor (%)", style: { color: "#000000", fontWeight: "bold" } },
       min: 0,
       max: 100,
+      gridLineColor: "#e5e7eb",
+      labels: { style: { color: "#000000" } },
     },
     series: [
       {
@@ -247,7 +249,14 @@ export default function Results() {
           .slice(0, 10)
           .reverse()
           .map((r) => r.percentage),
-        color: "#10b981",
+        color: "#000000",
+        lineWidth: 3,
+        marker: {
+          fillColor: "#000000",
+          lineWidth: 2,
+          lineColor: "#ffffff",
+          radius: 6,
+        },
       },
     ],
     legend: { enabled: false },
@@ -256,33 +265,36 @@ export default function Results() {
 
   if (loading) {
     return (
-      <div className="p-4 md:p-8 space-y-6">
-        <Skeleton className="h-10 w-64" />
+      <div className="p-4 md:p-8 space-y-6 bg-white min-h-screen">
+        <Skeleton className="h-10 w-64 bg-gray-200" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i}>
+            <Card key={i} className="border-2 border-gray-200">
               <CardContent className="pt-6">
-                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full bg-gray-200" />
               </CardContent>
             </Card>
           ))}
         </div>
-        <Skeleton className="h-64 w-full" />
+        <Skeleton className="h-64 w-full bg-gray-200" />
       </div>
     );
   }
 
   if (results.length === 0) {
     return (
-      <div className="p-4 md:p-8">
+      <div className="p-4 md:p-8 bg-white min-h-screen">
         <div className="flex flex-col items-center justify-center py-12">
-          <Target className="w-16 h-16 text-muted-foreground mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Belum Ada Hasil</h2>
-          <p className="text-muted-foreground mb-6 text-center max-w-md">
+          <Target className="w-16 h-16 text-gray-300 mb-4" />
+          <h2 className="text-2xl font-black mb-2 text-black">Belum Ada Hasil</h2>
+          <p className="text-gray-500 mb-6 text-center max-w-md font-medium">
             Anda belum menyelesaikan tryout apapun. Mulai tryout pertama Anda
             sekarang!
           </p>
-          <Button onClick={() => navigate("/dashboard/tryout")}>
+          <Button
+            onClick={() => navigate("/dashboard/tryout")}
+            className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
+          >
             <Trophy className="w-4 h-4 mr-2" />
             Mulai Tryout
           </Button>
@@ -292,89 +304,89 @@ export default function Results() {
   }
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
+    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 bg-white min-h-screen text-black">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">
+        <h1 className="text-2xl sm:text-3xl font-black mb-2 tracking-tight">
           Hasil & Analisis
         </h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
+        <p className="text-sm sm:text-base text-gray-600 font-medium">
           Lihat semua hasil tryout dan analisis performa Anda
         </p>
       </div>
 
       {/* Stats Cards - Mobile-First */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardContent className="pt-4 sm:pt-6">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                <p className="text-xs sm:text-sm text-gray-600 font-bold mb-1">
                   Total Tryout
                 </p>
-                <h3 className="text-2xl sm:text-3xl font-bold mb-1">
+                <h3 className="text-2xl sm:text-3xl font-black mb-1">
                   {stats.totalTryouts}
                 </h3>
-                <p className="text-xs text-muted-foreground">Tryout selesai</p>
+                <p className="text-xs text-gray-500 font-medium">Tryout selesai</p>
               </div>
-              <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-500">
+              <div className="p-3 rounded-lg bg-black text-white border-2 border-black">
                 <Trophy className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardContent className="pt-4 sm:pt-6">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                <p className="text-xs sm:text-sm text-gray-600 font-bold mb-1">
                   Rata-rata Skor
                 </p>
-                <h3 className="text-2xl sm:text-3xl font-bold mb-1">
+                <h3 className="text-2xl sm:text-3xl font-black mb-1">
                   {stats.averageScore.toFixed(1)}
                 </h3>
-                <p className="text-xs text-muted-foreground">Dari 100</p>
+                <p className="text-xs text-gray-500 font-medium">Dari 100</p>
               </div>
-              <div className="p-3 rounded-lg bg-green-100 dark:bg-green-950 text-green-500">
+              <div className="p-3 rounded-lg bg-white text-black border-2 border-black">
                 <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardContent className="pt-4 sm:pt-6">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                <p className="text-xs sm:text-sm text-gray-600 font-bold mb-1">
                   Skor Terbaik
                 </p>
-                <h3 className="text-2xl sm:text-3xl font-bold mb-1">
+                <h3 className="text-2xl sm:text-3xl font-black mb-1">
                   {stats.bestScore.toFixed(1)}
                 </h3>
-                <p className="text-xs text-muted-foreground">Personal best</p>
+                <p className="text-xs text-gray-500 font-medium">Personal best</p>
               </div>
-              <div className="p-3 rounded-lg bg-yellow-100 dark:bg-yellow-950 text-yellow-500">
+              <div className="p-3 rounded-lg bg-black text-white border-2 border-black">
                 <Award className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <CardContent className="pt-4 sm:pt-6">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                <p className="text-xs sm:text-sm text-gray-600 font-bold mb-1">
                   Tingkat Kelulusan
                 </p>
-                <h3 className="text-2xl sm:text-3xl font-bold mb-1">
+                <h3 className="text-2xl sm:text-3xl font-black mb-1">
                   {stats.passRate.toFixed(0)}%
                 </h3>
-                <p className="text-xs text-muted-foreground">Pass rate</p>
+                <p className="text-xs text-gray-500 font-medium">Pass rate</p>
               </div>
-              <div className="p-3 rounded-lg bg-purple-100 dark:bg-purple-950 text-purple-500">
+              <div className="p-3 rounded-lg bg-white text-black border-2 border-black">
                 <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             </div>
@@ -384,17 +396,17 @@ export default function Results() {
 
       {/* Progress Chart - Mobile-First */}
       {results.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm sm:text-base">
+        <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <CardHeader className="border-b-2 border-gray-100">
+            <CardTitle className="text-sm sm:text-base font-black">
               Progress Skor
             </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
+            <CardDescription className="text-xs sm:text-sm text-gray-600 font-medium">
               Grafik perkembangan skor dari {Math.min(results.length, 10)}{" "}
               tryout terakhir
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <div className="w-full overflow-x-auto">
               <HighchartsReact
                 highcharts={Highcharts}
@@ -412,27 +424,27 @@ export default function Results() {
       )}
 
       {/* Filters & Search - Mobile-First */}
-      <Card>
+      <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <CardContent className="pt-4 sm:pt-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
               <Input
                 placeholder="Cari tryout..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 min-h-[44px]"
+                className="pl-10 min-h-[44px] border-2 border-black focus-visible:ring-0 focus-visible:ring-offset-0 font-medium"
                 style={{ fontSize: "16px" }} // Prevent zoom on iOS
               />
             </div>
 
             {/* Category Filter */}
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="min-h-[44px]">
+              <SelectTrigger className="min-h-[44px] border-2 border-black font-bold focus:ring-0 focus:ring-offset-0">
                 <SelectValue placeholder="Kategori" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="border-2 border-black">
                 <SelectItem value="all">Semua Kategori</SelectItem>
                 <SelectItem value="CPNS">CPNS</SelectItem>
                 <SelectItem value="BUMN_TKD">BUMN TKD</SelectItem>
@@ -443,10 +455,10 @@ export default function Results() {
 
             {/* Status Filter */}
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="min-h-[44px]">
+              <SelectTrigger className="min-h-[44px] border-2 border-black font-bold focus:ring-0 focus:ring-offset-0">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="border-2 border-black">
                 <SelectItem value="all">Semua Status</SelectItem>
                 <SelectItem value="passed">Lulus</SelectItem>
                 <SelectItem value="failed">Tidak Lulus</SelectItem>
@@ -455,10 +467,10 @@ export default function Results() {
 
             {/* Sort */}
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="min-h-[44px]">
+              <SelectTrigger className="min-h-[44px] border-2 border-black font-bold focus:ring-0 focus:ring-offset-0">
                 <SelectValue placeholder="Urutkan" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="border-2 border-black">
                 <SelectItem value="date_desc">Terbaru</SelectItem>
                 <SelectItem value="date_asc">Terlama</SelectItem>
                 <SelectItem value="score_desc">Skor Tertinggi</SelectItem>
@@ -472,14 +484,14 @@ export default function Results() {
       {/* Results List - Mobile-First */}
       <div className="space-y-4">
         {filteredResults.length === 0 ? (
-          <Card>
+          <Card className="border-2 border-black border-dashed bg-gray-50">
             <CardContent className="py-8 sm:py-12">
               <div className="text-center">
-                <Filter className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg sm:text-xl font-semibold mb-2">
+                <Filter className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg sm:text-xl font-black mb-2">
                   Tidak Ada Hasil
                 </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">
                   Tidak ada hasil yang sesuai dengan filter Anda
                 </p>
               </div>
@@ -489,7 +501,7 @@ export default function Results() {
           filteredResults.map((result) => (
             <Card
               key={result.id}
-              className="hover:shadow-md transition-shadow cursor-pointer"
+              className="hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer border-2 border-black group"
               onClick={() =>
                 navigate(`/dashboard/results/${result.user_tryout_session_id}`)
               }
@@ -498,34 +510,35 @@ export default function Results() {
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                   {/* Left: Info */}
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-base sm:text-lg font-semibold">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                      <h3 className="text-base sm:text-lg font-black text-black group-hover:underline decoration-2 underline-offset-4">
                         {Array.isArray(result.tryout_packages)
                           ? result.tryout_packages[0]?.title ||
-                            "Tryout Tanpa Judul"
+                          "Tryout Tanpa Judul"
                           : result.tryout_packages?.title ||
-                            "Tryout Tanpa Judul"}
+                          "Tryout Tanpa Judul"}
                       </h3>
                       <Badge
                         variant={result.passed ? "default" : "secondary"}
                         className={cn(
+                          "border-2 font-bold",
                           result.passed
-                            ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                            : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                            ? "bg-green-100 text-green-700 border-green-600 hover:bg-green-200"
+                            : "bg-red-100 text-red-700 border-red-600 hover:bg-red-200"
                         )}
                       >
                         {result.passed ? "Lulus" : "Tidak Lulus"}
                       </Badge>
-                      <Badge variant="outline">
+                      <Badge variant="outline" className="border-2 border-black text-black font-bold">
                         {Array.isArray(result.tryout_packages)
                           ? result.tryout_packages[0]?.category ||
-                            "Tidak Berkategori"
+                          "Tidak Berkategori"
                           : result.tryout_packages?.category ||
-                            "Tidak Berkategori"}
+                          "Tidak Berkategori"}
                       </Badge>
                     </div>
 
-                    <div className="flex items-center gap-4 text-xs sm:text-sm text-muted-foreground mb-3">
+                    <div className="flex items-center gap-4 text-xs sm:text-sm text-gray-600 font-medium mb-4">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                         {formatDate(result.created_at)}
@@ -543,48 +556,50 @@ export default function Results() {
                     {/* Stats */}
                     <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
-                        <span className="font-medium">
+                        <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                        <span className="font-bold text-black">
                           {result.correct_answers}
                         </span>
-                        <span className="text-muted-foreground">Benar</span>
+                        <span className="text-gray-500 font-medium">Benar</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <XCircle className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
-                        <span className="font-medium">
+                        <XCircle className="w-3 h-3 sm:w-4 sm:h-4 text-red-600" />
+                        <span className="font-bold text-black">
                           {result.wrong_answers}
                         </span>
-                        <span className="text-muted-foreground">Salah</span>
+                        <span className="text-gray-500 font-medium">Salah</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Target className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
-                        <span className="font-medium">{result.unanswered}</span>
-                        <span className="text-muted-foreground">Kosong</span>
+                        <Target className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
+                        <span className="font-bold text-black">{result.unanswered}</span>
+                        <span className="text-gray-500 font-medium">Kosong</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Right: Score */}
-                  <div className="text-right ml-0 sm:ml-6">
-                    <div className="flex items-center gap-2 mb-1">
-                      <div
-                        className={cn(
-                          "text-2xl sm:text-4xl font-bold",
-                          result.passed ? "text-green-600" : "text-red-600"
-                        )}
-                      >
-                        {result.percentage.toFixed(1)}
+                  <div className="text-right ml-0 sm:ml-6 flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start w-full sm:w-auto mt-2 sm:mt-0 border-t-2 border-gray-100 sm:border-0 pt-3 sm:pt-0">
+                    <div>
+                      <div className="flex items-center gap-1 sm:justify-end mb-1">
+                        <div
+                          className={cn(
+                            "text-2xl sm:text-4xl font-black",
+                            result.passed ? "text-green-600" : "text-red-600"
+                          )}
+                        >
+                          {result.percentage.toFixed(1)}
+                        </div>
+                        <div className="text-gray-400 font-bold text-lg">%</div>
                       </div>
-                      <div className="text-muted-foreground">%</div>
+                      <p className="text-xs sm:text-sm text-gray-500 font-bold">
+                        {result.total_score.toFixed(0)} /{" "}
+                        {result.max_score.toFixed(0)}
+                      </p>
                     </div>
-                    <p className="text-xs sm:text-sm text-muted-foreground">
-                      {result.total_score.toFixed(0)} /{" "}
-                      {result.max_score.toFixed(0)}
-                    </p>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="mt-2 min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px]"
+                      className="mt-0 sm:mt-2 min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] border-2 border-black hover:bg-black hover:text-white font-bold"
                       onClick={(e) => {
                         e.stopPropagation();
                         navigate(
@@ -605,9 +620,9 @@ export default function Results() {
 
       {/* Summary Footer - Mobile-First */}
       {filteredResults.length > 0 && (
-        <Card>
+        <Card className="border-2 border-black bg-gray-50">
           <CardContent className="py-4">
-            <p className="text-center text-xs sm:text-sm text-muted-foreground">
+            <p className="text-center text-xs sm:text-sm text-gray-600 font-bold">
               Menampilkan {filteredResults.length} dari {results.length} hasil
             </p>
           </CardContent>

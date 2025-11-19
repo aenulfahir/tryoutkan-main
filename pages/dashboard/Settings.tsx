@@ -277,35 +277,44 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <div className="p-4 md:p-8 space-y-6">
-        <Skeleton className="h-10 w-64" />
-        <Skeleton className="h-96 w-full" />
+      <div className="p-4 md:p-8 space-y-6 bg-white min-h-screen">
+        <Skeleton className="h-10 w-64 bg-gray-200" />
+        <Skeleton className="h-96 w-full bg-gray-200" />
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-8 space-y-6">
+    <div className="p-4 md:p-8 space-y-6 bg-white min-h-screen text-black">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Pengaturan</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-3xl font-black mb-2 tracking-tight">Pengaturan</h1>
+        <p className="text-gray-600 font-medium">
           Kelola profil dan preferensi akun Anda
         </p>
       </div>
 
       {/* Tabs */}
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="profile">
+        <TabsList className="grid w-full grid-cols-3 bg-gray-100 border-2 border-black p-1 h-auto">
+          <TabsTrigger
+            value="profile"
+            className="data-[state=active]:bg-black data-[state=active]:text-white font-bold py-2"
+          >
             <UserIcon className="w-4 h-4 mr-2" />
             Profil
           </TabsTrigger>
-          <TabsTrigger value="security">
+          <TabsTrigger
+            value="security"
+            className="data-[state=active]:bg-black data-[state=active]:text-white font-bold py-2"
+          >
             <Lock className="w-4 h-4 mr-2" />
             Keamanan
           </TabsTrigger>
-          <TabsTrigger value="preferences">
+          <TabsTrigger
+            value="preferences"
+            className="data-[state=active]:bg-black data-[state=active]:text-white font-bold py-2"
+          >
             <Bell className="w-4 h-4 mr-2" />
             Preferensi
           </TabsTrigger>
@@ -314,10 +323,10 @@ export default function Settings() {
         {/* Profile Tab */}
         <TabsContent value="profile" className="space-y-6 mt-6">
           {/* Avatar Section */}
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardHeader>
-              <CardTitle>Foto Profil</CardTitle>
-              <CardDescription>
+              <CardTitle className="font-black">Foto Profil</CardTitle>
+              <CardDescription className="text-gray-600 font-medium">
                 Upload foto profil Anda untuk personalisasi akun
               </CardDescription>
             </CardHeader>
@@ -331,28 +340,28 @@ export default function Settings() {
           </Card>
 
           {/* Personal Information */}
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardHeader>
-              <CardTitle>Informasi Pribadi</CardTitle>
-              <CardDescription>
+              <CardTitle className="font-black">Informasi Pribadi</CardTitle>
+              <CardDescription className="text-gray-600 font-medium">
                 Perbarui informasi pribadi Anda di sini
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Name */}
               <div className="space-y-2">
-                <Label htmlFor="name">
-                  Nama Lengkap <span className="text-destructive">*</span>
+                <Label htmlFor="name" className="font-bold">
+                  Nama Lengkap <span className="text-red-600">*</span>
                 </Label>
                 <div className="relative">
-                  <UserIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <UserIcon className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                   <Input
                     id="name"
                     type="text"
                     placeholder="Masukkan nama lengkap"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-2 border-black font-medium focus-visible:ring-0"
                     required
                   />
                 </div>
@@ -360,54 +369,54 @@ export default function Settings() {
 
               {/* Email (Read-only) */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="flex items-center gap-2">
+                <Label htmlFor="email" className="flex items-center gap-2 font-bold">
                   Email
                   {user?.email_confirmed_at && (
-                    <span className="inline-flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
+                    <span className="inline-flex items-center gap-1 text-xs text-green-700 font-bold bg-green-100 px-2 py-0.5 rounded-full border border-green-600">
                       <CheckCircle2 className="w-3 h-3" />
                       Terverifikasi
                     </span>
                   )}
                 </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                   <Input
                     id="email"
                     type="email"
                     value={email}
                     disabled
-                    className="pl-10 bg-muted"
+                    className="pl-10 bg-gray-100 border-2 border-black font-medium text-gray-600"
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-gray-500 font-medium">
                   Email tidak dapat diubah
                 </p>
               </div>
 
               {/* Phone */}
               <div className="space-y-2">
-                <Label htmlFor="phone">Nomor Telepon</Label>
+                <Label htmlFor="phone" className="font-bold">Nomor Telepon</Label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                   <Input
                     id="phone"
                     type="tel"
                     placeholder="08xxxxxxxxxx"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-2 border-black font-medium focus-visible:ring-0"
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-gray-500 font-medium">
                   Format: 08xxxxxxxxxx atau +62xxxxxxxxxx
                 </p>
               </div>
 
-              <Separator />
+              <Separator className="bg-gray-200" />
 
               {/* Bio */}
               <div className="space-y-2">
-                <Label htmlFor="bio">Bio</Label>
+                <Label htmlFor="bio" className="font-bold">Bio</Label>
                 <Textarea
                   id="bio"
                   placeholder="Ceritakan sedikit tentang diri Anda..."
@@ -415,40 +424,41 @@ export default function Settings() {
                   onChange={(e) => setBio(e.target.value)}
                   rows={4}
                   maxLength={500}
+                  className="border-2 border-black font-medium focus-visible:ring-0"
                 />
-                <p className="text-xs text-muted-foreground text-right">
+                <p className="text-xs text-gray-500 font-medium text-right">
                   {bio.length}/500 karakter
                 </p>
               </div>
 
               {/* Date of Birth */}
               <div className="space-y-2">
-                <Label htmlFor="dateOfBirth">Tanggal Lahir</Label>
+                <Label htmlFor="dateOfBirth" className="font-bold">Tanggal Lahir</Label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                   <Input
                     id="dateOfBirth"
                     type="date"
                     value={dateOfBirth}
                     onChange={(e) => setDateOfBirth(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-2 border-black font-medium focus-visible:ring-0"
                   />
                 </div>
               </div>
 
               {/* Gender */}
               <div className="space-y-2">
-                <Label htmlFor="gender">Jenis Kelamin</Label>
+                <Label htmlFor="gender" className="font-bold">Jenis Kelamin</Label>
                 <Select
                   value={gender}
                   onValueChange={(value: "male" | "female" | "other") =>
                     setGender(value)
                   }
                 >
-                  <SelectTrigger id="gender">
+                  <SelectTrigger id="gender" className="border-2 border-black font-medium focus:ring-0">
                     <SelectValue placeholder="Pilih jenis kelamin" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="border-2 border-black">
                     <SelectItem value="male">Laki-laki</SelectItem>
                     <SelectItem value="female">Perempuan</SelectItem>
                     <SelectItem value="other">Lainnya</SelectItem>
@@ -456,11 +466,16 @@ export default function Settings() {
                 </Select>
               </div>
 
-              <Separator />
+              <Separator className="bg-gray-200" />
 
               {/* Save Button */}
               <div className="flex justify-end">
-                <Button onClick={handleSaveProfile} disabled={saving} size="lg">
+                <Button
+                  onClick={handleSaveProfile}
+                  disabled={saving}
+                  size="lg"
+                  className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
+                >
                   {saving ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -481,30 +496,33 @@ export default function Settings() {
         {/* Security Tab */}
         <TabsContent value="security" className="space-y-6 mt-6">
           {/* Password */}
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardHeader>
-              <CardTitle>Password</CardTitle>
-              <CardDescription>
+              <CardTitle className="font-black">Password</CardTitle>
+              <CardDescription className="text-gray-600 font-medium">
                 Kelola password akun Anda untuk keamanan yang lebih baik
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-start justify-between p-4 border rounded-lg bg-muted/50">
+              <div className="flex items-start justify-between p-4 border-2 border-black rounded-lg bg-gray-50">
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <Lock className="w-5 h-5 text-primary" />
+                  <div className="p-2 bg-black text-white rounded-lg border-2 border-black">
+                    <Lock className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-medium mb-1">Ubah Password</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <h4 className="font-bold mb-1">Ubah Password</h4>
+                    <p className="text-sm text-gray-600 font-medium">
                       Pastikan password Anda kuat dan unik
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-gray-500 mt-1 font-medium">
                       Minimal 6 karakter
                     </p>
                   </div>
                 </div>
-                <Button onClick={() => setShowPasswordDialog(true)}>
+                <Button
+                  onClick={() => setShowPasswordDialog(true)}
+                  className="bg-white text-black border-2 border-black font-bold hover:bg-gray-100"
+                >
                   <Lock className="w-4 h-4 mr-2" />
                   Ubah
                 </Button>
@@ -513,31 +531,30 @@ export default function Settings() {
           </Card>
 
           {/* Account Security Info */}
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardHeader>
-              <CardTitle>Informasi Keamanan</CardTitle>
-              <CardDescription>Status keamanan akun Anda</CardDescription>
+              <CardTitle className="font-black">Informasi Keamanan</CardTitle>
+              <CardDescription className="text-gray-600 font-medium">Status keamanan akun Anda</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Email Verification */}
-              <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="flex items-center justify-between p-4 border-2 border-black rounded-lg">
                 <div className="flex items-center gap-3">
                   <div
-                    className={`p-2 rounded-lg ${
-                      user?.email_confirmed_at
-                        ? "bg-green-100 dark:bg-green-900"
-                        : "bg-orange-100 dark:bg-orange-900"
-                    }`}
+                    className={`p-2 rounded-lg border-2 ${user?.email_confirmed_at
+                        ? "bg-green-100 border-green-600 text-green-700"
+                        : "bg-orange-100 border-orange-600 text-orange-700"
+                      }`}
                   >
                     {user?.email_confirmed_at ? (
-                      <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      <CheckCircle2 className="w-5 h-5" />
                     ) : (
-                      <AlertCircle className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                      <AlertCircle className="w-5 h-5" />
                     )}
                   </div>
                   <div>
-                    <h4 className="font-medium mb-1">Verifikasi Email</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <h4 className="font-bold mb-1">Verifikasi Email</h4>
+                    <p className="text-sm text-gray-600 font-medium">
                       {user?.email_confirmed_at
                         ? "Email Anda telah terverifikasi"
                         : "Email belum terverifikasi"}
@@ -550,23 +567,23 @@ export default function Settings() {
               </div>
 
               {/* Account Created */}
-              <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="flex items-center justify-between p-4 border-2 border-black rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                    <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div className="p-2 bg-blue-100 text-blue-700 border-2 border-blue-600 rounded-lg">
+                    <Shield className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-medium mb-1">Akun Dibuat</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <h4 className="font-bold mb-1">Akun Dibuat</h4>
+                    <p className="text-sm text-gray-600 font-medium">
                       {user?.created_at
                         ? new Date(user.created_at).toLocaleDateString(
-                            "id-ID",
-                            {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            }
-                          )
+                          "id-ID",
+                          {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )
                         : "-"}
                     </p>
                   </div>
@@ -579,27 +596,27 @@ export default function Settings() {
         {/* Preferences Tab */}
         <TabsContent value="preferences" className="space-y-6 mt-6">
           {/* Appearance */}
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardHeader>
-              <CardTitle>Tampilan</CardTitle>
-              <CardDescription>
+              <CardTitle className="font-black">Tampilan</CardTitle>
+              <CardDescription className="text-gray-600 font-medium">
                 Sesuaikan tampilan aplikasi sesuai preferensi Anda
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Dark Mode */}
-              <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="flex items-center justify-between p-4 border-2 border-black rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
+                  <div className="p-2 bg-black text-white rounded-lg border-2 border-black">
                     {darkMode ? (
-                      <Moon className="w-5 h-5 text-primary" />
+                      <Moon className="w-5 h-5" />
                     ) : (
-                      <Sun className="w-5 h-5 text-primary" />
+                      <Sun className="w-5 h-5" />
                     )}
                   </div>
                   <div>
-                    <h4 className="font-medium mb-1">Mode Gelap</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <h4 className="font-bold mb-1">Mode Gelap</h4>
+                    <p className="text-sm text-gray-600 font-medium">
                       {darkMode
                         ? "Tampilan gelap untuk kenyamanan mata"
                         : "Tampilan terang untuk visibilitas lebih baik"}
@@ -609,29 +626,30 @@ export default function Settings() {
                 <Switch
                   checked={darkMode}
                   onCheckedChange={handleToggleDarkMode}
+                  className="data-[state=checked]:bg-black data-[state=unchecked]:bg-gray-200 border-2 border-black"
                 />
               </div>
             </CardContent>
           </Card>
 
           {/* Notifications */}
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardHeader>
-              <CardTitle>Notifikasi</CardTitle>
-              <CardDescription>
+              <CardTitle className="font-black">Notifikasi</CardTitle>
+              <CardDescription className="text-gray-600 font-medium">
                 Kelola preferensi notifikasi Anda
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Email Notifications */}
-              <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="flex items-center justify-between p-4 border-2 border-black rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <Mail className="w-5 h-5 text-primary" />
+                  <div className="p-2 bg-black text-white rounded-lg border-2 border-black">
+                    <Mail className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-medium mb-1">Notifikasi Email</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <h4 className="font-bold mb-1">Notifikasi Email</h4>
+                    <p className="text-sm text-gray-600 font-medium">
                       Terima update dan pengingat via email
                     </p>
                   </div>
@@ -639,18 +657,19 @@ export default function Settings() {
                 <Switch
                   checked={emailNotifications}
                   onCheckedChange={handleToggleEmailNotifications}
+                  className="data-[state=checked]:bg-black data-[state=unchecked]:bg-gray-200 border-2 border-black"
                 />
               </div>
 
               {/* Push Notifications */}
-              <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="flex items-center justify-between p-4 border-2 border-black rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <Bell className="w-5 h-5 text-primary" />
+                  <div className="p-2 bg-black text-white rounded-lg border-2 border-black">
+                    <Bell className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-medium mb-1">Notifikasi Push</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <h4 className="font-bold mb-1">Notifikasi Push</h4>
+                    <p className="text-sm text-gray-600 font-medium">
                       Terima notifikasi real-time di browser
                     </p>
                   </div>
@@ -658,22 +677,23 @@ export default function Settings() {
                 <Switch
                   checked={pushNotifications}
                   onCheckedChange={handleTogglePushNotifications}
+                  className="data-[state=checked]:bg-black data-[state=unchecked]:bg-gray-200 border-2 border-black"
                 />
               </div>
             </CardContent>
           </Card>
 
           {/* Data & Privacy */}
-          <Card>
+          <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <CardHeader>
-              <CardTitle>Data & Privasi</CardTitle>
-              <CardDescription>
+              <CardTitle className="font-black">Data & Privasi</CardTitle>
+              <CardDescription className="text-gray-600 font-medium">
                 Informasi tentang data dan privasi Anda
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 border rounded-lg bg-muted/50">
-                <p className="text-sm text-muted-foreground">
+              <div className="p-4 border-2 border-black rounded-lg bg-gray-50">
+                <p className="text-sm text-gray-600 font-medium">
                   Data Anda disimpan dengan aman dan tidak akan dibagikan kepada
                   pihak ketiga tanpa izin Anda. Kami menggunakan enkripsi
                   end-to-end untuk melindungi informasi pribadi Anda.
@@ -686,16 +706,16 @@ export default function Settings() {
 
       {/* Change Password Dialog */}
       <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-        <DialogContent>
+        <DialogContent className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <DialogHeader>
-            <DialogTitle>Ubah Password</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="font-black">Ubah Password</DialogTitle>
+            <DialogDescription className="text-gray-600 font-medium">
               Masukkan password baru Anda. Password minimal 6 karakter.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label htmlFor="newPassword" className="text-sm font-medium">
+              <label htmlFor="newPassword" className="text-sm font-bold">
                 Password Baru
               </label>
               <Input
@@ -704,10 +724,11 @@ export default function Settings() {
                 placeholder="Masukkan password baru"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
+                className="border-2 border-black font-medium focus-visible:ring-0"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="text-sm font-medium">
+              <label htmlFor="confirmPassword" className="text-sm font-bold">
                 Konfirmasi Password
               </label>
               <Input
@@ -716,6 +737,7 @@ export default function Settings() {
                 placeholder="Konfirmasi password baru"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                className="border-2 border-black font-medium focus-visible:ring-0"
               />
             </div>
           </div>
@@ -724,10 +746,15 @@ export default function Settings() {
               variant="outline"
               onClick={() => setShowPasswordDialog(false)}
               disabled={changingPassword}
+              className="border-2 border-black font-bold hover:bg-gray-100"
             >
               Batal
             </Button>
-            <Button onClick={handleChangePassword} disabled={changingPassword}>
+            <Button
+              onClick={handleChangePassword}
+              disabled={changingPassword}
+              className="bg-black text-white border-2 border-black font-bold hover:bg-gray-800"
+            >
               {changingPassword ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />

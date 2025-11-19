@@ -185,7 +185,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   };
 
   return (
-    <header className="fixed top-0 right-0 left-0 lg:left-64 h-16 bg-card border-b border-border z-30 transition-all duration-300">
+    <header className="fixed top-0 right-0 left-0 lg:left-64 h-16 bg-white border-b-2 border-black z-30 transition-all duration-300">
       <div className="h-full px-4 lg:px-6 flex items-center justify-between">
         {/* Left Section */}
         <div className="flex items-center space-x-4">
@@ -194,7 +194,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             variant="ghost"
             size="icon"
             onClick={onMenuClick}
-            className="lg:hidden"
+            className="lg:hidden hover:bg-gray-100 text-black"
           >
             <Menu className="w-5 h-5" />
           </Button>
@@ -204,14 +204,14 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             {breadcrumbs.map((crumb, index) => (
               <div key={crumb.path} className="flex items-center space-x-2">
                 {index > 0 && (
-                  <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
                 )}
                 <Link
                   to={crumb.path}
                   className={
                     index === breadcrumbs.length - 1
-                      ? "font-medium text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "font-bold text-black"
+                      : "text-gray-500 hover:text-black transition-colors"
                   }
                 >
                   {crumb.label}
@@ -226,13 +226,13 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="hidden lg:block">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
                 type="search"
                 placeholder="Cari..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 w-64"
+                className="pl-10 w-64 border-2 border-gray-200 focus:border-black focus:ring-0 rounded-lg transition-colors"
               />
             </div>
           </form>
@@ -240,12 +240,12 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           {/* Notifications */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
+              <Button variant="ghost" size="icon" className="relative hover:bg-gray-100 text-black">
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
                   <Badge
                     variant="destructive"
-                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs border-2 border-white"
                   >
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </Badge>
@@ -254,28 +254,28 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-80 max-h-96 overflow-y-auto"
+              className="w-80 max-h-96 overflow-y-auto border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-lg"
             >
               <DropdownMenuLabel className="flex items-center justify-between">
-                <span>Notifikasi</span>
+                <span className="font-bold">Notifikasi</span>
                 {unreadCount > 0 && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleMarkAllAsRead}
-                    className="text-xs h-auto p-1"
+                    className="text-xs h-auto p-1 hover:bg-gray-100"
                   >
                     Tandai semua dibaca
                   </Button>
                 )}
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className="bg-gray-200" />
               {isLoadingNotifications ? (
-                <div className="p-4 text-center text-sm text-muted-foreground">
+                <div className="p-4 text-center text-sm text-gray-500">
                   Memuat notifikasi...
                 </div>
               ) : notifications.length === 0 ? (
-                <div className="p-4 text-center text-sm text-muted-foreground">
+                <div className="p-4 text-center text-sm text-gray-500">
                   Tidak ada notifikasi baru
                 </div>
               ) : (
@@ -283,9 +283,8 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                   {notifications.map((notification) => (
                     <div
                       key={notification.id}
-                      className={`p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
-                        !notification.is_read ? "bg-muted/30" : ""
-                      }`}
+                      className={`p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0 ${!notification.is_read ? "bg-blue-50/30" : ""
+                        }`}
                       onClick={() => handleMarkAsRead(notification.id)}
                     >
                       <div className="flex items-start space-x-3">
@@ -294,21 +293,21 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
-                            <p className="text-sm font-medium truncate">
+                            <p className="text-sm font-bold truncate">
                               {notification.title}
                             </p>
                             {!notification.is_read && (
-                              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 ml-2" />
+                              <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 ml-2" />
                             )}
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                          <p className="text-xs text-gray-600 mt-1 line-clamp-2">
                             {notification.message}
                           </p>
                           {notification.data &&
                             notification.type === "purchase" && (
-                              <div className="mt-2 text-xs text-muted-foreground">
+                              <div className="mt-2 text-xs text-gray-500 bg-gray-50 p-2 rounded border border-gray-200">
                                 <div>
-                                  Paket: {notification.data.package_title}
+                                  Paket: <span className="font-medium">{notification.data.package_title}</span>
                                 </div>
                                 <div>
                                   Harga: Rp{" "}
@@ -318,7 +317,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                                 </div>
                               </div>
                             )}
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-xs text-gray-400 mt-1">
                             {formatTime(notification.created_at)}
                           </p>
                         </div>
@@ -329,9 +328,9 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
               )}
               {notifications.length > 0 && (
                 <>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="bg-gray-200" />
                   <DropdownMenuItem
-                    className="text-center justify-center"
+                    className="text-center justify-center font-medium cursor-pointer hover:bg-gray-100"
                     onClick={() => {
                       // Navigate to notifications page if exists
                       navigate("/admin/notifications");
@@ -347,34 +346,34 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center space-x-2">
-                <Avatar className="w-8 h-8">
+              <Button variant="ghost" className="flex items-center space-x-2 hover:bg-gray-100">
+                <Avatar className="w-8 h-8 border-2 border-black">
                   <AvatarImage src={userProfile?.avatar_url} />
-                  <AvatarFallback>
+                  <AvatarFallback className="bg-black text-white font-bold">
                     {getInitials(userProfile?.name || "Admin")}
                   </AvatarFallback>
                 </Avatar>
-                <span className="hidden lg:block font-medium">
+                <span className="hidden lg:block font-bold text-sm">
                   {userProfile?.name || "Admin"}
                 </span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end" className="w-56 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-lg">
               <DropdownMenuLabel>
                 <div>
-                  <p className="font-medium">{userProfile?.name || "Admin"}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="font-bold">{userProfile?.name || "Admin"}</p>
+                  <p className="text-xs text-gray-500 font-normal">
                     {userProfile?.email}
                   </p>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate("/admin/settings")}>
+              <DropdownMenuSeparator className="bg-gray-200" />
+              <DropdownMenuItem onClick={() => navigate("/admin/settings")} className="cursor-pointer hover:bg-gray-100 font-medium">
                 <Settings className="w-4 h-4 mr-2" />
                 Pengaturan
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+              <DropdownMenuSeparator className="bg-gray-200" />
+              <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer hover:bg-red-50 font-medium">
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
               </DropdownMenuItem>

@@ -149,37 +149,37 @@ export function Timer({
         "flex items-center justify-center sm:justify-start space-x-2 sm:space-x-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 transition-all",
         "min-h-[44px] sm:min-h-[48px]", // WCAG touch target minimum
         isCritical
-          ? "bg-red-50 border-red-500 dark:bg-red-950 animate-pulse"
+          ? "bg-red-50 border-black animate-pulse"
           : isWarning
-          ? "bg-yellow-50 border-yellow-500 dark:bg-yellow-950"
-          : "bg-card border-border"
+            ? "bg-yellow-50 border-black"
+            : "bg-white border-black"
       )}
     >
       {isCritical ? (
-        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 dark:text-red-400 animate-pulse flex-shrink-0" />
+        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 animate-pulse flex-shrink-0" />
       ) : (
         <Clock
           className={cn(
             "w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0",
             isWarning
-              ? "text-yellow-600 dark:text-yellow-400"
-              : "text-muted-foreground"
+              ? "text-yellow-600"
+              : "text-black"
           )}
         />
       )}
 
-      <div className="flex flex-col sm:flex-row sm:items-center">
-        <p className="text-xs text-muted-foreground hidden sm:block">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+        <p className="text-xs text-gray-600 hidden sm:block font-medium">
           Waktu Tersisa
         </p>
         <p
           className={cn(
-            "text-lg sm:text-xl font-bold tabular-nums",
+            "text-lg sm:text-xl font-black tabular-nums",
             isCritical
-              ? "text-red-600 dark:text-red-400"
+              ? "text-red-600"
               : isWarning
-              ? "text-yellow-600 dark:text-yellow-400"
-              : ""
+                ? "text-yellow-600"
+                : "text-black"
           )}
         >
           {formatTime(timeRemaining)}
