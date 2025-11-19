@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Check } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const plans = [
   {
@@ -53,80 +55,115 @@ const plans = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="py-12 md:py-20 px-4 bg-muted/30">
-      <div className="container mx-auto">
-        <div className="text-center mb-8 md:mb-16">
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4">
+    <section id="pricing" className="py-20 px-4 bg-muted/30 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-foreground/3 rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto relative z-10">
+        <div className="text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-4xl md:text-5xl font-bold mb-6 tracking-tight"
+          >
             Pilih Paket Tryout
-          </h2>
-          <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-xl text-muted-foreground max-w-2xl mx-auto"
+          >
             Investasi terbaik untuk masa depanmu dengan harga terjangkau
-          </p>
+          </motion.p>
         </div>
 
-        <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+        <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {plans.map((plan, index) => (
-            <Card
+            <motion.div
               key={index}
-              className={`relative ${
-                plan.popular
-                  ? "border-primary shadow-xl scale-100 md:scale-105"
-                  : "border-border"
-              }`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                  <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs md:text-sm font-semibold">
-                    Paling Populer
-                  </span>
-                </div>
-              )}
-              <CardHeader className="text-center pt-6 md:pt-8">
-                <h3 className="text-xl md:text-2xl font-bold mb-2">
-                  {plan.name}
-                </h3>
-                <p className="text-muted-foreground text-xs md:text-sm mb-4 px-2">
-                  {plan.description}
-                </p>
-                <div className="mb-4">
-                  <span className="text-3xl md:text-5xl font-bold">
-                    Rp {plan.price}
-                  </span>
-                  <span className="text-sm md:text-base text-muted-foreground">
+              <Card
+                className={`relative h-full flex flex-col transition-all duration-300 hover:shadow-xl ${plan.popular
+                    ? "border-foreground shadow-lg scale-105 z-10"
+                    : "border-border hover:border-foreground/50"
+                  }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                    <div className="bg-foreground text-background px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg">
+                      <Sparkles size={14} />
+                      Paling Populer
+                    </div>
+                  </div>
+                )}
+                <CardHeader className="text-center pt-10 pb-8">
+                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                  <p className="text-muted-foreground mb-6">
+                    {plan.description}
+                  </p>
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="text-sm font-medium text-muted-foreground">
+                      Rp
+                    </span>
+                    <span className="text-5xl font-bold tracking-tight">
+                      {plan.price}
+                    </span>
+                  </div>
+                  <span className="text-sm text-muted-foreground">
                     /{plan.period}
                   </span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Button
-                  className="w-full mb-4 md:mb-6 text-sm md:text-base"
-                  variant={plan.popular ? "default" : "outline"}
-                  asChild
-                >
-                  <a href="/register">{plan.cta}</a>
-                </Button>
-                <ul className="space-y-2 md:space-y-3">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-start">
-                      <Check
-                        className="text-primary mr-2 flex-shrink-0 mt-0.5"
-                        size={16}
-                      />
-                      <span className="text-xs md:text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent className="flex-grow flex flex-col">
+                  <ul className="space-y-4 mb-8 flex-grow">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-start gap-3">
+                        <div className="mt-1 w-5 h-5 rounded-full bg-foreground/10 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-3 h-3 text-foreground" />
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to="/register" className="w-full">
+                    <Button
+                      className={`w-full h-12 text-base font-medium rounded-xl transition-all duration-300 ${plan.popular
+                          ? "bg-foreground text-background hover:bg-foreground/90 hover:scale-105 shadow-lg"
+                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                    >
+                      {plan.cta}
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
 
-        <div className="text-center mt-8 md:mt-12">
-          <p className="text-sm text-muted-foreground">
-            💡 <strong>Info:</strong> Semua paket include akses selamanya dan
-            bisa diakses di semua perangkat
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="text-center mt-12"
+        >
+          <p className="text-sm text-muted-foreground bg-background/50 inline-block px-4 py-2 rounded-full border border-border">
+            💡 <strong>Info:</strong> Semua paket include akses selamanya dan bisa
+            diakses di semua perangkat
           </p>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Star, Shield, Brain } from "lucide-react";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
   const [counters, setCounters] = useState({
@@ -8,7 +10,6 @@ export default function Hero() {
     questions: 0,
     satisfaction: 0,
   });
-  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     const targetValues = {
@@ -17,7 +18,7 @@ export default function Hero() {
       satisfaction: 95,
     };
 
-    const duration = 2000; // 2 seconds
+    const duration = 2000;
     const steps = 50;
     const increment = {
       users: targetValues.users / steps,
@@ -43,141 +44,124 @@ export default function Hero() {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <section className="pt-24 md:pt-32 pb-12 md:pb-20 px-4 relative overflow-hidden">
-      {/* Background parallax effect */}
-      <div
-        className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 -z-10"
-        style={{
-          transform: `translateY(${scrollY * 0.5}px)`,
-        }}
-      ></div>
+    <section className="pt-32 pb-20 px-4 relative overflow-hidden min-h-screen flex items-center bg-background">
+      {/* Abstract Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.05),transparent_50%)]" />
+        <div className="absolute top-20 right-20 w-64 h-64 bg-foreground/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-foreground/3 rounded-full blur-3xl" />
+      </div>
 
-      {/* Floating elements for parallax */}
-      <div
-        className="absolute top-20 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl -z-10"
-        style={{
-          transform: `translateY(${scrollY * 0.3}px) translateX(${
-            scrollY * 0.1
-          }px)`,
-        }}
-      ></div>
-      <div
-        className="absolute top-40 right-10 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -z-10"
-        style={{
-          transform: `translateY(${scrollY * 0.2}px) translateX(${
-            -scrollY * 0.1
-          }px)`,
-        }}
-      ></div>
-      <div
-        className="absolute bottom-20 left-1/4 w-16 h-16 bg-primary/5 rounded-full blur-lg -z-10"
-        style={{
-          transform: `translateY(${scrollY * 0.4}px)`,
-        }}
-      ></div>
-
-      <div className="container mx-auto">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-block mb-4 px-3 md:px-4 py-2 bg-primary/10 rounded-full">
-            <span className="text-primary font-medium text-xs md:text-sm">
+      <div className="container mx-auto relative z-10">
+        <div className="max-w-5xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-block mb-6 px-4 py-1.5 bg-foreground/5 rounded-full border border-foreground/10"
+          >
+            <span className="text-foreground/80 font-medium text-sm flex items-center gap-2">
+              <Star className="w-4 h-4 fill-foreground/20" />
               Platform Tryout Online Terpercaya
             </span>
-          </div>
+          </motion.div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 md:mb-6 leading-tight">
-            Persiapkan Dirimu untuk <span className="text-primary">Sukses</span>{" "}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight tracking-tight"
+          >
+            Persiapkan Dirimu untuk <br />
+            <span className="relative inline-block">
+              <span className="relative z-10">Sukses</span>
+              <motion.span
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="absolute bottom-2 left-0 h-4 bg-foreground/10 -z-0 -rotate-2"
+              />
+            </span>{" "}
             di Ujian
-          </h1>
+          </motion.h1>
 
-          <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-4">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed"
+          >
             Latihan tryout interaktif dengan analisis pintar dan pembahasan
             lengkap untuk bantu kamu lolos CPNS & BUMN.
-          </p>
+          </motion.p>
 
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center mb-6 md:mb-8 px-4">
-            <Button
-              size="lg"
-              className="text-sm md:text-lg px-6 md:px-8 w-full sm:w-auto bg-green-600 hover:bg-green-700"
-              asChild
-            >
-              <a href="/register">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+          >
+            <Link to="/register">
+              <Button
+                size="lg"
+                className="text-lg px-8 h-14 rounded-full bg-foreground text-background hover:bg-foreground/90 transition-all hover:scale-105"
+              >
                 Coba Sekarang Gratis
-                <ArrowRight className="ml-2 hidden sm:block" size={20} />
-                <ArrowRight className="ml-2 sm:hidden" size={16} />
-              </a>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="text-sm md:text-lg px-6 md:px-8 w-full sm:w-auto"
-              asChild
-            >
-              <a href="#demo">
-                <Play className="mr-2 hidden sm:block" size={20} />
-                <Play className="mr-2 sm:hidden" size={16} />
+                <ArrowRight className="ml-2" size={20} />
+              </Button>
+            </Link>
+            <a href="#features">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 h-14 rounded-full border-2 hover:bg-accent transition-all hover:scale-105"
+              >
+                <Play className="mr-2" size={20} />
                 Lihat Demo
-              </a>
-            </Button>
-          </div>
+              </Button>
+            </a>
+          </motion.div>
 
-          {/* Trust Elements */}
-          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-8 md:mb-12 px-4 text-sm md:text-base text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Star className="text-yellow-500 fill-yellow-500" size={16} />
-              <span>
-                Dipercaya oleh {counters.users.toLocaleString("id-ID")}+ peserta
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Shield className="text-green-600" size={16} />
-              <span>Aman & resmi</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Brain className="text-blue-600" size={16} />
-              <span>Pembahasan oleh expert</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-2xl mx-auto pt-6 md:pt-8 border-t border-border px-4">
-            <div>
-              <div className="text-2xl md:text-3xl font-bold text-primary">
+          {/* Stats Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto pt-10 border-t border-border"
+          >
+            <div className="flex flex-col items-center p-4 rounded-2xl hover:bg-accent/50 transition-colors">
+              <div className="text-4xl font-bold mb-2 tabular-nums tracking-tight">
                 {counters.users > 1000
                   ? `${(counters.users / 1000).toFixed(0)}K+`
                   : counters.users.toLocaleString("id-ID")}
               </div>
-              <div className="text-xs md:text-sm text-muted-foreground">
+              <div className="text-muted-foreground font-medium flex items-center gap-2">
+                <Shield className="w-4 h-4" />
                 Pengguna Aktif
               </div>
             </div>
-            <div>
-              <div className="text-2xl md:text-3xl font-bold text-primary">
+            <div className="flex flex-col items-center p-4 rounded-2xl hover:bg-accent/50 transition-colors">
+              <div className="text-4xl font-bold mb-2 tabular-nums tracking-tight">
                 {counters.questions > 1000
                   ? `${(counters.questions / 1000).toFixed(0)}K+`
                   : counters.questions.toLocaleString("id-ID")}
               </div>
-              <div className="text-xs md:text-sm text-muted-foreground">
+              <div className="text-muted-foreground font-medium flex items-center gap-2">
+                <Brain className="w-4 h-4" />
                 Soal Berkualitas
               </div>
             </div>
-            <div>
-              <div className="text-2xl md:text-3xl font-bold text-primary">
+            <div className="flex flex-col items-center p-4 rounded-2xl hover:bg-accent/50 transition-colors">
+              <div className="text-4xl font-bold mb-2 tabular-nums tracking-tight">
                 {counters.satisfaction}%
               </div>
-              <div className="text-xs md:text-sm text-muted-foreground">
+              <div className="text-muted-foreground font-medium flex items-center gap-2">
+                <Star className="w-4 h-4" />
                 Tingkat Kepuasan
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

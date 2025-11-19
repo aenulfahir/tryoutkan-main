@@ -1,18 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Loader2, Lock } from "lucide-react";
+import { Mail, Loader2, Lock, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -89,9 +83,8 @@ export default function Login() {
 
       // 3. Show success message
       toast.success("Login Berhasil!", {
-        description: `Selamat datang kembali${
-          userRole === "admin" ? ", Admin" : ""
-        }!`,
+        description: `Selamat datang kembali${userRole === "admin" ? ", Admin" : ""
+          }!`,
       });
 
       // 4. Redirect based on role
@@ -109,121 +102,133 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navbar */}
-      <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-md border-b border-border z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">
-                  T
-                </span>
-              </div>
-              <span className="text-2xl font-bold">TryoutKan</span>
-            </Link>
-            <Link to="/">
-              <Button variant="ghost">Kembali ke Beranda</Button>
-            </Link>
+    <div className="min-h-screen bg-background flex">
+      {/* Left Side - Form */}
+      <div className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center relative">
+        <Link
+          to="/"
+          className="absolute top-8 left-8 md:left-12 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Kembali
+        </Link>
+
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-md mx-auto w-full"
+        >
+          <div className="mb-10">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">
+              Selamat Datang Kembali
+            </h1>
+            <p className="text-muted-foreground">
+              Masuk ke akun Anda untuk melanjutkan belajar
+            </p>
           </div>
-        </div>
-      </nav>
 
-      <div className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 flex items-center justify-center min-h-screen">
-        <div className="w-full max-w-md">
-          <Card>
-            <CardHeader className="space-y-1 text-center p-4 md:p-6">
-              <CardTitle className="text-xl md:text-2xl font-bold">
-                Selamat Datang Kembali
-              </CardTitle>
-              <CardDescription className="text-sm md:text-base">
-                Masuk ke akun Anda untuk melanjutkan
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 p-4 md:p-6">
-              {/* Error Message */}
-              {error && (
-                <div className="p-3 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
-                  <p className="text-xs md:text-sm text-red-800 dark:text-red-400">
-                    {error}
-                  </p>
-                </div>
-              )}
+          {/* Error Message */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 mb-6"
+            >
+              <p className="text-sm text-destructive font-medium">{error}</p>
+            </motion.div>
+          )}
 
-              {/* Email Input */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm md:text-base">
-                  Alamat Email
-                </Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="nama@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                    className="pl-10 text-sm md:text-base"
-                    disabled={loading}
-                  />
-                </div>
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="nama@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                  className="pl-10 h-12 rounded-xl"
+                  disabled={loading}
+                />
               </div>
+            </div>
 
-              {/* Password Input */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-sm md:text-base">
-                    Password
-                  </Label>
-                  <Link
-                    to="/forgot-password"
-                    className="text-xs md:text-sm text-primary hover:underline"
-                  >
-                    Lupa Password?
-                  </Link>
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Masukkan password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                    className="pl-10 text-sm md:text-base"
-                    disabled={loading}
-                  />
-                </div>
-              </div>
-
-              <Button
-                className="w-full text-sm md:text-base"
-                onClick={handleLogin}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Masuk...
-                  </>
-                ) : (
-                  "Masuk"
-                )}
-              </Button>
-
-              <p className="text-center text-xs md:text-sm text-muted-foreground">
-                Belum punya akun?{" "}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
                 <Link
-                  to="/register"
-                  className="text-primary hover:underline font-medium"
+                  to="/forgot-password"
+                  className="text-sm text-primary hover:underline font-medium"
                 >
-                  Daftar
+                  Lupa Password?
                 </Link>
+              </div>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Masukkan password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                  className="pl-10 h-12 rounded-xl"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <Button
+              className="w-full h-12 rounded-xl text-base font-medium"
+              onClick={handleLogin}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Masuk...
+                </>
+              ) : (
+                "Masuk Sekarang"
+              )}
+            </Button>
+
+            <p className="text-center text-sm text-muted-foreground">
+              Belum punya akun?{" "}
+              <Link
+                to="/register"
+                className="text-primary hover:underline font-bold"
+              >
+                Daftar Gratis
+              </Link>
+            </p>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Right Side - Image/Pattern */}
+      <div className="hidden lg:block w-1/2 bg-foreground text-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 flex items-center justify-center p-12">
+          <div className="max-w-lg text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <h2 className="text-4xl font-bold mb-6">
+                Mulai Perjalanan Suksesmu Hari Ini
+              </h2>
+              <p className="text-lg text-background/80 leading-relaxed">
+                Bergabunglah dengan ribuan peserta lain yang telah berhasil lolos
+                ujian CPNS & BUMN bersama TryoutKan.
               </p>
-            </CardContent>
-          </Card>
+            </motion.div>
+          </div>
         </div>
       </div>
     </div>
