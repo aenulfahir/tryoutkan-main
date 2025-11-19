@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tooltip } from "@/components/ui/tooltip";
 import DataTable from "@/components/admin/DataTable";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import TryoutFormWithSections from "@/components/admin/TryoutFormWithSections";
@@ -157,11 +158,30 @@ export default function AdminTryoutList() {
       key: "title",
       label: "Judul",
       render: (item: TryoutPackage) => (
-        <div>
-          <p className="font-bold text-black">{item.title}</p>
-          <p className="text-sm text-gray-600 font-medium line-clamp-1">
-            {item.description}
-          </p>
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-black">{item.title}</span>
+          {item.description && (
+            <Tooltip content={item.description}>
+              <div className="cursor-help text-gray-400 hover:text-black transition-colors">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-info"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 16v-4" />
+                  <path d="M12 8h.01" />
+                </svg>
+              </div>
+            </Tooltip>
+          )}
         </div>
       ),
     },
@@ -205,8 +225,8 @@ export default function AdminTryoutList() {
         <Badge
           variant={item.is_active ? "default" : "secondary"}
           className={`font-bold border-2 border-black ${item.is_active
-              ? "bg-black text-white hover:bg-gray-800"
-              : "bg-white text-black hover:bg-gray-100"
+            ? "bg-black text-white hover:bg-gray-800"
+            : "bg-white text-black hover:bg-gray-100"
             }`}
         >
           {item.is_active ? "Active" : "Inactive"}
