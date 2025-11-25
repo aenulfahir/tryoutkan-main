@@ -39,6 +39,8 @@ import {
 import { Balance, Transaction, Payment } from "@/types/database";
 import { supabase } from "@/lib/supabase";
 import { PromoCodeInput } from "@/components/billing/PromoCodeInput";
+import { getCurrentUserProfile, Profile } from "@/services/profile";
+import { generatePaymentInvoice } from "@/lib/pdfGenerator";
 
 export default function Billing() {
   const [balance, setBalance] = useState<Balance | null>(null);
@@ -48,6 +50,7 @@ export default function Billing() {
   const [activeTab, setActiveTab] = useState<"transactions" | "payments">(
     "transactions"
   );
+  const [userProfile, setUserProfile] = useState<Profile | null>(null);
 
   // Top Up Modal States
   const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
@@ -67,15 +70,17 @@ export default function Billing() {
     try {
       console.log("💳 Loading billing data...");
 
-      const [balanceData, transactionsData, paymentsData] = await Promise.all([
+      const [balanceData, transactionsData, paymentsData, profileData] = await Promise.all([
         getUserBalance(),
         getUserTransactions(),
         getUserPayments(),
+        getCurrentUserProfile(),
       ]);
 
       setBalance(balanceData);
       setTransactions(transactionsData);
       setPayments(paymentsData);
+      setUserProfile(profileData);
     } catch (error) {
       console.error("❌ Error loading billing data:", error);
     } finally {
@@ -361,8 +366,8 @@ export default function Billing() {
                     onClick={() => handlePresetAmount(amount)}
                     disabled={isTopUpLoading}
                     className={`p-4 rounded-xl border-2 transition-all hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] min-h-[44px] ${parseInt(topUpAmount) === amount
-                        ? "border-black bg-black text-white"
-                        : "border-black bg-white text-black hover:bg-gray-50"
+                      ? "border-black bg-black text-white"
+                      : "border-black bg-white text-black hover:bg-gray-50"
                       } disabled:opacity-50 disabled:cursor-not-allowed font-bold`}
                   >
                     <div className={`text-xs mb-1 ${parseInt(topUpAmount) === amount ? "text-gray-300" : "text-gray-500"}`}>Rp</div>
@@ -464,8 +469,8 @@ export default function Billing() {
             type="button"
             onClick={() => setActiveTab("transactions")}
             className={`px-3 sm:px-4 py-2 text-sm font-bold border-b-2 transition-colors min-h-[44px] whitespace-nowrap -mb-[2px] ${activeTab === "transactions"
-                ? "border-black text-black"
-                : "border-transparent text-gray-500 hover:text-black"
+              ? "border-black text-black"
+              : "border-transparent text-gray-500 hover:text-black"
               }`}
           >
             <span className="text-xs sm:text-sm">Transactions</span>
@@ -474,8 +479,8 @@ export default function Billing() {
             type="button"
             onClick={() => setActiveTab("payments")}
             className={`px-3 sm:px-4 py-2 text-sm font-bold border-b-2 transition-colors min-h-[44px] whitespace-nowrap -mb-[2px] ${activeTab === "payments"
-                ? "border-black text-black"
-                : "border-transparent text-gray-500 hover:text-black"
+              ? "border-black text-black"
+              : "border-transparent text-gray-500 hover:text-black"
               }`}
           >
             <span className="text-xs sm:text-sm">Payments</span>
@@ -678,14 +683,14 @@ export default function Billing() {
                               </span>
                               <span
                                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold border-2 ${isPromoRedeem
-                                    ? "bg-purple-100 text-purple-700 border-purple-600"
-                                    : isDirectTopUp
-                                      ? "bg-green-100 text-green-700 border-green-600"
-                                      : isGift
-                                        ? "bg-yellow-100 text-yellow-700 border-yellow-600"
-                                        : isPurchase
-                                          ? "bg-blue-100 text-blue-700 border-blue-600"
-                                          : "bg-red-100 text-red-700 border-red-600"
+                                  ? "bg-purple-100 text-purple-700 border-purple-600"
+                                  : isDirectTopUp
+                                    ? "bg-green-100 text-green-700 border-green-600"
+                                    : isGift
+                                      ? "bg-yellow-100 text-yellow-700 border-yellow-600"
+                                      : isPurchase
+                                        ? "bg-blue-100 text-blue-700 border-blue-600"
+                                        : "bg-red-100 text-red-700 border-red-600"
                                   }`}
                               >
                                 <CheckCircle className="w-3 h-3 mr-1" />
@@ -699,8 +704,8 @@ export default function Billing() {
                         <div className="text-right">
                           <p
                             className={`text-xl font-black ${transaction.amount > 0
-                                ? "text-green-600"
-                                : "text-red-600"
+                              ? "text-green-600"
+                              : "text-red-600"
                               }`}
                           >
                             {transaction.amount > 0 ? "+" : ""}
@@ -794,18 +799,28 @@ export default function Billing() {
                           {formatCurrency(payment.amount)}
                         </p>
                         {payment.invoice_url &&
-                          payment.status === "PENDING" && (
+                          (payment.status as string).toUpperCase() === "PENDING" && (
                             <Button
                               variant="outline"
                               size="sm"
-                              className="mt-2 h-8 text-xs border-2 border-black font-bold hover:bg-gray-100"
-                              onClick={() =>
-                                window.open(payment.invoice_url, "_blank")
-                              }
+                              className="mt-2 w-full border-2 border-black font-bold"
+                              onClick={() => window.open(payment.invoice_url!, "_blank")}
                             >
-                              Pay Now
+                              Bayar Sekarang
                             </Button>
                           )}
+
+                        {((payment.status as string).toUpperCase() === "PAID" || (payment.status as string).toUpperCase() === "COMPLETED") && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-2 w-full border-2 border-black font-bold hover:bg-gray-100"
+                            onClick={() => generatePaymentInvoice(payment, userProfile)}
+                          >
+                            <FileText className="w-4 h-4 mr-2" />
+                            Download Invoice
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </CardContent>
@@ -814,7 +829,8 @@ export default function Billing() {
             </div>
           )}
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }
