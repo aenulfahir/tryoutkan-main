@@ -8,6 +8,8 @@ interface NavbarProps {
   onLoginClick?: () => void;
 }
 
+import { ThemeToggle } from "@/components/ThemeToggle";
+
 export default function Navbar({ onLoginClick }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -29,11 +31,10 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled
           ? "bg-background/80 backdrop-blur-md border-b border-border py-4"
           : "bg-transparent py-6"
-      }`}
+        }`}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
@@ -58,6 +59,7 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             <Link to="/login">
               <Button variant="ghost" className="font-medium">
                 Masuk
@@ -70,12 +72,15 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
             </Link>
           </div>
 
-          <button
-            className="md:hidden p-2 hover:bg-accent rounded-full transition-colors"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
+            <button
+              className="p-2 hover:bg-accent rounded-full transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         <AnimatePresence>

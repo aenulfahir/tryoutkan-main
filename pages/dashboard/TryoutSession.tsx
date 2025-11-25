@@ -74,6 +74,8 @@ export default function TryoutSession() {
   const [elapsedSeconds, setElapsedSeconds] = useState(0); // Track elapsed time from database
   const [showRefreshWarning, setShowRefreshWarning] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showBackWarning, setShowBackWarning] = useState(false);
+  const [isNavigatingAway, setIsNavigatingAway] = useState(false);
 
   useEffect(() => {
     if (sessionId) {
@@ -84,10 +86,17 @@ export default function TryoutSession() {
   // Add beforeunload event listener to show confirmation dialog
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      // Only show confirmation if session is active and not completed and not already showing custom dialog
-      if (session && session.status === "in_progress" && !showRefreshWarning) {
-        const message =
-          "Apakah Anda yakin ingin meninggalkan halaman ini? Progress tryout Anda akan tersimpan, namun timer akan terus berjalan.";
+      // Only show confirmation if session is active and not navigating away intentionally
+      if (
+        session &&
+        session.status === "in_progress" &&
+        !showRefreshWarning &&
+        !showBackWarning &&
+        !isNavigatingAway &&
+        !submitting
+      ) {
+        // Standard message (most browsers ignore this and show their own generic message)
+        const message = "Perubahan yang belum disimpan mungkin akan hilang.";
         e.preventDefault();
         e.returnValue = message;
         return message;
@@ -99,7 +108,7 @@ export default function TryoutSession() {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [session, showRefreshWarning]);
+  }, [session, showRefreshWarning, showBackWarning, isNavigatingAway, submitting]);
 
   // Handle keyboard shortcuts for refresh
   useEffect(() => {
@@ -111,7 +120,7 @@ export default function TryoutSession() {
         (e.metaKey && e.key === "r")
       ) {
         // Only show custom dialog if session is active and not completed
-        if (session && session.status === "in_progress" && !isRefreshing) {
+        if (session && session.status === "in_progress" && !isRefreshing && !submitting) {
           e.preventDefault();
           setShowRefreshWarning(true);
         }
@@ -123,18 +132,83 @@ export default function TryoutSession() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [session, isRefreshing]);
+  }, [session, isRefreshing, submitting]);
 
   const handleRefreshConfirm = () => {
     setIsRefreshing(true);
     setShowRefreshWarning(false);
     // Remove the beforeunload listener temporarily to allow refresh
-    window.removeEventListener("beforeunload", () => { });
+    window.onbeforeunload = null;
     window.location.reload();
   };
 
   const handleRefreshCancel = () => {
     setShowRefreshWarning(false);
+  };
+
+  // Handle browser back button
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      // Prevent default back navigation if session is active
+      if (session && session.status === "in_progress" && !isNavigatingAway && !submitting) {
+        // Prevent the navigation
+        e.preventDefault();
+
+        // Push state again to maintain the current URL and history state
+        // This effectively "cancels" the back button action in the browser history
+        window.history.pushState(null, "", window.location.href);
+
+        // Show warning dialog
+        setShowBackWarning(true);
+      }
+    };
+
+    // Push initial state to enable popstate detection
+    // We need at least one history entry to "go back" to
+    if (session && session.status === "in_progress") {
+      window.history.pushState(null, "", window.location.href);
+      window.addEventListener("popstate", handlePopState);
+    }
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [session, isNavigatingAway, submitting]);
+
+  const handleBackConfirm = async () => {
+    setIsNavigatingAway(true);
+    setShowBackWarning(false);
+
+    // Auto-submit the tryout before navigating
+    try {
+      setSubmitting(true);
+      toast.info("Menyimpan Progress...", {
+        description: "Hasil tryout akan disubmit otomatis",
+        duration: 2000,
+      });
+
+      if (sessionId) {
+        await calculateTryoutResult(sessionId);
+      }
+
+      // Navigate back after submission
+      // We use replace to avoid adding to history stack
+      setTimeout(() => {
+        navigate("/dashboard/tryout", { replace: true });
+      }, 1000);
+    } catch (error) {
+      console.error("Error auto-submitting:", error);
+      // Still allow navigation even if submit fails
+      setTimeout(() => {
+        navigate("/dashboard/tryout", { replace: true });
+      }, 1000);
+    }
+  };
+
+  const handleBackCancel = () => {
+    setShowBackWarning(false);
+    // Re-push state to maintain protection just in case
+    window.history.pushState(null, "", window.location.href);
   };
 
   async function loadSession() {
@@ -776,6 +850,77 @@ export default function TryoutSession() {
         onConfirm={handleRefreshConfirm}
         onCancel={handleRefreshCancel}
       />
+
+      {/* Back Button Warning Dialog */}
+      <Dialog open={showBackWarning} onOpenChange={setShowBackWarning}>
+        <DialogContent
+          className="max-w-md border-2 border-black bg-white"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 font-black text-xl">
+              <AlertTriangle className="w-5 h-5 text-yellow-600" />
+              Keluar dari Tryout?
+            </DialogTitle>
+            <DialogDescription className="text-gray-600 font-medium">
+              Anda mencoba keluar dari sesi tryout yang sedang berlangsung.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="bg-yellow-50 border-2 border-yellow-100 rounded-xl p-4">
+              <p className="text-sm text-yellow-800 font-bold">
+                ⚠️ Peringatan
+              </p>
+              <p className="text-xs text-yellow-700 mt-2 font-medium">
+                Jika Anda keluar sekarang, tryout akan otomatis disubmit dengan jawaban yang sudah Anda isi.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 rounded-xl p-4 space-y-2 border-2 border-gray-100">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 font-medium">
+                  Sudah Dijawab:
+                </span>
+                <span className="font-black text-black">
+                  {Object.keys(answers).length} dari {questions.length}
+                </span>
+              </div>
+              {questions.length - Object.keys(answers).length > 0 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 font-medium">
+                    Belum Dijawab:
+                  </span>
+                  <span className="font-black text-red-600">
+                    {questions.length - Object.keys(answers).length}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <p className="text-sm text-gray-600 font-medium">
+              Apakah Anda yakin ingin keluar dan submit tryout sekarang?
+            </p>
+          </div>
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={handleBackCancel}
+              className="border-2 border-black font-bold hover:bg-gray-100"
+            >
+              Lanjut Tryout
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleBackConfirm}
+              className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
+            >
+              Ya, Keluar & Submit
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
