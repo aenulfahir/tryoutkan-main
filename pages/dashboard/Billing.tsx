@@ -223,9 +223,12 @@ export default function Billing() {
         throw new Error(errorMessage);
       }
 
-      // Redirect to invoice URL
+      // Redirect to invoice URL in new tab and update UI
       if (data.invoice_url) {
-        window.location.href = data.invoice_url;
+        window.open(data.invoice_url, "_blank");
+        setIsTopUpModalOpen(false);
+        setActiveTab("payments");
+        loadData(); // Trigger loading state and refresh data
       } else {
         throw new Error("Invoice URL tidak ditemukan dalam response");
       }
@@ -325,38 +328,44 @@ export default function Billing() {
 
       {/* Top Up Modal - Redesigned */}
       <Dialog open={isTopUpModalOpen} onOpenChange={setIsTopUpModalOpen}>
-        <DialogContent className="sm:max-w-lg max-w-[95vw] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-          <DialogHeader>
-            <div className="flex items-center space-x-3 mb-2">
-              <div className="p-2 bg-black text-white rounded-lg border-2 border-black">
-                <Wallet className="w-6 h-6" />
+        <DialogContent className="sm:max-w-lg max-w-[95vw] border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-0 overflow-hidden gap-0">
+          <div className="p-6 bg-black text-white">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+                <Wallet className="w-6 h-6 text-white" />
               </div>
               <div>
-                <DialogTitle className="text-xl sm:text-2xl font-black">
+                <DialogTitle className="text-xl sm:text-2xl font-black text-white">
                   Top Up Balance
                 </DialogTitle>
-                <DialogDescription className="text-sm sm:text-base font-medium text-gray-600">
-                  Pilih atau masukkan jumlah top up
+                <DialogDescription className="text-white/80 font-medium">
+                  Secure payment via Xendit
                 </DialogDescription>
               </div>
             </div>
-          </DialogHeader>
+          </div>
 
-          <div className="space-y-6 py-4">
+          <div className="p-6 space-y-6 bg-white">
             {/* Current Balance Display */}
-            <div className="bg-gray-50 p-4 rounded-xl border-2 border-black border-dashed">
-              <p className="text-sm text-gray-600 font-bold mb-1">
-                Current Balance
-              </p>
-              <p className="text-2xl font-black text-black">
-                {formatCurrency(balance?.balance || 0)}
-              </p>
+            <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-4 rounded-xl border-2 border-black border-dashed flex justify-between items-center">
+              <div>
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">
+                  Current Balance
+                </p>
+                <p className="text-2xl font-black text-black">
+                  {formatCurrency(balance?.balance || 0)}
+                </p>
+              </div>
+              <div className="h-10 w-10 bg-black rounded-full flex items-center justify-center">
+                <Wallet className="w-5 h-5 text-white" />
+              </div>
             </div>
 
             {/* Preset Amount Cards - Mobile-First */}
             <div>
-              <label className="text-sm font-bold mb-3 block">
-                Quick Select
+              <label className="text-sm font-bold mb-3 block flex items-center justify-between">
+                <span>Quick Select</span>
+                <span className="text-xs text-gray-500 font-normal">Instant processing</span>
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {[50000, 100000, 200000].map((amount) => (
@@ -365,13 +374,18 @@ export default function Billing() {
                     type="button"
                     onClick={() => handlePresetAmount(amount)}
                     disabled={isTopUpLoading}
-                    className={`p-4 rounded-xl border-2 transition-all hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] min-h-[44px] ${parseInt(topUpAmount) === amount
-                      ? "border-black bg-black text-white"
-                      : "border-black bg-white text-black hover:bg-gray-50"
-                      } disabled:opacity-50 disabled:cursor-not-allowed font-bold`}
+                    className={`relative p-4 rounded-xl border-2 transition-all duration-200 min-h-[80px] flex flex-col items-center justify-center ${parseInt(topUpAmount) === amount
+                      ? "border-black bg-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] translate-x-[-2px] translate-y-[-2px]"
+                      : "border-gray-200 bg-white text-black hover:border-black hover:bg-gray-50"
+                      } disabled:opacity-50 disabled:cursor-not-allowed group`}
                   >
-                    <div className={`text-xs mb-1 ${parseInt(topUpAmount) === amount ? "text-gray-300" : "text-gray-500"}`}>Rp</div>
-                    <div className="text-lg">
+                    {amount === 100000 && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-black shadow-sm z-10">
+                        POPULAR
+                      </div>
+                    )}
+                    <div className={`text-xs mb-1 font-bold ${parseInt(topUpAmount) === amount ? "text-gray-300" : "text-gray-400"}`}>IDR</div>
+                    <div className="text-lg font-black">
                       {(amount / 1000).toFixed(0)}K
                     </div>
                   </button>
@@ -382,8 +396,8 @@ export default function Billing() {
             {/* Custom Amount Input - Mobile-First */}
             <div className="space-y-2">
               <label className="text-sm font-bold">Custom Amount</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">
+              <div className="relative group">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold group-focus-within:text-black transition-colors">
                   Rp
                 </span>
                 <Input
@@ -395,18 +409,19 @@ export default function Billing() {
                     setTopUpError("");
                   }}
                   disabled={isTopUpLoading}
-                  className="text-base sm:text-lg pl-10 h-12 min-h-[44px] border-2 border-black font-bold focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="text-base sm:text-lg pl-10 h-14 min-h-[44px] border-2 border-gray-200 focus:border-black font-bold focus-visible:ring-0 focus-visible:ring-offset-0 transition-all rounded-xl"
                   style={{ fontSize: "16px" }} // Prevent zoom on iOS
                 />
               </div>
-              <p className="text-xs text-gray-500 font-medium">
+              <p className="text-xs text-gray-500 font-medium flex items-center">
+                <CheckCircle className="w-3 h-3 mr-1 text-green-500" />
                 Minimum top up: Rp 10.000
               </p>
             </div>
 
             {/* Error Message */}
             {topUpError && (
-              <div className="flex items-start space-x-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg border-2 border-red-600 font-bold">
+              <div className="flex items-start space-x-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg border-2 border-red-600 font-bold animate-in fade-in slide-in-from-top-2">
                 <XCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                 <span>{topUpError}</span>
               </div>
@@ -414,7 +429,7 @@ export default function Billing() {
 
             {/* Submit Button - Mobile-First */}
             <Button
-              className="w-full h-12 text-base min-h-[44px] bg-black text-white hover:bg-gray-800 border-2 border-black font-bold"
+              className="w-full h-14 text-base min-h-[44px] bg-black text-white hover:bg-gray-800 border-2 border-black font-bold rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-none active:translate-y-[4px] active:translate-x-[4px]"
               size="lg"
               onClick={handleTopUpSubmit}
               disabled={
@@ -423,16 +438,22 @@ export default function Billing() {
             >
               {isTopUpLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
-                  <span className="text-sm sm:text-base">Processing...</span>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  <span className="text-base">Processing Payment...</span>
                 </>
               ) : (
                 <>
-                  <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  <span className="text-sm sm:text-base">Continue</span>
+                  <span className="text-base mr-2">Continue to Payment</span>
+                  <ArrowUpRight className="w-5 h-5" />
                 </>
               )}
             </Button>
+
+            <div className="text-center">
+              <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+                Secure Payment Processing
+              </p>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
