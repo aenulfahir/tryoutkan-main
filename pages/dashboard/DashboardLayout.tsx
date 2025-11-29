@@ -25,6 +25,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface NavItem {
   name: string;
@@ -163,38 +164,15 @@ export default function DashboardLayout() {
           </div>
 
           {/* Right: User Profile Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none"
-              >
-                <Avatar className="w-9 h-9 border-2 border-black">
-                  <AvatarImage src={userProfile?.avatar_url} />
-                  <AvatarFallback className="bg-black text-white font-bold">
-                    {getInitials(
-                      userProfile?.name ||
-                      user?.user_metadata?.name ||
-                      user?.email ||
-                      "User"
-                    )}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="hidden md:block text-left">
-                  <p className="text-sm font-bold leading-none">
-                    {userProfile?.name || user?.user_metadata?.name || "User"}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {user?.email || ""}
-                  </p>
-                </div>
-                <ChevronDown className="w-4 h-4 text-gray-500 hidden md:block" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-lg">
-              <DropdownMenuLabel>
-                <div className="flex items-center space-x-3">
-                  <Avatar className="w-10 h-10 border-2 border-black">
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none"
+                >
+                  <Avatar className="w-9 h-9 border-2 border-black">
                     <AvatarImage src={userProfile?.avatar_url} />
                     <AvatarFallback className="bg-black text-white font-bold">
                       {getInitials(
@@ -205,39 +183,65 @@ export default function DashboardLayout() {
                       )}
                     </AvatarFallback>
                   </Avatar>
-                  <div>
-                    <p className="font-bold text-sm">
+                  <div className="hidden md:block text-left">
+                    <p className="text-sm font-bold leading-none">
                       {userProfile?.name || user?.user_metadata?.name || "User"}
                     </p>
-                    <p className="text-xs text-gray-500 font-normal">
+                    <p className="text-xs text-gray-500 mt-1">
                       {user?.email || ""}
                     </p>
                   </div>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-gray-200" />
-              <DropdownMenuItem asChild>
-                <Link to="/dashboard/settings" className="cursor-pointer hover:bg-gray-100 focus:bg-gray-100 font-medium">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Settings
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/dashboard/support" className="cursor-pointer hover:bg-gray-100 focus:bg-gray-100 font-medium">
-                  <HelpCircle className="w-4 h-4 mr-2" />
-                  Help & Support
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-gray-200" />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="text-red-600 focus:text-red-600 cursor-pointer hover:bg-red-50 focus:bg-red-50 font-medium"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <ChevronDown className="w-4 h-4 text-gray-500 hidden md:block" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-lg">
+                <DropdownMenuLabel>
+                  <div className="flex items-center space-x-3">
+                    <Avatar className="w-10 h-10 border-2 border-black">
+                      <AvatarImage src={userProfile?.avatar_url} />
+                      <AvatarFallback className="bg-black text-white font-bold">
+                        {getInitials(
+                          userProfile?.name ||
+                          user?.user_metadata?.name ||
+                          user?.email ||
+                          "User"
+                        )}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-bold text-sm">
+                        {userProfile?.name || user?.user_metadata?.name || "User"}
+                      </p>
+                      <p className="text-xs text-gray-500 font-normal">
+                        {user?.email || ""}
+                      </p>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-gray-200" />
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard/settings" className="cursor-pointer hover:bg-gray-100 focus:bg-gray-100 font-medium">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard/support" className="cursor-pointer hover:bg-gray-100 focus:bg-gray-100 font-medium">
+                    <HelpCircle className="w-4 h-4 mr-2" />
+                    Help & Support
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-gray-200" />
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-red-600 focus:text-red-600 cursor-pointer hover:bg-red-50 focus:bg-red-50 font-medium"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </header>
 
